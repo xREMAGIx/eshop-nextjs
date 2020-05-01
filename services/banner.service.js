@@ -12,7 +12,9 @@ async function getAll() {
     //headers: authHeader()
   };
 
-  return await axios.get(`/api/banner`, requestConfig).then(handleResponse);
+  return await axios
+    .get(`http://localhost:5000/api/banner`, requestConfig)
+    .then(handleResponse);
 }
 
 async function add(image) {

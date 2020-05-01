@@ -9,11 +9,16 @@ import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     position: "sticky",
+    zIndex: 5,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -64,23 +69,34 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  menuListItem: {
+    width: "150px",
+  },
 }));
 
 export default function MainBar(props) {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
+  const [openCategories, setOpenCategories] = React.useState(false);
+  const [openBrands, setOpenBrands] = React.useState(false);
 
-  const { categories } = props;
+  const { categories, brands } = props;
 
-  const handleClick = (event) => {
+  const handleCategoriesClick = (event) => {
     setAnchorEl(event.currentTarget);
-    setOpen(true);
+    setOpenCategories(true);
+  };
+
+  const handleBrandsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpenBrands(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setAnchorEl(null);
+    setOpenCategories(false);
+    setOpenBrands(false);
   };
 
   return (
@@ -97,49 +113,133 @@ export default function MainBar(props) {
             >
               <MenuIcon />
             </IconButton>
-            <Typography className={classes.title} variant="h6" noWrap>
-              Material-UI
-            </Typography>
+            <Box style={{ marginRight: "50px" }}>
+              <Typography className={classes.title} variant="h6" noWrap>
+                Material-UI
+              </Typography>
+            </Box>
 
-            {/* Categories menu */}
-            <div>
-              <Button
-                aria-owns={open ? "simple-menu" : null}
-                aria-haspopup="true"
-                onClick={(e) => handleClick(e)}
-                onMouseOver={(e) => handleClick(e)}
-              >
-                Categories
-              </Button>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={() => handleClose()}
-                MenuListProps={{ onMouseLeave: handleClose }}
-              >
-                {categories.map((category) => (
-                  <MenuItem key={category.id} onClick={() => handleClose()}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </div>
+            <Grid container spacing={5}>
+              {/* Home button */}
+              <Grid item>
+                <Button>Home</Button>
+              </Grid>
 
-            {/* Search bar */}
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ "aria-label": "search" }}
-              />
-            </div>
+              {/* Categories menu */}
+              <Grid item>
+                <div>
+                  <Button
+                    aria-owns={openCategories ? "category-menu" : null}
+                    aria-haspopup="true"
+                    onClick={(e) => handleCategoriesClick(e)}
+                    onMouseOver={(e) => handleCategoriesClick(e)}
+                  >
+                    Categories
+                  </Button>
+                  <Menu
+                    id="category-menu"
+                    anchorEl={anchorEl}
+                    getContentAnchorEl={null}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    transformOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    open={openCategories}
+                    onClose={() => handleClose()}
+                    MenuListProps={{ onMouseLeave: handleClose }}
+                  >
+                    {categories.map((category) => (
+                      <MenuItem
+                        className={classes.menuListItem}
+                        key={category.id}
+                        onClick={() => handleClose()}
+                      >
+                        {category.name}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </div>
+              </Grid>
+
+              {/* Brands menu */}
+              <Grid item>
+                <div>
+                  <Button
+                    aria-owns={openBrands ? "brand-menu" : null}
+                    aria-haspopup="true"
+                    onClick={(e) => handleBrandsClick(e)}
+                    onMouseOver={(e) => handleBrandsClick(e)}
+                  >
+                    Brands
+                  </Button>
+                  <Menu
+                    id="brand-menu"
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    anchorEl={anchorEl}
+                    getContentAnchorEl={null}
+                    open={openBrands}
+                    onClose={() => handleClose()}
+                    MenuListProps={{ onMouseLeave: handleClose }}
+                    transformOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                  >
+                    {brands.map((brand) => (
+                      <MenuItem
+                        className={classes.menuListItem}
+                        key={brand.id}
+                        onClick={() => handleClose()}
+                      >
+                        {brand.name}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </div>
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justify="flex-end"
+              spacing={3}
+            >
+              {/* Search bar */}
+              <Grid item>
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder="Search…"
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput,
+                    }}
+                    inputProps={{ "aria-label": "search" }}
+                  />
+                </div>
+              </Grid>
+
+              {/* User space */}
+              <Grid item>
+                <IconButton aria-label="cart">
+                  <ShoppingCartIcon />
+                </IconButton>
+                <IconButton aria-label="user">
+                  <AccountCircleIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
           </Toolbar>
         </AppBar>
       </div>
