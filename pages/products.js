@@ -4,7 +4,6 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -22,7 +21,7 @@ import Link from "@material-ui/core/Link";
 import { productActions, bannerActions } from "../actions";
 import MainBar from "../src/Appbar";
 import Carousel from "../src/Carousel";
-import NoSsr from "@material-ui/core/NoSsr";
+import ListItemHorizontal from "../src/ListItemHorizontal";
 
 function Copyright() {
   return (
@@ -48,15 +47,46 @@ function Project(props) {
           // title={props.item.name}
         />
       )}
-      {props.item.img && (
-        <CardMedia
-          className={classes.media}
-          image={URL.createObjectURL(props.item.img)}
-          // title={props.item.name}
-        />
-      )}
-      {/* <Button className={classes.bannerCheckBtn}>Check it out!</Button> */}
     </Paper>
+  );
+}
+
+function GridList(props) {
+  const products = props.product;
+  const classes = useStyles();
+
+  return (
+    <Grid container direction="row" justify="center" spacing={4}>
+      {products.map((product) => (
+        <Grid className={classes.newProductList} key={product.id} item xs={3}>
+          <Card className={classes.card}>
+            {product.images.length > 0 ? (
+              <CardMedia
+                className={classes.cardMedia}
+                image={
+                  "http://localhost:5000/uploads/" + product.images[0].path
+                }
+                title="Image title"
+              />
+            ) : null}
+            <CardContent className={classes.cardContent}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {product.productName}
+              </Typography>
+              <Typography variant="h6">$ {product.price}</Typography>
+            </CardContent>
+            <CardActions className={classes.cardActions}>
+              <Button size="small" color="primary">
+                View
+              </Button>
+              <IconButton color="secondary" aria-label="add-to-cart">
+                <AddShoppingCartIcon />
+              </IconButton>
+            </CardActions>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
   );
 }
 
@@ -93,6 +123,17 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
+
+var splitArray = function (arr, size) {
+  var arr2 = arr.slice(0),
+    arrays = [];
+
+  while (arr2.length > 0) {
+    arrays.push(arr2.splice(0, size));
+  }
+
+  return arrays;
+};
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -150,7 +191,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 0, 0),
     position: "relative",
-    height: "500px",
+    //height: "500px",
     overflow: "hidden",
     // padding: "20px",
     color: "white",
@@ -158,18 +199,22 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionTitle: {
     textAlign: "center",
-    borderBottom: "2px solid #000",
-    marginTop: "40px",
+    margin: "50px",
+    fontWeight: "bold",
+  },
+  sectionTitleBar: {
+    width: "100px",
+    height: "5px",
+    margin: "8px auto 0",
+    display: "block",
+    backgroundColor: theme.palette.secondary.dark,
   },
   arcticlesRoot: {},
   arcticlesMedia: {
     height: 300,
   },
   arcticlesContainer: {
-    // width: "100px",
-    // height: "100vw",
-    //background: "primary",
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.light,
   },
   arcticlesGrid: {
     maxWidth: "1000px",
@@ -182,10 +227,6 @@ const useStyles = makeStyles((theme) => ({
     height: 0,
     overflow: "hidden",
     transition: "opacity 0.5s, height 0.1s linear",
-
-    // visibility: "hidden",
-    // opacity: 0,
-    // transition: "visibility 0s, opacity 0.5s linear",
   },
   gridList: {
     flexWrap: "nowrap",
@@ -195,9 +236,21 @@ const useStyles = makeStyles((theme) => ({
   tabRoot: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    "& .MuiAppBar-colorPrimary": {
+      color: "#000",
+      backgroundColor: theme.palette.background.paper,
+    },
+    "& .MuiPaper-elevation4": {
+      boxShadow: "none",
+    },
   },
   tabPanel: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.background.paper,
+
+    // backgroundColor: theme.palette.secondary.light,
+  },
+  newProductList: {
+    height: "320px",
   },
 }));
 
@@ -209,6 +262,12 @@ const Products = (props) => {
   const timer = 500;
   const animation = "fade";
   const indicators = true;
+
+  const sortedNewProduct = result.products.items
+    .slice()
+    .sort((a, b) => new Date(b.createAt) - new Date(a.createAt));
+
+  const arraySplitted = splitArray(sortedNewProduct, 4);
 
   const [value, setValue] = React.useState(0);
 
@@ -266,7 +325,6 @@ const Products = (props) => {
       {result.banners.items !== undefined && (
         <Carousel
           style={{ zIndex: -1 }}
-          className={classes.imageBanner}
           autoPlay={autoPlay}
           timer={timer}
           animation={animation}
@@ -280,7 +338,8 @@ const Products = (props) => {
 
       {/* Arcticles */}
       <Typography className={classes.sectionTitle} variant="h4">
-        Features Arcticles
+        Feature Arcticles
+        <span className={classes.sectionTitleBar}></span>
       </Typography>
       <Container className={classes.arcticlesContainer} maxWidth="lg">
         <Grid
@@ -337,44 +396,20 @@ const Products = (props) => {
       {/* New products */}
       <Typography className={classes.sectionTitle} variant="h4">
         New Products
+        <span className={classes.sectionTitleBar}></span>
       </Typography>
-      <Container className={classes.newProductsContainer} maxWidth="md">
-        <Grid container spacing={4}>
-          {result.products.items.map((product) => (
-            <Grid item key={product.id} xs={12} sm={6} md={4}>
-              <Card className={classes.card}>
-                {product.images.length > 0 ? (
-                  <CardMedia
-                    className={classes.cardMedia}
-                    image={
-                      "http://localhost:5000/uploads/" + product.images[0].path
-                    }
-                    title="Image title"
-                  />
-                ) : null}
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {product.productName}
-                  </Typography>
-                  <Typography>{product.description}</Typography>
-                  <Typography variant="h6">$ {product.price}</Typography>
-                </CardContent>
-                <CardActions className={classes.cardActions}>
-                  <Button size="small" color="primary">
-                    View
-                  </Button>
-                  <IconButton color="secondary" aria-label="add-to-cart">
-                    <AddShoppingCartIcon />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+      <Container className={classes.newProductsContainer} maxWidth="lg">
+        <ListItemHorizontal style={{ zIndex: -1 }}>
+          {arraySplitted.map((product, index) => {
+            return <GridList product={product} key={index} />;
+          })}
+        </ListItemHorizontal>
       </Container>
 
+      {/* Feature Sale Products */}
       <Typography className={classes.sectionTitle} variant="h4">
-        Features Sale Product
+        Feature Sale Products
+        <span className={classes.sectionTitleBar}></span>
       </Typography>
       <Container className={classes.arcticlesContainer} maxWidth="lg">
         <Grid
@@ -426,10 +461,11 @@ const Products = (props) => {
         </Grid>
       </Container>
 
+      {/* Products */}
       <Typography className={classes.sectionTitle} variant="h4">
         Products
+        <span className={classes.sectionTitleBar}></span>
       </Typography>
-
       <Container maxWidth="md">
         <div className={classes.tabRoot}>
           <AppBar position="static">

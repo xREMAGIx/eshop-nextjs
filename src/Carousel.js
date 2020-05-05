@@ -108,9 +108,7 @@ export default function Carousel(props) {
   };
 
   const next = (event) => {
-    console.log(active);
     const next = active + 1 > props.children.length - 1 ? 0 : active + 1;
-    console.log("next: " + next);
     setActive(next);
     reset();
 
