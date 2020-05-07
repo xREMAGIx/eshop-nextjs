@@ -11,10 +11,10 @@ export const postActions = {
 };
 
 function getAll() {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(request());
 
-    postService.getAll().then(
+    await postService.getAll().then(
       (posts) => {
         dispatch(success(posts));
       },
@@ -34,9 +34,9 @@ function getAll() {
 }
 
 function getById(id) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(request(id));
-    postService.getById(id).then(
+    await postService.getById(id).then(
       (posts) => dispatch(success(posts)),
       (error) => dispatch(failure(error.toString()))
     );

@@ -14,15 +14,17 @@ async function getAll() {
     //headers: authHeader()
   };
 
-  return await axios.get(`/api/posts`, requestConfig).then(handleResponse);
+  return await axios
+    .get(`http://localhost:5000/api/posts`, requestConfig)
+    .then(handleResponse);
 }
 
 async function getById(id) {
   const requestConfig = {
-    headers: authHeader(),
+    //headers: authHeader(),
   };
   return await axios
-    .get(`/api/posts/${id}`, requestConfig)
+    .get(`http://localhost:5000/api/posts/${id}`, requestConfig)
     .then(handleResponse);
 }
 
@@ -126,12 +128,6 @@ async function _delete(id) {
 function handleResponse(response) {
   const data = response.data.data;
   if (response.status !== 200) {
-    // if (response.status === 401) {
-    //   // auto logout if 401 response returned from api
-    //   //logout();
-    //   location.reload(true);
-    // }
-
     const error = (data && data.message) || response.statusText;
     return Promise.reject(error);
   }

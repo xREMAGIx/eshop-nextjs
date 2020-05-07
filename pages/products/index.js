@@ -15,13 +15,13 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import PropTypes from "prop-types";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Link from "@material-ui/core/Link";
-import { productActions, bannerActions } from "../actions";
-import MainBar from "../src/Appbar";
-import Carousel from "../src/Carousel";
-import ListItemHorizontal from "../src/ListItemHorizontal";
+import { productActions, bannerActions, postActions } from "../../actions";
+import MainBar from "../../src/Appbar";
+import Carousel from "../../src/Carousel";
+import ListItemHorizontal from "../../src/ListItemHorizontal";
+import Link from "../../src/Link";
 
 function Copyright() {
   return (
@@ -534,6 +534,51 @@ const Products = (props) => {
         </div>
       </Container>
 
+      {/* Posts */}
+      <Typography className={classes.sectionTitle} variant="h4">
+        Posts
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <Container maxWidth="md">
+        <Grid container spacing={4}>
+          {result.posts.items.map((post) => (
+            <Grid
+              item
+              key={post.id}
+              className={classes.productCardGrid}
+              xs={12}
+              sm={6}
+              //innerRef={ref}
+              //ref={ref}
+            >
+              <Card className={classes.card}>
+                <CardActionArea
+                  component={Link}
+                  href="/posts/[id]"
+                  as={`/posts/${post.id}`}
+                >
+                  {post.images.length > 0 ? (
+                    <CardMedia
+                      className={classes.cardMedia}
+                      image={
+                        "http://localhost:5000/uploads/" +
+                        product.images[0].path
+                      }
+                      title="Image title"
+                    />
+                  ) : null}
+                  <CardContent className={classes.cardContent}>
+                    <Typography variant="h5"> {post.title}</Typography>
+
+                    {/* <Typography>{post.content}</Typography> */}
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
       {/* </main> */}
 
       {/* Footer */}
@@ -559,23 +604,12 @@ const Products = (props) => {
 Products.getInitialProps = async ({ store }) => {
   let result;
   await store.dispatch(bannerActions.getAll());
+  await store.dispatch(postActions.getAll());
   await store
     .dispatch(productActions.getAll())
     .then(() => (result = store.getState()));
 
   return { result };
 };
-
-// export async function getServerSideProps({ store }) {
-//   let result;
-//   await store
-//     .dispatch(productActions.getAll())
-//     .then(() => (result = store.getState()));
-//   return {
-//     props: {
-//       products,
-//     }, // will be passed to the page component as props
-//   };
-// }
 
 export default Products;
