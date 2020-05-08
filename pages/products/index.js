@@ -592,7 +592,7 @@ const Products = (props) => {
           color="textSecondary"
           component="p"
         >
-          Something here to give the footer a purpose!
+          An E-Commerce Page make with NEXT-JS + REDUX + MATERIAL-UI
         </Typography>
         <Copyright />
       </footer>

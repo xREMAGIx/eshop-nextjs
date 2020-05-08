@@ -356,15 +356,6 @@ const Home = (props) => {
                   image="https://source.unsplash.com/random"
                   title="Contemplative Reptile"
                 />
-                {/* <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent> */}
               </CardActionArea>
             </Card>
           </Grid>
@@ -495,31 +486,38 @@ const Home = (props) => {
                   //ref={ref}
                 >
                   <Card ref={targetRef} className={classes.card}>
-                    {product.images.length > 0 ? (
-                      <CardMedia
-                        className={classes.cardMedia}
-                        image={
-                          "http://localhost:5000/uploads/" +
-                          product.images[0].path
-                        }
-                        title="Image title"
-                      />
-                    ) : null}
-                    <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {product.productName}
-                      </Typography>
-                      <Typography>{product.description}</Typography>
-                      <Typography variant="h6">$ {product.price}</Typography>
-                    </CardContent>
-                    <CardActions className={classes.cardActions}>
-                      <Button size="small" color="primary">
-                        View
-                      </Button>
-                      <IconButton color="secondary" aria-label="add-to-cart">
-                        <AddShoppingCartIcon />
-                      </IconButton>
-                    </CardActions>
+                    <CardActionArea
+                      component={Link}
+                      naked
+                      href="/products/[id]"
+                      as={`/products/${product.id}`}
+                    >
+                      {product.images.length > 0 ? (
+                        <CardMedia
+                          className={classes.cardMedia}
+                          image={
+                            "http://localhost:5000/uploads/" +
+                            product.images[0].path
+                          }
+                          title="Image title"
+                        />
+                      ) : null}
+                      <CardContent className={classes.cardContent}>
+                        <Typography gutterBottom variant="h5" component="h2">
+                          {product.productName}
+                        </Typography>
+                        <Typography>{product.description}</Typography>
+                        <Typography variant="h6">$ {product.price}</Typography>
+                      </CardContent>
+                      <CardActions className={classes.cardActions}>
+                        <Button size="small" color="primary">
+                          View
+                        </Button>
+                        <IconButton color="secondary" aria-label="add-to-cart">
+                          <AddShoppingCartIcon />
+                        </IconButton>
+                      </CardActions>
+                    </CardActionArea>
                   </Card>
                 </Grid>
               ))}
@@ -592,7 +590,7 @@ const Home = (props) => {
           color="textSecondary"
           component="p"
         >
-          Something here to give the footer a purpose!
+          An E-Commerce Page made with NEXT-JS + REDUX + MATERIAL-UI
         </Typography>
         <Copyright />
       </footer>

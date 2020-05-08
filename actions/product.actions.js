@@ -73,20 +73,20 @@ function getAll() {
 }
 
 function getById(id) {
-  return (dispatch) => {
+  return async (dispatch) => {
     //category getAll
     dispatch(requestCategory());
-    categoryService.getAll().then(
-      (categories) => {
+    await categoryService.getAll().then(
+      async (categories) => {
         dispatch(successCategory(categories));
 
         //brand getAll
         dispatch(requestBrand());
-        brandService.getAll().then(
-          (brands) => {
+        await brandService.getAll().then(
+          async (brands) => {
             dispatch(successBrand(brands));
             dispatch(request(id));
-            productService.getById(id).then(
+            await productService.getById(id).then(
               (products) => {
                 dispatch(success(products));
               },

@@ -10,7 +10,7 @@ export default (initialState) => {
   const store = createStore(
     rootReducer,
     initialState,
-    compose(applyMiddleware(thunkMiddleware, loggerMiddleware))
+    compose(applyMiddleware(thunkMiddleware))
   );
 
   // IF REDUCERS WERE CHANGED, RELOAD WITH INITIAL STATE

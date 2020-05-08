@@ -20,10 +20,10 @@ async function getAll() {
 
 async function getById(id) {
   const requestConfig = {
-    headers: authHeader(),
+    //headers: authHeader(),
   };
   return await axios
-    .get(`/api/products/${id}`, requestConfig)
+    .get(`http://localhost:5000/api/products/${id}`, requestConfig)
     .then(handleResponse);
 }
 
