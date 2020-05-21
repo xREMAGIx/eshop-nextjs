@@ -8,6 +8,7 @@ import { posts } from "./posts.reducer";
 import { banners } from "./banners.reducer";
 import { categories } from "./categories.reducer";
 import { brands } from "./brands.reducer";
+import { cart } from "./carts.reducer";
 
 const rootReducer = combineReducers({
   //   authentication,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   categories,
   users,
   brands,
+  cart,
 });
 
 export default rootReducer;

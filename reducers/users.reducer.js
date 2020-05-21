@@ -1,9 +1,11 @@
 import { userConstants } from "../constants";
 
 const initialState = {
+  token: null,
   loading: true,
   isAuthenticated: false,
   user: null,
+  items: [],
 };
 
 export function users(state = initialState, action) {
@@ -17,7 +19,7 @@ export function users(state = initialState, action) {
       return {
         loading: false,
         isAuthenticated: true,
-        user: action.user,
+        token: action.token,
       };
     case userConstants.LOGIN_FAILURE:
       return { error: action.error };
@@ -35,12 +37,15 @@ export function users(state = initialState, action) {
     case userConstants.REGISTER_FAILURE:
       return { loading: false, error: action.error };
 
+    case userConstants.AUTHENTICATE:
+      return { ...state, token: action.token };
+
     case userConstants.LOGOUT:
       return {
         ...state,
-        loading: true,
         isAuthenticated: false,
         user: null,
+        token: null,
       };
 
     case userConstants.GETME_REQUEST:
@@ -69,6 +74,7 @@ export function users(state = initialState, action) {
       return {
         error: action.error,
       };
+
     case userConstants.DELETE_REQUEST:
       // add 'deleting:true' property to user being deleted
       return {
@@ -97,6 +103,7 @@ export function users(state = initialState, action) {
           return user;
         }),
       };
+
     default:
       return state;
   }

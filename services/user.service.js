@@ -1,5 +1,5 @@
-import { authHeader } from "../helpers";
 import axios from "axios";
+import setAuthToken from "../helpers/auth-header";
 
 export const userService = {
   login,
@@ -20,31 +20,33 @@ async function login(user) {
   };
   const body = JSON.stringify(user);
 
-  await axios
-    .post(`/api/auth/login`, body, requestConfig)
-    .then(handleResponse)
-    .catch((error) => handleResponse(error));
+  return await axios
+    .post(`http://localhost:5000/api/auth/login`, body, requestConfig)
+    .then(handleResponse);
 }
 
-async function getMe() {
+async function getMe(token) {
+  setAuthToken(token);
   const requestConfig = {
     headers: {
       "Content-Type": "application/json",
     },
   };
-  return await axios.get(`/api/auth/me`, requestConfig).then(handleResponse);
+  return await axios
+    .get(`http://localhost:5000/api/auth/me`, requestConfig)
+    .then(handleResponse);
 }
 
 async function logout() {
   // remove user from local storage to log user out
-  await axios.post("/api/auth/logout");
+  await axios.post("http://localhost:5000/api/auth/logout");
   localStorage.removeItem("user");
 }
 
 function getAll() {
   const requestOptions = {
     method: "GET",
-    headers: authHeader(),
+    //headers: authHeader(),
   };
 
   return fetch(`/api/users`, requestOptions).then(handleResponse);
@@ -53,7 +55,7 @@ function getAll() {
 function getById(id) {
   const requestOptions = {
     method: "GET",
-    headers: authHeader(),
+    //headers: authHeader(),
   };
 
   return fetch(`/api/users/${id}`, requestOptions)
@@ -69,7 +71,9 @@ async function register(user) {
   };
 
   const body = JSON.stringify(user);
-  await axios.post("/api/auth/register", body, config).then(handleResponse);
+  await axios
+    .post("http://localhost:5000/api/auth/register", body, config)
+    .then(handleResponse);
 }
 
 function update(user) {
@@ -93,10 +97,11 @@ function _delete(id) {
 }
 
 function handleResponse(response) {
+  console.log(response);
   let data;
-  if (response.data.data) data = response.data.data;
+  data = response.data;
 
-  if (response.status !== 200) {
+  if (response.status === 404) {
     const error = (response && response.message) || response.statusText;
     return Promise.reject(error);
   }

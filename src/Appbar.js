@@ -11,9 +11,14 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import Hidden from "@material-ui/core/Hidden";
+import Popover from "@material-ui/core/Popover";
+import Paper from "@material-ui/core/Popover";
+import ButtonBase from "@material-ui/core/ButtonBase";
+import Link from "../src/Link";
+import { useDispatch } from "react-redux";
+import { userActions } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,16 +78,60 @@ const useStyles = makeStyles((theme) => ({
   menuListItem: {
     width: "150px",
   },
+  popover: {
+    pointerEvents: "none",
+  },
+  paper: {
+    padding: theme.spacing(1),
+    pointerEvents: "auto",
+  },
+  cartRoot: {
+    flexGrow: 1,
+    // width: "300px",
+  },
+  cartPaper: {
+    padding: theme.spacing(2),
+    margin: "auto",
+    maxWidth: 500,
+  },
+  cartImage: {
+    width: 64,
+    height: 64,
+  },
+  cartImg: {
+    margin: "auto",
+    display: "block",
+    maxWidth: "100%",
+    maxHeight: "100%",
+  },
 }));
 
 export default function MainBar(props) {
   const classes = useStyles();
+
+  const [openCartPopover, setOpenCartPopover] = React.useState(false);
+
+  const popoverAnchor = React.useRef(null);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openCategories, setOpenCategories] = React.useState(false);
   const [openBrands, setOpenBrands] = React.useState(false);
 
   const { categories, brands } = props;
+
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    dispatch(userActions.logout());
+  };
+
+  const handlePopoverOpen = ({ currentTarget }) => {
+    setOpenCartPopover(true);
+  };
+
+  const handlePopoverClose = ({ currentTarget }) => {
+    setOpenCartPopover(false);
+  };
 
   const handleCategoriesClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -124,7 +173,9 @@ export default function MainBar(props) {
               <Grid container spacing={5}>
                 {/* Home button */}
                 <Grid item>
-                  <Button>Home</Button>
+                  <Button component={Link} naked href="/" as={`/`}>
+                    Home
+                  </Button>
                 </Grid>
 
                 {/* Categories menu */}
@@ -214,7 +265,7 @@ export default function MainBar(props) {
               direction="row"
               alignItems="center"
               justify="flex-end"
-              spacing={3}
+              spacing={4}
             >
               {/* Search bar */}
               <Grid item>
@@ -234,13 +285,100 @@ export default function MainBar(props) {
               </Grid>
 
               {/* User space */}
+              {/* Cart Button */}
               <Grid item>
-                <IconButton aria-label="cart">
+                <IconButton
+                  ref={popoverAnchor}
+                  aria-label="cart"
+                  aria-owns={openCartPopover ? "mouse-over-popover" : undefined}
+                  aria-haspopup="true"
+                  onMouseEnter={handlePopoverOpen}
+                  onMouseLeave={handlePopoverClose}
+                >
                   <ShoppingCartIcon />
                 </IconButton>
-                <IconButton aria-label="user">
-                  <AccountCircleIcon />
-                </IconButton>
+                <Popover
+                  id="mouse-over-popover"
+                  className={classes.popover}
+                  classes={{
+                    paper: classes.paper,
+                  }}
+                  open={openCartPopover}
+                  anchorEl={popoverAnchor.current}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  PaperProps={{
+                    onMouseEnter: handlePopoverOpen,
+                    onMouseLeave: handlePopoverClose,
+                  }}
+                  onClose={handlePopoverClose}
+                  disableRestoreFocus
+                >
+                  <div className={classes.cartRoot}>
+                    <Typography variant="body1">Cart detail: </Typography>
+                    {/* <Paper className={classes.cartPaper}> */}
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.cartImage}>
+                          <img
+                            src="https://source.unsplash.com/random"
+                            className={classes.cartImg}
+                            alt="complex"
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid
+                          item
+                          container
+                          direction="column"
+                          justify="center"
+                          //alignItems="center"
+                        >
+                          <Grid item xs={12}>
+                            <Typography gutterBottom variant="body1">
+                              Standard license
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Typography variant="subtitle1">$19.00</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Typography variant="caption">Quantity: 1</Typography>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    {/* </Paper> */}
+                  </div>
+                </Popover>
+              </Grid>
+
+              {/* Account Button */}
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => logout()}
+                >
+                  Logout
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  component={Link}
+                  naked
+                  href="/login"
+                  as={`/login`}
+                >
+                  Login
+                </Button>
               </Grid>
             </Grid>
           </Toolbar>

@@ -17,19 +17,26 @@ import Box from "@material-ui/core/Box";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { productActions, bannerActions, postActions } from "../actions";
+import {
+  productActions,
+  bannerActions,
+  postActions,
+  userActions,
+  cartActions,
+} from "../actions";
 import MainBar from "../src/Appbar";
 import Carousel from "../src/Carousel";
 import ListItemHorizontal from "../src/ListItemHorizontal";
 import Link from "../src/Link";
+import { useDispatch, useSelector } from "react-redux";
+import { checkServerSideCookie } from "../actions/user.actions";
+import Private from "../components/PrivateRoute";
+import { Router } from "next/router";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -55,6 +62,8 @@ function GridList(props) {
   const products = props.product;
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   return (
     <Grid container direction="row" justify="center" spacing={4}>
       {products.map((product) => (
@@ -79,7 +88,11 @@ function GridList(props) {
               <Button size="small" color="primary">
                 View
               </Button>
-              <IconButton color="secondary" aria-label="add-to-cart">
+              <IconButton
+                color="secondary"
+                aria-label="add-to-cart"
+                onClick={() => dispatch(cartActions.addItem(product._id))}
+              >
                 <AddShoppingCartIcon />
               </IconButton>
             </CardActions>
@@ -271,6 +284,8 @@ const Home = (props) => {
 
   const [value, setValue] = React.useState(0);
 
+  const dispatch = useDispatch();
+
   const targetRef = React.useRef();
   const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
 
@@ -316,296 +331,322 @@ const Home = (props) => {
 
   return (
     <React.Fragment>
-      <MainBar
-        categories={result.categories.items}
-        brands={result.brands.items}
-      />
+      <Private>
+        <MainBar
+          categories={result.categories.items}
+          brands={result.brands.items}
+        />
 
-      {/* Simple Carousel */}
-      {result.banners.items !== undefined && (
-        <Carousel
-          style={{ zIndex: -1 }}
-          autoPlay={autoPlay}
-          timer={timer}
-          animation={animation}
-          indicators={indicators}
-        >
-          {result.banners.items.map((item, index) => {
-            return <Project item={item} key={index} />;
-          })}
-        </Carousel>
-      )}
+        {/* Simple Carousel */}
+        {result.banners.items !== undefined && (
+          <Carousel
+            style={{ zIndex: -1 }}
+            autoPlay={autoPlay}
+            timer={timer}
+            animation={animation}
+            indicators={indicators}
+          >
+            {result.banners.items.map((item, index) => {
+              return <Project item={item} key={index} />;
+            })}
+          </Carousel>
+        )}
 
-      {/* Arcticles */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Feature Arcticles
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.arcticlesContainer} maxWidth="lg">
-        <Grid
-          className={classes.arcticlesGrid}
-          container
-          direction="row"
-          spacing={4}
-        >
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* New products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        New Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.newProductsContainer} maxWidth="lg">
-        <ListItemHorizontal style={{ zIndex: -1 }}>
-          {arraySplitted.map((product, index) => {
-            return <GridList product={product} key={index} />;
-          })}
-        </ListItemHorizontal>
-      </Container>
-
-      {/* Feature Sale Products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Feature Sale Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.arcticlesContainer} maxWidth="lg">
-        <Grid
-          className={classes.arcticlesGrid}
-          container
-          direction="row"
-          spacing={4}
-        >
-          <Grid item xs={12} md={8}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-                {/* <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent> */}
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-                {/* <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent> */}
-              </CardActionArea>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* Products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container maxWidth="md">
-        <div className={classes.tabRoot}>
-          <AppBar position="static">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-              centered
-            >
-              <Tab label="New Products" {...a11yProps(0)} />
-              <Tab label="Best Seller" {...a11yProps(1)} />
-              <Tab label="Special Offer" {...a11yProps(2)} />
-            </Tabs>
-          </AppBar>
-          <TabPanel className={classes.tabPanel} value={value} index={0}>
-            <Grid container spacing={4}>
-              {result.products.items.map((product) => (
-                <Grid
-                  item
-                  key={product.id}
-                  style={{ height: dimensions.height }}
-                  className={classes.productCardGrid}
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  //innerRef={ref}
-                  //ref={ref}
-                >
-                  <Card ref={targetRef} className={classes.card}>
-                    <CardActionArea
-                      component={Link}
-                      naked
-                      href="/products/[id]"
-                      as={`/products/${product.id}`}
-                    >
-                      {product.images.length > 0 ? (
-                        <CardMedia
-                          className={classes.cardMedia}
-                          image={
-                            "http://localhost:5000/uploads/" +
-                            product.images[0].path
-                          }
-                          title="Image title"
-                        />
-                      ) : null}
-                      <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {product.productName}
-                        </Typography>
-                        <Typography>{product.description}</Typography>
-                        <Typography variant="h6">$ {product.price}</Typography>
-                      </CardContent>
-                      <CardActions className={classes.cardActions}>
-                        <Button size="small" color="primary">
-                          View
-                        </Button>
-                        <IconButton color="secondary" aria-label="add-to-cart">
-                          <AddShoppingCartIcon />
-                        </IconButton>
-                      </CardActions>
-                    </CardActionArea>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            Item Two
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            Item Three
-          </TabPanel>
-        </div>
-      </Container>
-
-      {/* Posts */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Posts
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container maxWidth="md">
-        <Grid container spacing={4}>
-          {result.posts.items.map((post) => (
-            <Grid
-              item
-              key={post.id}
-              className={classes.productCardGrid}
-              xs={12}
-              sm={6}
-              //innerRef={ref}
-              //ref={ref}
-            >
-              <Card className={classes.card}>
-                <CardActionArea
-                  component={Link}
-                  href="/posts/[id]"
-                  as={`/posts/${post.id}`}
-                >
-                  {post.images.length > 0 ? (
-                    <CardMedia
-                      className={classes.cardMedia}
-                      image={
-                        "http://localhost:5000/uploads/" +
-                        product.images[0].path
-                      }
-                      title="Image title"
-                    />
-                  ) : null}
-                  <CardContent className={classes.cardContent}>
-                    <Typography variant="h5"> {post.title}</Typography>
-
-                    {/* <Typography>{post.content}</Typography> */}
-                  </CardContent>
+        {/* Arcticles */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Feature Arcticles
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container className={classes.arcticlesContainer} maxWidth="lg">
+          <Grid
+            className={classes.arcticlesGrid}
+            container
+            direction="row"
+            spacing={4}
+          >
+            <Grid item xs={12} sm={6} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/random"
+                    title="Contemplative Reptile"
+                  />
                 </CardActionArea>
               </Card>
             </Grid>
-          ))}
-        </Grid>
-      </Container>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/random"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/random"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
 
-      {/* </main> */}
+        {/* New products */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          New Products
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container className={classes.newProductsContainer} maxWidth="lg">
+          <ListItemHorizontal style={{ zIndex: -1 }}>
+            {arraySplitted.map((product, index) => {
+              return <GridList product={product} key={index} />;
+            })}
+          </ListItemHorizontal>
+        </Container>
 
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
+        {/* Feature Sale Products */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Feature Sale Products
+          <span className={classes.sectionTitleBar}></span>
         </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="textSecondary"
-          component="p"
-        >
-          An E-Commerce Page made with NEXT-JS + REDUX + MATERIAL-UI
+        <Container className={classes.arcticlesContainer} maxWidth="lg">
+          <Grid
+            className={classes.arcticlesGrid}
+            container
+            direction="row"
+            spacing={4}
+          >
+            <Grid item xs={12} md={8}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/random"
+                    title="Contemplative Reptile"
+                  />
+                  {/* <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  Lizard
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent> */}
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/random"
+                    title="Contemplative Reptile"
+                  />
+                  {/* <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  Lizard
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent> */}
+                </CardActionArea>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
+
+        {/* Products */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Products
+          <span className={classes.sectionTitleBar}></span>
         </Typography>
-        <Copyright />
-      </footer>
-      {/* End footer */}
+        <Container maxWidth="md">
+          <div className={classes.tabRoot}>
+            <AppBar position="static">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="simple tabs example"
+                centered
+              >
+                <Tab label="New Products" {...a11yProps(0)} />
+                <Tab label="Best Seller" {...a11yProps(1)} />
+                <Tab label="Special Offer" {...a11yProps(2)} />
+              </Tabs>
+            </AppBar>
+            <TabPanel className={classes.tabPanel} value={value} index={0}>
+              <Grid container spacing={4}>
+                {result.products.items.map((product) => (
+                  <Grid
+                    item
+                    key={product.id}
+                    style={{ height: dimensions.height }}
+                    className={classes.productCardGrid}
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    //innerRef={ref}
+                    //ref={ref}
+                  >
+                    <Card ref={targetRef} className={classes.card}>
+                      <CardActionArea
+                        component={Link}
+                        naked
+                        href="/products/[id]"
+                        as={`/products/${product.id}`}
+                      >
+                        {product.images.length > 0 ? (
+                          <CardMedia
+                            className={classes.cardMedia}
+                            image={
+                              "http://localhost:5000/uploads/" +
+                              product.images[0].path
+                            }
+                            title="Image title"
+                          />
+                        ) : null}
+                        <CardContent className={classes.cardContent}>
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {product.productName}
+                          </Typography>
+                          <Typography>{product.description}</Typography>
+                          <Typography variant="h6">
+                            $ {product.price}
+                          </Typography>
+                        </CardContent>
+                        <CardActions className={classes.cardActions}>
+                          <Button size="small" color="primary">
+                            View
+                          </Button>
+                          <IconButton
+                            color="secondary"
+                            aria-label="add-to-cart"
+                          >
+                            <AddShoppingCartIcon />
+                          </IconButton>
+                        </CardActions>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              Item Two
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              Item Three
+            </TabPanel>
+          </div>
+        </Container>
+
+        {/* Posts */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Posts
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container maxWidth="md">
+          <Grid container spacing={4}>
+            {result.posts.items.map((post) => (
+              <Grid
+                item
+                key={post.id}
+                className={classes.productCardGrid}
+                xs={12}
+                sm={6}
+                //innerRef={ref}
+                //ref={ref}
+              >
+                <Card className={classes.card}>
+                  <CardActionArea
+                    component={Link}
+                    href="/posts/[id]"
+                    as={`/posts/${post.id}`}
+                  >
+                    {post.images.length > 0 ? (
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image={
+                          "http://localhost:5000/uploads/" +
+                          product.images[0].path
+                        }
+                        title="Image title"
+                      />
+                    ) : null}
+                    <CardContent className={classes.cardContent}>
+                      <Typography variant="h5"> {post.title}</Typography>
+
+                      {/* <Typography>{post.content}</Typography> */}
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+
+        {/* </main> */}
+
+        {/* Footer */}
+        <footer className={classes.footer}>
+          <Typography variant="h6" align="center" gutterBottom>
+            Footer
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="textSecondary"
+            component="p"
+          >
+            An E-Commerce Page made with NEXT-JS + REDUX + MATERIAL-UI
+          </Typography>
+          <Copyright />
+        </footer>
+        {/* End footer */}
+      </Private>
     </React.Fragment>
   );
 };
 
-Home.getInitialProps = async ({ store }) => {
+Home.getInitialProps = async (ctx) => {
   let result;
-  await store.dispatch(bannerActions.getAll());
-  await store.dispatch(postActions.getAll());
-  await store
+  checkServerSideCookie(ctx);
+
+  const token = ctx.store.getState().users.token;
+  console.log(12);
+  if (ctx.req) {
+    console.log("on server, need to copy cookies from req");
+  } else {
+    console.log("on client, cookies are automatic");
+  }
+
+  // console.log(ctx.store);
+  // if (token) {
+  // await ctx.store.dispatch(userActions.getMe());
+  // const response = await axios({
+  //   method: "get",
+  //   url: "http://localhost:5000/api/auth/me",
+  //   headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined,
+  // });
+  await ctx.store.dispatch(bannerActions.getAll());
+  await ctx.store.dispatch(postActions.getAll());
+  await ctx.store
     .dispatch(productActions.getAll())
-    .then(() => (result = store.getState()));
+    .then(() => (result = ctx.store.getState()));
+  //}
 
   return { result };
 };

@@ -6,9 +6,11 @@
   "dependencies": {
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.52",
     "axios": "^0.19.2",
     "clsx": "latest",
     "history": "^4.10.1",
+    "js-cookie": "^2.2.1",
     "next": "latest",
     "prop-types": "latest",
     "react": "latest",
