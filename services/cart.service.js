@@ -1,120 +1,82 @@
-//import { authHeader } from "../helpers";
+import { getCookie } from "../helpers";
+import Cookies from "js-cookie";
 import axios from "axios";
+//import setAuthToken from "../helpers/auth-header";
+
+//setAuthToken(getCookie("token"));
 
 export const cartService = {
   getAll,
+  checkOutCart,
   addItem,
-  //   update,
-  //   delete: _delete,
+  subtractItem,
+  deleteItem,
 };
 
-async function getAll() {
+async function getAll(token) {
   const requestConfig = {
-    //headers: authHeader()
+    // headers: {
+    //   authorization: "Bearer " + getCookie("token"),
+    // },
   };
-
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return await axios
     .get(`http://localhost:5000/api/cart`, requestConfig)
     .then(handleResponse);
 }
 
-async function addItem(productId) {
+async function checkOutCart(token) {
+  const requestConfig = {
+    payment: "Cash",
+  };
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  return await axios
+    .post(`http://localhost:5000/api/orders/createOrder`, requestConfig)
+    .then(handleResponse);
+}
+
+async function addItem(productId, token) {
   const requestConfig = {
     headers: {
-      //authHeader(),
       "Content-Type": "application/json",
     },
   };
+
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return await axios
     .put(`http://localhost:5000/api/cart/${productId}`, requestConfig)
     .then(handleResponse);
 }
 
-//   if (imageData.get("image")) {
-//     let res;
-//     try {
-//       res = await axios.post(`/api/categories`, body, requestConfig);
-//     } catch (error) {
-//       console.log(error);
-//     }
+async function subtractItem(productId, token) {
+  const requestConfig = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
 
-//     const configFormData = {
-//       headers: {
-//         "Content-Type": "multipart/form-data",
-//       },
-//     };
-//     try {
-//       return await axios
-//         .put(
-//           "/api/categories/" + res.data.data._id + "/image",
-//           imageData,
-//           configFormData
-//         )
-//         .then(handleResponse);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   } else {
-//     return await axios
-//       .post("/api/categories", body, requestConfig)
-//       .then(handleResponse);
-//   }
-// }
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  return await axios
+    .patch(`http://localhost:5000/api/cart/${productId}`, requestConfig)
+    .then(handleResponse);
+}
 
-// async function update(id, category, image) {
-//   const imageData = new FormData();
-//   imageData.append("image", image);
+async function deleteItem(productId, token) {
+  const requestConfig = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
 
-//   const requestConfig = {
-//     headers: {
-//       //authHeader(),
-//       "Content-Type": "application/json",
-//     },
-//   };
-
-//   const body = JSON.stringify(category);
-//   console.log(body);
-
-//   if (imageData.get("image")) {
-//     try {
-//       await axios.put(`/api/categories/${id}`, body, requestConfig);
-//     } catch (error) {
-//       console.log(error);
-//     }
-
-//     const configFormData = {
-//       headers: {
-//         "Content-Type": "multipart/form-data",
-//       },
-//     };
-//     try {
-//       return await axios
-//         .put("/api/categories/" + id + "/image", imageData, configFormData)
-//         .then(handleResponse);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   } else {
-//     return await axios
-//       .put(`/api/categories/${id}`, body, requestConfig)
-//       .then(handleResponse);
-//   }
-// }
-
-// // prefixed function name with underscore because delete is a reserved word in javascript
-// async function _delete(id) {
-//   const requestConfig = {
-//     // headers: authHeader()
-//   };
-
-//   return await axios
-//     .delete(`/api/categories/${id}`, requestConfig)
-//     .then(handleResponse);
-// }
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  return await axios
+    .delete(`http://localhost:5000/api/cart/${productId}`, requestConfig)
+    .then(handleResponse);
+}
 
 function handleResponse(response) {
   const data = response.data.data;
-  if (response.status !== 200) {
+  if (response.status === 404) {
     // if (response.status === 401) {
     //   // auto logout if 401 response returned from api
     //   //logout();

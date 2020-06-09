@@ -202,8 +202,6 @@ function SignIn() {
   );
 }
 
-SignIn.getInitialProps = async (ctx) => {
-  checkServerSideCookie(ctx);
-};
+SignIn.getInitialProps = async (ctx) => {};
 
 export default SignIn;

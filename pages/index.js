@@ -21,6 +21,7 @@ import {
   productActions,
   bannerActions,
   postActions,
+  categoryActions,
   userActions,
   cartActions,
 } from "../actions";
@@ -31,7 +32,6 @@ import Link from "../src/Link";
 import { useDispatch, useSelector } from "react-redux";
 import { checkServerSideCookie } from "../actions/user.actions";
 import Private from "../components/PrivateRoute";
-import { Router } from "next/router";
 
 function Copyright() {
   return (
@@ -276,15 +276,21 @@ const Home = (props) => {
   const animation = "fade";
   const indicators = true;
 
-  const sortedNewProduct = result.products.items
-    .slice()
-    .sort((a, b) => new Date(b.createAt) - new Date(a.createAt));
+  const products = useSelector((state) => state.products);
+  const banners = useSelector((state) => state.banners);
+  const posts = useSelector((state) => state.posts);
+
+  const sortedNewProduct = products.items
+    ? products.items
+        .slice()
+        .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
+    : [];
 
   const arraySplitted = splitArray(sortedNewProduct, 4);
 
   const [value, setValue] = React.useState(0);
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const targetRef = React.useRef();
   const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
@@ -332,13 +338,10 @@ const Home = (props) => {
   return (
     <React.Fragment>
       <Private>
-        <MainBar
-          categories={result.categories.items}
-          brands={result.brands.items}
-        />
+        <MainBar />
 
         {/* Simple Carousel */}
-        {result.banners.items !== undefined && (
+        {banners.items !== undefined && (
           <Carousel
             style={{ zIndex: -1 }}
             autoPlay={autoPlay}
@@ -346,7 +349,7 @@ const Home = (props) => {
             animation={animation}
             indicators={indicators}
           >
-            {result.banners.items.map((item, index) => {
+            {banners.items.map((item, index) => {
               return <Project item={item} key={index} />;
             })}
           </Carousel>
@@ -369,7 +372,7 @@ const Home = (props) => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/random"
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
@@ -380,7 +383,7 @@ const Home = (props) => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/random"
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
@@ -391,7 +394,7 @@ const Home = (props) => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/random"
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
@@ -430,18 +433,9 @@ const Home = (props) => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/random"
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
                     title="Contemplative Reptile"
                   />
-                  {/* <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent> */}
                 </CardActionArea>
               </Card>
             </Grid>
@@ -450,18 +444,9 @@ const Home = (props) => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/random"
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
                     title="Contemplative Reptile"
                   />
-                  {/* <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent> */}
                 </CardActionArea>
               </Card>
             </Grid>
@@ -489,59 +474,65 @@ const Home = (props) => {
             </AppBar>
             <TabPanel className={classes.tabPanel} value={value} index={0}>
               <Grid container spacing={4}>
-                {result.products.items.map((product) => (
-                  <Grid
-                    item
-                    key={product.id}
-                    style={{ height: dimensions.height }}
-                    className={classes.productCardGrid}
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    //innerRef={ref}
-                    //ref={ref}
-                  >
-                    <Card ref={targetRef} className={classes.card}>
-                      <CardActionArea
-                        component={Link}
-                        naked
-                        href="/products/[id]"
-                        as={`/products/${product.id}`}
+                {products.items
+                  ? products.items.map((product) => (
+                      <Grid
+                        item
+                        key={product.id}
+                        style={{ height: dimensions.height }}
+                        className={classes.productCardGrid}
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        //innerRef={ref}
+                        //ref={ref}
                       >
-                        {product.images.length > 0 ? (
-                          <CardMedia
-                            className={classes.cardMedia}
-                            image={
-                              "http://localhost:5000/uploads/" +
-                              product.images[0].path
-                            }
-                            title="Image title"
-                          />
-                        ) : null}
-                        <CardContent className={classes.cardContent}>
-                          <Typography gutterBottom variant="h5" component="h2">
-                            {product.productName}
-                          </Typography>
-                          <Typography>{product.description}</Typography>
-                          <Typography variant="h6">
-                            $ {product.price}
-                          </Typography>
-                        </CardContent>
-                        <CardActions className={classes.cardActions}>
-                          <Button size="small" color="primary">
-                            View
-                          </Button>
-                          <IconButton
-                            color="secondary"
-                            aria-label="add-to-cart"
+                        <Card ref={targetRef} className={classes.card}>
+                          <CardActionArea
+                            component={Link}
+                            naked
+                            href="/products/[id]"
+                            as={`/products/${product.id}`}
                           >
-                            <AddShoppingCartIcon />
-                          </IconButton>
-                        </CardActions>
-                      </CardActionArea>
-                    </Card>
-                  </Grid>
-                ))}
+                            {product.images.length > 0 ? (
+                              <CardMedia
+                                className={classes.cardMedia}
+                                image={
+                                  "http://localhost:5000/uploads/" +
+                                  product.images[0].path
+                                }
+                                title="Image title"
+                              />
+                            ) : null}
+                            <CardContent className={classes.cardContent}>
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="h2"
+                              >
+                                {product.productName}
+                              </Typography>
+                              <Typography>{product.description}</Typography>
+                              <Typography variant="h6">
+                                $ {product.price}
+                              </Typography>
+                            </CardContent>
+                            <CardActions className={classes.cardActions}>
+                              <Button size="small" color="primary">
+                                View
+                              </Button>
+                              <IconButton
+                                color="secondary"
+                                aria-label="add-to-cart"
+                              >
+                                <AddShoppingCartIcon />
+                              </IconButton>
+                            </CardActions>
+                          </CardActionArea>
+                        </Card>
+                      </Grid>
+                    ))
+                  : null}
               </Grid>
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -560,41 +551,43 @@ const Home = (props) => {
         </Typography>
         <Container maxWidth="md">
           <Grid container spacing={4}>
-            {result.posts.items.map((post) => (
-              <Grid
-                item
-                key={post.id}
-                className={classes.productCardGrid}
-                xs={12}
-                sm={6}
-                //innerRef={ref}
-                //ref={ref}
-              >
-                <Card className={classes.card}>
-                  <CardActionArea
-                    component={Link}
-                    href="/posts/[id]"
-                    as={`/posts/${post.id}`}
+            {posts.items
+              ? posts.items.map((post) => (
+                  <Grid
+                    item
+                    key={post.id}
+                    className={classes.productCardGrid}
+                    xs={12}
+                    sm={6}
+                    //innerRef={ref}
+                    //ref={ref}
                   >
-                    {post.images.length > 0 ? (
-                      <CardMedia
-                        className={classes.cardMedia}
-                        image={
-                          "http://localhost:5000/uploads/" +
-                          product.images[0].path
-                        }
-                        title="Image title"
-                      />
-                    ) : null}
-                    <CardContent className={classes.cardContent}>
-                      <Typography variant="h5"> {post.title}</Typography>
+                    <Card className={classes.card}>
+                      <CardActionArea
+                        component={Link}
+                        href="/posts/[id]"
+                        as={`/posts/${post.id}`}
+                      >
+                        {post.images.length > 0 ? (
+                          <CardMedia
+                            className={classes.cardMedia}
+                            image={
+                              "http://localhost:5000/uploads/" +
+                              product.images[0].path
+                            }
+                            title="Image title"
+                          />
+                        ) : null}
+                        <CardContent className={classes.cardContent}>
+                          <Typography variant="h5"> {post.title}</Typography>
 
-                      {/* <Typography>{post.content}</Typography> */}
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            ))}
+                          {/* <Typography>{post.content}</Typography> */}
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                ))
+              : null}
           </Grid>
         </Container>
 
@@ -623,30 +616,25 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
   let result;
+
   checkServerSideCookie(ctx);
 
   const token = ctx.store.getState().users.token;
-  console.log(12);
+
   if (ctx.req) {
     console.log("on server, need to copy cookies from req");
   } else {
     console.log("on client, cookies are automatic");
   }
 
-  // console.log(ctx.store);
-  // if (token) {
-  // await ctx.store.dispatch(userActions.getMe());
-  // const response = await axios({
-  //   method: "get",
-  //   url: "http://localhost:5000/api/auth/me",
-  //   headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined,
-  // });
   await ctx.store.dispatch(bannerActions.getAll());
   await ctx.store.dispatch(postActions.getAll());
+  await ctx.store.dispatch(categoryActions.getAll());
+  await ctx.store.dispatch(cartActions.getAll(token));
+
   await ctx.store
     .dispatch(productActions.getAll())
     .then(() => (result = ctx.store.getState()));
-  //}
 
   return { result };
 };

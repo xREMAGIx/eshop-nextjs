@@ -5,16 +5,17 @@ import { cartService } from "../services";
 export const cartActions = {
   addItem,
   getAll,
-  //getById,
-  //update,
+  subtractItem,
+  deleteItem,
+  checkOutCart,
   //delete: _delete,
 };
 
-function getAll() {
-  return (dispatch) => {
+function getAll(token) {
+  return async (dispatch) => {
     dispatch(request());
 
-    cartService.getAll().then(
+    await cartService.getAll(token).then(
       (carts) => {
         dispatch(success(carts));
       },
@@ -33,37 +34,13 @@ function getAll() {
   }
 }
 
-// function getById(id) {
-//   return async (dispatch) => {
-//     dispatch(request(id));
-//     await brandService.getById(id).then(
-//       (brands) => dispatch(success(brands)),
-//       (error) => dispatch(failure(error.toString()))
-//     );
-//   };
-
-//   function request(id) {
-//     return { type: brandConstants.GETBYID_REQUEST, id };
-//   }
-//   function success(brands) {
-//     return { type: brandConstants.GETBYID_SUCCESS, brands };
-//   }
-//   function failure(error) {
-//     return { type: brandConstants.GETBYID_FAILURE, error };
-//   }
-// }
-
-function addItem(productId) {
+function addItem(productId, token) {
   return async (dispatch) => {
     dispatch(request(productId));
-    await cartService.addItem(productId).then(
-      (productId) => {
-        dispatch(success(productId));
-        //history.push("/brands");
-        //window.location.reload();
-
-        //window.location.reload();
-        //dispatch(alertActions.success("Add new post successful"));
+    await cartService.addItem(productId, token).then(
+      (cart) => {
+        dispatch(success(cart));
+        // await dispatch(getAll(token));
       },
       (error) => {
         dispatch(failure(error.toString()));
@@ -75,61 +52,81 @@ function addItem(productId) {
   function request(productId) {
     return { type: cartConstants.ADD_ITEM_REQUEST, productId };
   }
-  function success(productId) {
-    return { type: cartConstants.ADD_ITEM_SUCCESS, productId };
+  function success(cart) {
+    return { type: cartConstants.ADD_ITEM_SUCCESS, cart };
   }
   function failure(error) {
     return { type: cartConstants.ADD_ITEM_FAILURE, error };
   }
 }
 
-// function update(id, brand, image) {
-//   return async (dispatch) => {
-//     dispatch(request(id));
-//     await brandService.update(id, brand, image).then(
-//       (id) => {
-//         dispatch(success(id));
-//         window.location.reload();
-//         //dispatch(alertActions.success("Add new post successful"));
-//       },
-//       (error) => {
-//         dispatch(failure(error.toString()));
-//         //dispatch(alertActions.error(error.toString()));
-//       }
-//     );
-//   };
+function subtractItem(productId, token) {
+  return async (dispatch) => {
+    dispatch(request(productId));
+    await cartService.subtractItem(productId, token).then(
+      (cart) => {
+        dispatch(success(cart));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+      }
+    );
+  };
 
-//   function request(id) {
-//     return { type: brandConstants.UPDATE_REQUEST, id };
-//   }
-//   function success(id) {
-//     return { type: brandConstants.UPDATE_SUCCESS, id };
-//   }
-//   function failure(error) {
-//     return { type: brandConstants.UPDATE_FAILURE, id, error };
-//   }
-// }
+  function request(productId) {
+    return { type: cartConstants.SUBTRACT_ITEM_REQUEST, productId };
+  }
+  function success(cart) {
+    return { type: cartConstants.SUBTRACT_ITEM_SUCCESS, cart };
+  }
+  function failure(error) {
+    return { type: cartConstants.SUBTRACT_ITEM_FAILURE, error };
+  }
+}
 
-// // prefixed function name with underscore because delete is a reserved word in javascript
-// function _delete(id) {
-//   return async (dispatch) => {
-//     dispatch(request(id));
-//     await brandService.delete(id).then(
-//       (id) => {
-//         dispatch(success(id));
-//         window.location.reload();
-//       },
-//       (error) => dispatch(failure(id, error.toString()))
-//     );
-//   };
+function deleteItem(productId, token) {
+  return async (dispatch) => {
+    dispatch(request(productId));
+    await cartService.deleteItem(productId, token).then(
+      (cart) => {
+        dispatch(success(cart));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+      }
+    );
+  };
 
-//   function request(id) {
-//     return { type: brandConstants.DELETE_REQUEST, id };
-//   }
-//   function success(id) {
-//     return { type: brandConstants.DELETE_SUCCESS, id };
-//   }
-//   function failure(id, error) {
-//     return { type: brandConstants.DELETE_FAILURE, id, error };
-//   }
-// }
+  function request(productId) {
+    return { type: cartConstants.DELETE_ITEM_REQUEST, productId };
+  }
+  function success(cart) {
+    return { type: cartConstants.DELETE_ITEM_SUCCESS, cart };
+  }
+  function failure(error) {
+    return { type: cartConstants.DELETE_ITEM_FAILURE, error };
+  }
+}
+
+function checkOutCart(token) {
+  return async (dispatch) => {
+    dispatch(request());
+
+    await cartService.checkOutCart(token).then(
+      (carts) => {
+        dispatch(success(carts));
+      },
+      (error) => dispatch(failure(error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: cartConstants.CHECKOUT_REQUEST };
+  }
+  function success(cart) {
+    return { type: cartConstants.CHECKOUT_SUCCESS, cart };
+  }
+  function failure(error) {
+    return { type: cartConstants.CHECKOUT_FAILURE, error };
+  }
+}

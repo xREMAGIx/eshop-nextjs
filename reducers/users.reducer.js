@@ -19,7 +19,7 @@ export function users(state = initialState, action) {
       return {
         loading: false,
         isAuthenticated: true,
-        token: action.token,
+        token: action.token.token,
       };
     case userConstants.LOGIN_FAILURE:
       return { error: action.error };
@@ -55,9 +55,10 @@ export function users(state = initialState, action) {
       };
     case userConstants.GETME_SUCCESS:
       return {
+        ...state,
         loading: false,
         isAuthenticated: true,
-        user: action.user,
+        user: action.data,
       };
     case userConstants.GETME_FAILURE:
       return { error: action.error };

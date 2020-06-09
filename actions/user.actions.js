@@ -57,8 +57,7 @@ function login(user) {
         await userService.getMe(data.token).then(
           (userData) => {
             auth.user_data = userData.data;
-            console.log(auth);
-            dispatch(successGetMe(user));
+            dispatch(successGetMe(userData));
             authenticate(auth, () => {
               Router.push("/");
             });
@@ -98,6 +97,9 @@ function login(user) {
 function logout() {
   userService.logout();
   removeCookie("token");
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("user");
+  }
   Router.push("/login");
   return { type: userConstants.LOGOUT };
 }
@@ -174,6 +176,7 @@ function _delete(id) {
 export const checkServerSideCookie = (ctx) => {
   const isServer = !!ctx.req;
 
+  console.log(ctx.req);
   if (isServer) {
     if (ctx.req.headers.cookie) {
       const token = getCookie("token", ctx.req);

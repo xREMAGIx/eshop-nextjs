@@ -26,10 +26,13 @@ export function products(
 
     case productConstants.GETBYID_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case productConstants.GETBYID_SUCCESS:
       return {
+        ...state,
+        loading: false,
         item: action.products,
       };
     case productConstants.GETBYID_ERROR:

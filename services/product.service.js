@@ -41,7 +41,6 @@ async function add(product, image) {
   };
 
   const body = JSON.stringify(product);
-  console.log(body);
 
   if (imageData.get("image")) {
     let res;
@@ -145,7 +144,6 @@ async function _delete(id) {
 
 function handleResponse(response) {
   const data = response.data.data;
-  console.log(data);
   if (response.status !== 200) {
     // if (response.status === 401) {
     //   // auto logout if 401 response returned from api

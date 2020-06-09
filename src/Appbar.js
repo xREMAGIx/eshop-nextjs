@@ -14,11 +14,19 @@ import Box from "@material-ui/core/Box";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import Hidden from "@material-ui/core/Hidden";
 import Popover from "@material-ui/core/Popover";
-import Paper from "@material-ui/core/Popover";
+import clsx from "clsx";
 import ButtonBase from "@material-ui/core/ButtonBase";
+import Badge from "@material-ui/core/Badge";
 import Link from "../src/Link";
-import { useDispatch } from "react-redux";
-import { userActions } from "../actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  userActions,
+  productActions,
+  bannerActions,
+  categoryActions,
+} from "../actions";
+import { useEffect } from "react";
+import { cartService } from "../services";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +36,12 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+  },
+  link: {
+    color: theme.palette.common.white,
+    "&:hover": {
+      textDecoration: "none",
+    },
   },
   title: {
     flexGrow: 1,
@@ -87,12 +101,14 @@ const useStyles = makeStyles((theme) => ({
   },
   cartRoot: {
     flexGrow: 1,
-    // width: "300px",
   },
   cartPaper: {
-    padding: theme.spacing(2),
-    margin: "auto",
-    maxWidth: 500,
+    // padding: theme.spacing(2),
+    // margin: "auto",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    maxHeight: "200px",
+    overflow: "auto",
   },
   cartImage: {
     width: 64,
@@ -106,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MainBar(props) {
+export default function Mainbar(props) {
   const classes = useStyles();
 
   const [openCartPopover, setOpenCartPopover] = React.useState(false);
@@ -117,7 +133,25 @@ export default function MainBar(props) {
   const [openCategories, setOpenCategories] = React.useState(false);
   const [openBrands, setOpenBrands] = React.useState(false);
 
-  const { categories, brands } = props;
+  const categories = useSelector((state) => state.categories);
+  const brands = useSelector((state) => state.brands);
+  const cart = useSelector((state) => state.cart);
+  const products = useSelector((state) => state.products);
+
+  const [productsInCart, setProductsInCart] = React.useState([]);
+
+  useEffect(() => {
+    setProductsInCart(
+      cart.items && cart.items.products !== null
+        ? cart.items.products.map((element) =>
+            Object.assign(
+              products.items.find((product) => product.id === element.product),
+              { amount: element.amount }
+            )
+          )
+        : []
+    );
+  }, [cart.items]);
 
   const dispatch = useDispatch();
 
@@ -164,7 +198,13 @@ export default function MainBar(props) {
               <MenuIcon />
             </IconButton>
             <Box style={{ marginRight: "50px" }}>
-              <Typography className={classes.title} variant="h6" noWrap>
+              <Typography
+                className={clsx(classes.title, classes.link)}
+                component={Link}
+                href="/"
+                variant="h6"
+                noWrap
+              >
                 Material-UI
               </Typography>
             </Box>
@@ -205,7 +245,7 @@ export default function MainBar(props) {
                       onClose={() => handleClose()}
                       MenuListProps={{ onMouseLeave: handleClose }}
                     >
-                      {categories.map((category) => (
+                      {categories.items.map((category) => (
                         <MenuItem
                           className={classes.menuListItem}
                           key={category.id}
@@ -245,7 +285,7 @@ export default function MainBar(props) {
                         horizontal: "center",
                       }}
                     >
-                      {brands.map((brand) => (
+                      {brands.items.map((brand) => (
                         <MenuItem
                           className={classes.menuListItem}
                           key={brand.id}
@@ -295,7 +335,18 @@ export default function MainBar(props) {
                   onMouseEnter={handlePopoverOpen}
                   onMouseLeave={handlePopoverClose}
                 >
-                  <ShoppingCartIcon />
+                  <Badge
+                    badgeContent={
+                      productsInCart
+                        ? productsInCart
+                            .map((e) => e.amount)
+                            .reduce((sum, current) => sum + current, 0)
+                        : null
+                    }
+                    color="secondary"
+                  >
+                    <ShoppingCartIcon />
+                  </Badge>
                 </IconButton>
                 <Popover
                   id="mouse-over-popover"
@@ -320,43 +371,89 @@ export default function MainBar(props) {
                   onClose={handlePopoverClose}
                   disableRestoreFocus
                 >
-                  <div className={classes.cartRoot}>
-                    <Typography variant="body1">Cart detail: </Typography>
-                    {/* <Paper className={classes.cartPaper}> */}
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <ButtonBase className={classes.cartImage}>
-                          <img
-                            src="https://source.unsplash.com/random"
-                            className={classes.cartImg}
-                            alt="complex"
-                          />
-                        </ButtonBase>
-                      </Grid>
-                      <Grid item xs={12} sm container>
-                        <Grid
-                          item
-                          container
-                          direction="column"
-                          justify="center"
-                          //alignItems="center"
-                        >
-                          <Grid item xs={12}>
-                            <Typography gutterBottom variant="body1">
-                              Standard license
-                            </Typography>
+                  {/* <div className={classes.cartRoot}> */}
+                  <Typography variant="h6">Cart detail: </Typography>
+                  {productsInCart && productsInCart.length > 0 ? (
+                    <React.Fragment>
+                      <div className={classes.cartPaper}>
+                        {productsInCart.map((element, index) => (
+                          <Grid
+                            key={index}
+                            container
+                            style={{ marginBottom: 10 }}
+                          >
+                            <Grid item style={{ paddingRight: 10 }}>
+                              <ButtonBase
+                                className={classes.cartImage}
+                                component={Link}
+                                href="/products/[id]"
+                                as={`/products/${element.id}`}
+                              >
+                                <img
+                                  src={
+                                    "http://localhost:5000/uploads/" +
+                                    element.images[0].path
+                                  }
+                                  alt={element.productName}
+                                  className={classes.cartImg}
+                                  alt="complex"
+                                />
+                              </ButtonBase>
+                            </Grid>
+                            <Grid item xs={12} sm container>
+                              <Grid
+                                item
+                                container
+                                direction="column"
+                                justify="center"
+                                //alignItems="center"
+                              >
+                                <Grid item xs={12}>
+                                  <Typography
+                                    gutterBottom
+                                    variant="body1"
+                                    component={Link}
+                                    href="/products/[id]"
+                                    as={`/products/${element.id}`}
+                                  >
+                                    {element.productName}
+                                  </Typography>
+                                </Grid>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Typography variant="subtitle1">
+                                  ${element.price}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Typography variant="caption">
+                                  Quantity: {element.amount}
+                                </Typography>
+                              </Grid>
+                            </Grid>
                           </Grid>
+                        ))}
+                      </div>
+                      <Grid container justify="space-between">
+                        <Grid item>
+                          <Button>Delete</Button>
                         </Grid>
-                        <Grid item xs={6}>
-                          <Typography variant="subtitle1">$19.00</Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Typography variant="caption">Quantity: 1</Typography>
+                        <Grid item>
+                          <Button
+                            className={classes.link}
+                            variant="contained"
+                            color="primary"
+                            component={Link}
+                            href="/cart"
+                          >
+                            View Cart
+                          </Button>
                         </Grid>
                       </Grid>
-                    </Grid>
-                    {/* </Paper> */}
-                  </div>
+                    </React.Fragment>
+                  ) : (
+                    "There's nothing in cart"
+                  )}
                 </Popover>
               </Grid>
 
