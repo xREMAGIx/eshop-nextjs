@@ -1,6 +1,5 @@
 import { productActions } from "../../actions";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import MainBar from "../../src/Appbar";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
@@ -19,10 +18,13 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import IconButton from "@material-ui/core/IconButton";
 import SwipeableViews from "react-swipeable-views";
+import ButtonBase from "@material-ui/core/ButtonBase";
 import PropTypes from "prop-types";
+import clsx from "clsx";
 
 import { checkServerSideCookie } from "../../actions/user.actions";
 import Private from "../../components/PrivateRoute";
+import MainBar from "../../components/Appbar";
 import { cartActions } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -71,6 +73,15 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     margin: "30px 0 30px 0",
+  },
+  imgGrid: {
+    opacity: 0.6,
+    "&:hover": {
+      opacity: 0.9,
+    },
+  },
+  activeImg: {
+    opacity: 1,
   },
 }));
 
@@ -124,6 +135,19 @@ export default function Product(props) {
 
   const [value, setValue] = React.useState(0);
 
+  const [imageMain, setImageMain] = React.useState({
+    path: "http://localhost:5000/uploads/" + product.images[0].path,
+    index: 0,
+  });
+
+  const handleImageChange = (index) => {
+    console.log(index);
+    setImageMain({
+      path: "http://localhost:5000/uploads/" + product.images[index].path,
+      index: index,
+    });
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -147,18 +171,22 @@ export default function Product(props) {
                 <React.Fragment>
                   <CardMedia
                     className={classes.cardMedia}
-                    image={
-                      "http://localhost:5000/uploads/" + product.images[0].path
-                    }
+                    image={imageMain.path}
                     title="Image title"
                   />
                   <div className={classes.gridRoot}>
                     <GridList className={classes.gridList} cols={2.5}>
-                      {product.images.map((tile) => (
-                        <GridListTile key={tile._id}>
+                      {product.images.map((tile, index) => (
+                        <GridListTile
+                          className={clsx(classes.imgGrid, {
+                            [classes.activeImg]: index === imageMain.index,
+                          })}
+                          key={tile._id}
+                        >
                           <img
                             src={"http://localhost:5000/uploads/" + tile.path}
                             alt={tile.title}
+                            onClick={() => handleImageChange(index)}
                           />
                         </GridListTile>
                       ))}

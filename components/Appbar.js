@@ -3,7 +3,6 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
-import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
@@ -17,6 +16,9 @@ import Popover from "@material-ui/core/Popover";
 import clsx from "clsx";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import Badge from "@material-ui/core/Badge";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+
+import { fade, makeStyles } from "@material-ui/core/styles";
 import Link from "../src/Link";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -142,7 +144,7 @@ export default function Mainbar(props) {
 
   useEffect(() => {
     setProductsInCart(
-      cart.items && cart.items.products !== null
+      cart.items && cart.items.products !== undefined
         ? cart.items.products.map((element) =>
             Object.assign(
               products.items.find((product) => product.id === element.product),
@@ -188,15 +190,17 @@ export default function Mainbar(props) {
       <div className={classes.root}>
         <AppBar>
           <Toolbar>
-            {/* Menu icon */}
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-            >
-              <MenuIcon />
-            </IconButton>
+            <Hidden mdUp>
+              {/* Menu icon */}
+              <IconButton
+                edge="start"
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="open drawer"
+              >
+                <MenuIcon />
+              </IconButton>
+            </Hidden>
             <Box style={{ marginRight: "50px" }}>
               <Typography
                 className={clsx(classes.title, classes.link)}
@@ -459,23 +463,9 @@ export default function Mainbar(props) {
 
               {/* Account Button */}
               <Grid item>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => logout()}
-                >
-                  Logout
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  component={Link}
-                  naked
-                  href="/login"
-                  as={`/login`}
-                >
-                  Login
-                </Button>
+                <IconButton aria-label="acount-icon" onClick={() => logout()}>
+                  <AccountCircleIcon />
+                </IconButton>
               </Grid>
             </Grid>
           </Toolbar>

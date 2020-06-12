@@ -7,7 +7,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import MainBar from "../src/Appbar";
+import MainBar from "../components/Appbar";
 import { checkServerSideCookie } from "../actions/user.actions";
 import {
   productActions,
@@ -22,10 +22,16 @@ import Link from "../src/Link";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
 
 const TAX_RATE = 0.1;
 
 const useStyles = makeStyles((theme) => ({
+  marginY: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
   table: {
     //minWidth: 700,
   },
@@ -36,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(2),
     color: theme.palette.primary.main,
     borderBottom: "solid 1px #000",
+  },
+  center: {
+    display: "flex",
+    flexDirection: "column",
+    justifyItems: "center",
+    alignItems: "center",
   },
 }));
 
@@ -48,7 +60,6 @@ function priceRow(qty, unit) {
 }
 
 function subtotal(items) {
-  console.log(items);
   return items
     .map(({ price, amount }) => price * amount)
     .reduce((sum, i) => sum + i, 0);
@@ -90,9 +101,16 @@ const Cart = (props) => {
     <React.Fragment>
       <MainBar />
       <Container className={classes.container}>
-        <Typography className={classes.typography} variant="h4" gutterBottom>
-          Cart
-        </Typography>
+        <div className={classes.center}>
+          <img
+            style={{ width: "20%" }}
+            src="/images/animation-vector-shopping-6.png"
+            alt="Cart"
+          ></img>
+          <Typography className={classes.typography} variant="h3" gutterBottom>
+            Cart
+          </Typography>
+        </div>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="spanning table">
             <TableHead>
@@ -174,13 +192,40 @@ const Cart = (props) => {
           </Table>
         </TableContainer>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => dispatch(cartActions.checkOutCart(users.token))}
-        >
-          CheckOut
-        </Button>
+        <Grid className={classes.marginY} container spacing={4}>
+          <Grid item xs={12} sm={6}>
+            <Paper style={{ padding: 30 }} elevation={3}>
+              <Typography variant="h6">COUPON DISCOUNT</Typography>
+              <Typography gutterBottom>
+                Enter your coupon code if you have one!
+              </Typography>
+              <TextField
+                id="standard-full-width"
+                placeholder="Enter your code here"
+                fullWidth
+                margin="normal"
+              />
+            </Paper>
+          </Grid>
+          <Grid
+            item
+            container
+            xs={12}
+            sm={6}
+            direction="row"
+            justify="flex-end"
+          >
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => dispatch(cartActions.checkOutCart(users.token))}
+              >
+                CheckOut
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
       </Container>
     </React.Fragment>
   );

@@ -176,7 +176,6 @@ function _delete(id) {
 export const checkServerSideCookie = (ctx) => {
   const isServer = !!ctx.req;
 
-  console.log(ctx.req);
   if (isServer) {
     if (ctx.req.headers.cookie) {
       const token = getCookie("token", ctx.req);

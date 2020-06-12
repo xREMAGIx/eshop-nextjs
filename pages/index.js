@@ -25,13 +25,14 @@ import {
   userActions,
   cartActions,
 } from "../actions";
-import MainBar from "../src/Appbar";
-import Carousel from "../src/Carousel";
+import MainBar from "../components/Appbar";
+import Carousel from "../components/Carousel";
 import ListItemHorizontal from "../src/ListItemHorizontal";
 import Link from "../src/Link";
 import { useDispatch, useSelector } from "react-redux";
 import { checkServerSideCookie } from "../actions/user.actions";
 import Private from "../components/PrivateRoute";
+import Footer from "../components/Footer";
 
 function Copyright() {
   return (
@@ -594,21 +595,7 @@ const Home = (props) => {
         {/* </main> */}
 
         {/* Footer */}
-        <footer className={classes.footer}>
-          <Typography variant="h6" align="center" gutterBottom>
-            Footer
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color="textSecondary"
-            component="p"
-          >
-            An E-Commerce Page made with NEXT-JS + REDUX + MATERIAL-UI
-          </Typography>
-          <Copyright />
-        </footer>
-        {/* End footer */}
+        <Footer />
       </Private>
     </React.Fragment>
   );
