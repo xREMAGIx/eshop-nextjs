@@ -143,11 +143,11 @@ export default function Mainbar(props) {
   const [productsInCart, setProductsInCart] = React.useState([]);
 
   useEffect(() => {
-    console.log(cart.items.products);
     setProductsInCart(
-      cart.items.products !== undefined &&
-        cart.items.products !== null &&
-        products.items
+      cart.items &&
+        cart.items !== null &&
+        products.items &&
+        products.items.length > 0
         ? cart.items.products.map((element) =>
             Object.assign(
               products.items.find((product) => product.id === element.product),

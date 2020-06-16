@@ -6,9 +6,16 @@ import withReduxStore from "../lib/with-redux-store";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../src/theme";
+import Router from "next/router";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Modal from "@material-ui/core/Modal";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 
 function MyApp(props) {
   const { Component, pageProps, store } = props;
+
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -18,10 +25,25 @@ function MyApp(props) {
     }
   }, []);
 
+  Router.onRouteChangeStart = () => {
+    console.log("onRouteChnageStart triggered");
+    setLoading(true);
+  };
+
+  Router.onRouteChangeComplete = () => {
+    console.log("onRouteChnageComplete triggered");
+    setLoading(false);
+  };
+
+  Router.onRouteChangeError = () => {
+    console.log("onRouteChnageError triggered");
+    setLoading(false);
+  };
+
   return (
     <React.Fragment>
       <Head>
-        <title>My page</title>
+        <title>NextJS page</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
@@ -31,6 +53,23 @@ function MyApp(props) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <Provider store={store}>
+          {loading && (
+            <Modal
+              open={loading}
+              disablePortal
+              disableEnforceFocus
+              disableAutoFocus
+              style={{
+                display: "flex",
+                // alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+            >
+              <CircularProgress color="secondary" />
+            </Modal>
+          )}
           <Component {...pageProps} />
         </Provider>
       </ThemeProvider>
@@ -56,7 +95,6 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
 
 MyApp.propTypes = {
   Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
   store: PropTypes.object.isRequired,
 };
 

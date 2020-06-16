@@ -75,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   cardRoot: {
-    maxWidth: 345,
     transition: "box-shadow 0.3s",
     "&:hover": {
       boxShadow: ` 2px 3px 10px ${theme.palette.secondary.main}`,
