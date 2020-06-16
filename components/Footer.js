@@ -115,31 +115,33 @@ export default function StickyFooter() {
               <Typography className={classes.title} variant="h6">
                 Shopping
               </Typography>
-              <List component="nav" aria-label="main mailbox folders">
-                <ListItemLink href="/products">
+              <List component="nav" aria-label="shopping-list">
+                <ListItemLink href="/products" as={`/products`}>
                   <ListItemText primary="Products" />
                 </ListItemLink>
-                <ListItemLink href="/categories">
+                <ListItemLink href="/categories" as={`/categories`}>
                   <ListItemText primary="Categories" />
                 </ListItemLink>
-                <ListItemLink href="/brands">
+                <ListItemLink href="/brands" as={`/brands`}>
                   <ListItemText primary="Brands" />
                 </ListItemLink>
               </List>
             </Grid>
             <Grid item xs={12} sm={6} md={2}>
               <Typography className={classes.title} variant="h6">
-                Acount
+                Account
               </Typography>
-              <ListItemLink href="/account">
-                <ListItemText primary="My account" />
-              </ListItemLink>
-              <ListItemLink href="/cart">
-                <ListItemText primary="Cart" />
-              </ListItemLink>
-              <ListItemLink href="/orders">
-                <ListItemText primary="Orders" />
-              </ListItemLink>
+              <List component="nav" aria-label="account-list">
+                <ListItemLink href="/account">
+                  <ListItemText primary="My account" />
+                </ListItemLink>
+                <ListItemLink href="/cart">
+                  <ListItemText primary="Cart" />
+                </ListItemLink>
+                <ListItemLink href="/orders">
+                  <ListItemText primary="Orders" />
+                </ListItemLink>
+              </List>
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Typography className={classes.title} variant="h6">

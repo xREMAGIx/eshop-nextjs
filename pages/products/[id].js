@@ -25,7 +25,7 @@ import clsx from "clsx";
 import { checkServerSideCookie } from "../../actions/user.actions";
 import Private from "../../components/PrivateRoute";
 import MainBar from "../../components/Appbar";
-import { cartActions } from "../../actions";
+import { cartActions, userActions } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({

@@ -22,7 +22,6 @@ import {
   bannerActions,
   postActions,
   categoryActions,
-  userActions,
   cartActions,
 } from "../actions";
 import MainBar from "../components/Appbar";
@@ -235,7 +234,6 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
     padding: "20px 0",
   },
-
   cardActions: {
     opacity: 0,
     height: 0,

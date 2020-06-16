@@ -9,589 +9,555 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import IconButton from "@material-ui/core/IconButton";
-import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { productActions, bannerActions, postActions } from "../../actions";
-import MainBar from "../../src/Appbar";
-import Carousel from "../../src/Carousel";
-import ListItemHorizontal from "../../src/ListItemHorizontal";
+import SearchIcon from "@material-ui/icons/Search";
+import InputBase from "@material-ui/core/InputBase";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Collapse from "@material-ui/core/Collapse";
+import Slider from "@material-ui/core/Slider";
+import Tooltip from "@material-ui/core/Tooltip";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import Divider from "@material-ui/core/Divider";
+import Pagination from "@material-ui/lab/Pagination";
+
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import PageviewIcon from "@material-ui/icons/Pageview";
+import FacebookIcon from "@material-ui/icons/Facebook";
+import TwitterIcon from "@material-ui/icons/Twitter";
+import InstagramIcon from "@material-ui/icons/Instagram";
+
+import { useDispatch, useSelector } from "react-redux";
+
 import Link from "../../src/Link";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      {/* <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "} */}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-function Project(props) {
-  const classes = useStyles();
-  return (
-    <Paper className={classes.imagePaper} elevation={10}>
-      {props.item.path && (
-        <CardMedia
-          className={classes.media}
-          image={"http://localhost:5000/uploads/" + props.item.path}
-          // title={props.item.name}
-        />
-      )}
-    </Paper>
-  );
-}
-
-function GridList(props) {
-  const products = props.product;
-  const classes = useStyles();
-
-  return (
-    <Grid container direction="row" justify="center" spacing={4}>
-      {products.map((product) => (
-        <Grid className={classes.newProductList} key={product.id} item xs={3}>
-          <Card className={classes.card}>
-            {product.images.length > 0 ? (
-              <CardMedia
-                className={classes.cardMedia}
-                image={
-                  "http://localhost:5000/uploads/" + product.images[0].path
-                }
-                title="Image title"
-              />
-            ) : null}
-            <CardContent className={classes.cardContent}>
-              <Typography gutterBottom variant="h5" component="h2">
-                {product.productName}
-              </Typography>
-              <Typography variant="h6">$ {product.price}</Typography>
-            </CardContent>
-            <CardActions className={classes.cardActions}>
-              <Button size="small" color="primary">
-                View
-              </Button>
-              <IconButton color="secondary" aria-label="add-to-cart">
-                <AddShoppingCartIcon />
-              </IconButton>
-            </CardActions>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-  );
-}
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {/* <Typography>{children}</Typography> */}
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-var splitArray = function (arr, size) {
-  var arr2 = arr.slice(0),
-    arrays = [];
-
-  while (arr2.length > 0) {
-    arrays.push(arr2.splice(0, size));
-  }
-
-  return arrays;
-};
+import Footer from "../../components/Footer";
+import { productActions, bannerActions, cartActions } from "../../actions";
+import { checkServerSideCookie } from "../../actions/user.actions";
+import MainBar from "../../components/Appbar";
 
 const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
+  margin: {
+    margin: theme.spacing(1),
   },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(9, 0, 6),
+  marginY: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
-  newProductsContainer: {
-    paddingTop: theme.spacing(8),
-    height: "400px",
-    paddingBottom: theme.spacing(8),
-  },
-  card: {
-    //height: "100%",
-
-    display: "flex",
-    flexDirection: "column",
-    "&:hover": {
-      "& .MuiCardActions-root": {
-        opacity: 1,
-        height: "50px",
-        // visibility: "visible",
-        // opacity: 1,
-      },
-    },
-  },
-  cardMedia: {
-    paddingTop: "56.25%", // 16:9
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
-  },
-  container: { width: "500px" },
-  media: {
-    backgroundColor: "white",
-    height: "100%",
-    overflow: "hidden",
-    position: "relative",
-    transition: "300ms",
-    cursor: "pointer",
-    "&:hover": {
-      filter: "brightness(115%)",
-    },
-  },
-  imagePaper: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 0, 0),
-    position: "relative",
-    //height: "500px",
-    overflow: "hidden",
-    // padding: "20px",
-    color: "white",
-    height: "100vh",
-  },
-  sectionTitle: {
-    textAlign: "center",
-    margin: "50px",
+  title: {
+    paddingLeft: theme.spacing(1),
+    borderLeftStyle: "solid",
+    borderColor: theme.palette.primary.main,
     fontWeight: "bold",
+    marginBottom: theme.spacing(1),
   },
-  sectionTitleBar: {
-    width: "100px",
-    height: "5px",
-    margin: "8px auto 0",
-    display: "block",
-    backgroundColor: theme.palette.secondary.dark,
+  filterPaper: {
+    padding: theme.spacing(1),
   },
-  arcticlesRoot: {},
-  arcticlesMedia: {
-    height: 300,
-  },
-  arcticlesContainer: {
-    backgroundColor: theme.palette.primary.light,
-  },
-  arcticlesGrid: {
-    maxWidth: "1000px",
-    margin: "auto",
-    padding: "20px 0",
-  },
-
-  cardActions: {
-    opacity: 0,
-    height: 0,
-    overflow: "hidden",
-    transition: "opacity 0.5s, height 0.1s linear",
-  },
-  gridList: {
-    flexWrap: "nowrap",
-    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "translateZ(0)",
-  },
-  tabRoot: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-    "& .MuiAppBar-colorPrimary": {
-      color: "#000",
-      backgroundColor: theme.palette.background.paper,
-    },
-    "& .MuiPaper-elevation4": {
-      boxShadow: "none",
+  listLink: {
+    color: theme.palette.text.primary,
+    paddingLeft: theme.spacing(3),
+    transition: "padding-left 0.5s",
+    "&:hover": {
+      color: theme.palette.primary.main,
+      textDecoration: "none",
+      paddingLeft: theme.spacing(1),
     },
   },
-  tabPanel: {
-    backgroundColor: theme.palette.background.paper,
-
-    // backgroundColor: theme.palette.secondary.light,
+  cardRoot: {
+    maxWidth: 345,
+    transition: "box-shadow 0.3s",
+    "&:hover": {
+      boxShadow: ` 2px 3px 10px ${theme.palette.secondary.main}`,
+    },
   },
-  newProductList: {
-    height: "320px",
+  iconBtn: {
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  quickViewPaper: { width: "80%", padding: theme.spacing(1) },
+  addBtn: {
+    "&:hover": {
+      color: theme.palette.common.white,
+      backgroundColor: theme.palette.primary.main,
+    },
   },
 }));
 
-const Products = (props) => {
+const sortOptions = [
+  { title: "Newest Items", value: "-createAt" },
+  { title: "Price Increase", value: "price" },
+  { title: "Price Decrease", value: "-price" },
+  { title: "Name A -> Z", value: "name" },
+  { title: "Name Z -> A", value: "-name" },
+];
+
+function ListItemLink(props) {
   const classes = useStyles();
-  const { result } = props;
 
-  const autoPlay = false;
-  const timer = 500;
-  const animation = "fade";
-  const indicators = true;
+  return (
+    <ListItem button className={classes.listLink} component={Link} {...props} />
+  );
+}
 
-  const sortedNewProduct = result.products.items
-    .slice()
-    .sort((a, b) => new Date(b.createAt) - new Date(a.createAt));
+const Products = () => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const arraySplitted = splitArray(sortedNewProduct, 4);
+  const categories = useSelector((state) => state.categories);
+  const brands = useSelector((state) => state.brands);
+  const products = useSelector((state) => state.products);
+  const users = useSelector((state) => state.users);
 
-  const [value, setValue] = React.useState(0);
+  const [openFilterCollapse, setOpenFilterCollapse] = React.useState(false);
+  const [priceValue, setPriceValue] = React.useState([0, 100]);
+  const [productQV, setProductQV] = React.useState();
+  const [openQuickView, setOpenQuickView] = React.useState(false);
 
-  const targetRef = React.useRef();
-  const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
-
-  // holds the timer for setTimeout and clearInterval
-  let movement_timer = null;
-
-  // the number of ms the window size must stay the same size before the
-  // dimension state variable is reset
-  const RESET_TIMEOUT = 100;
-
-  const changeDimension = () => {
-    // For some reason targetRef.current.getBoundingClientRect was not available
-    // I found this worked for me, but unfortunately I can't find the
-    // documentation to explain this experience
-
-    if (targetRef.current) {
-      setDimensions({
-        width: targetRef.current.offsetWidth,
-        height: targetRef.current.offsetHeight + 50,
-      });
-    }
+  const handleOpenQuickView = (productId) => {
+    setOpenQuickView(true);
+    setProductQV(products.items.find((x) => x._id === productId));
   };
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleCloseQuickView = () => {
+    setOpenQuickView(false);
   };
 
-  React.useEffect(() => {
-    changeDimension();
-  }, []);
+  const handlePriceChange = (event, newValue) => {
+    setPriceValue(newValue);
+  };
 
-  // every time the window is resized, the timer is cleared and set again
-  // the net effect is the component will only reset after the window size
-  // is at rest for the duration set in RESET_TIMEOUT.  This prevents rapid
-  // redrawing of the component for more complex components such as charts
-  if (typeof window !== "undefined") {
-    // it's safe to use window now
-    window.addEventListener("resize", () => {
-      clearInterval(movement_timer);
-      movement_timer = setTimeout(changeDimension, RESET_TIMEOUT);
-    });
-  }
+  const handleFilterClick = () => {
+    setOpenFilterCollapse(!openFilterCollapse);
+  };
+
+  const handleAddToCart = (productId) => {
+    dispatch(cartActions.addItem(productId, users.token));
+  };
 
   return (
     <React.Fragment>
-      <MainBar
-        categories={result.categories.items}
-        brands={result.brands.items}
-      />
+      {/* AppBar */}
+      <MainBar />
 
-      {/* Simple Carousel */}
-      {result.banners.items !== undefined && (
-        <Carousel
-          style={{ zIndex: -1 }}
-          autoPlay={autoPlay}
-          timer={timer}
-          animation={animation}
-          indicators={indicators}
-        >
-          {result.banners.items.map((item, index) => {
-            return <Project item={item} key={index} />;
-          })}
-        </Carousel>
-      )}
-
-      {/* Arcticles */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Feature Arcticles
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.arcticlesContainer} maxWidth="lg">
-        <Grid
-          className={classes.arcticlesGrid}
-          container
-          direction="row"
-          spacing={4}
-        >
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-                {/* <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent> */}
-              </CardActionArea>
-            </Card>
+      {/* Main */}
+      <Container style={{ marginTop: "64px" }} maxWidth="lg">
+        <Typography variant="h3">Products</Typography>
+        {/* Search, sort bar */}
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item xs={12} sm={12} md={3}>
+            <Paper>
+              <div className={classes.margin}>
+                <Grid container spacing={1} alignItems="flex-end">
+                  <Grid item sm={1} md={2}>
+                    <SearchIcon />
+                  </Grid>
+                  <Grid item xs={11} sm={11} md={10}>
+                    <TextField fullWidth label="Search" />
+                  </Grid>
+                </Grid>
+              </div>
+            </Paper>
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
+          <Grid item xs={12} sm={12} md={9}>
+            <Paper>
+              <Grid
+                container
+                justify="space-between"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item sm={3}></Grid>
+                <Grid item xs={12} sm={6}>
+                  <Autocomplete
+                    id="combo-box-demo"
+                    options={sortOptions}
+                    value={sortOptions[0]}
+                    getOptionLabel={(option) => option.title}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Sort by"
+                        variant="outlined"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item sm={3}>
+                  Showing: 1-9 of {products.items ? products.items.length : 0}{" "}
+                  products
+                </Grid>
+              </Grid>
+            </Paper>
           </Grid>
         </Grid>
-      </Container>
 
-      {/* New products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        New Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.newProductsContainer} maxWidth="lg">
-        <ListItemHorizontal style={{ zIndex: -1 }}>
-          {arraySplitted.map((product, index) => {
-            return <GridList product={product} key={index} />;
-          })}
-        </ListItemHorizontal>
-      </Container>
-
-      {/* Feature Sale Products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Feature Sale Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.arcticlesContainer} maxWidth="lg">
-        <Grid
-          className={classes.arcticlesGrid}
-          container
-          direction="row"
-          spacing={4}
-        >
-          <Grid item xs={12} md={8}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/random"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* Products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container maxWidth="md">
-        <div className={classes.tabRoot}>
-          <AppBar position="static">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-              centered
+        {/* Filter, main product grid */}
+        <Grid container alignItems="flex-start" spacing={2}>
+          <Grid item xs={12} sm={12} md={3}>
+            <ListItem button onClick={handleFilterClick}>
+              <ListItemText
+                primary="Filters"
+                secondary="Categories,brands,..."
+              />
+              {openFilterCollapse ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse
+              className={classes.marginY}
+              in={openFilterCollapse}
+              timeout="auto"
+              unmountOnExit
             >
-              <Tab label="New Products" {...a11yProps(0)} />
-              <Tab label="Best Seller" {...a11yProps(1)} />
-              <Tab label="Special Offer" {...a11yProps(2)} />
-            </Tabs>
-          </AppBar>
-          <TabPanel className={classes.tabPanel} value={value} index={0}>
+              <Grid container direction="column" spacing={2}>
+                <Grid item>
+                  <Paper className={classes.filterPaper} elevation={2}>
+                    <Typography className={classes.title} variant="h6">
+                      Categories
+                    </Typography>
+                    {categories.items
+                      ? categories.items.map((category, index) => (
+                          <ListItemLink
+                            key={category._id}
+                            href="/categories/[id]"
+                            as={`/categories/${category._id}`}
+                          >
+                            <ListItemText
+                              key={index}
+                              primary={`${category.name}`}
+                            />
+                          </ListItemLink>
+                        ))
+                      : null}
+                  </Paper>
+                </Grid>
+                <Grid item>
+                  <Paper className={classes.filterPaper} elevation={2}>
+                    <Typography className={classes.title} variant="h6">
+                      Brands
+                    </Typography>
+                    {brands.items
+                      ? brands.items.map((brand, index) => (
+                          <ListItemLink
+                            key={index}
+                            href="/brands/[id]"
+                            as={`/brands/${brand._id}`}
+                          >
+                            <ListItemText primary={`${brand.name}`} />
+                          </ListItemLink>
+                        ))
+                      : null}
+                  </Paper>
+                </Grid>
+                <Grid item>
+                  <Paper className={classes.filterPaper} elevation={2}>
+                    <Typography
+                      className={classes.title}
+                      variant="h6"
+                      gutterBottom
+                    >
+                      Price
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Your range:
+                      <em style={{ paddingLeft: "3em" }}>
+                        ${priceValue[0]} - ${priceValue[1]}
+                      </em>
+                    </Typography>
+                    <Slider
+                      value={priceValue}
+                      onChange={handlePriceChange}
+                      valueLabelDisplay="auto"
+                      aria-labelledby="range-slider"
+                      //getAriaValueText={valuetext}
+                    />
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Collapse>
+          </Grid>
+          <Grid item xs={12} sm={12} md={9}>
             <Grid container spacing={4}>
-              {result.products.items.map((product) => (
+              {products.items
+                ? products.items.map((product, index) => (
+                    <Grid item key={index} xs={12} sm={6} md={4}>
+                      <Card className={classes.cardRoot}>
+                        <CardActionArea
+                          component={Link}
+                          href="/products/[id]"
+                          as={`/products/${product._id}`}
+                        >
+                          <CardMedia
+                            component="img"
+                            width={"100%"}
+                            image={
+                              "http://localhost:5000/uploads/" +
+                              product.images[0].path
+                            }
+                            title={product.productName}
+                          />
+                        </CardActionArea>
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {product.productName}
+                          </Typography>
+
+                          {product.discount > 0 ? (
+                            <Grid container alignItems="center" spacing={3}>
+                              <Grid item>
+                                <Typography variant="h6" color="primary">
+                                  $
+                                  {(product.price * (100 - product.discount)) /
+                                    100}
+                                </Typography>
+                              </Grid>
+                              <Grid item>
+                                <Typography
+                                  style={{ textDecoration: "line-through" }}
+                                  variant="body1"
+                                  color="textSecondary"
+                                >
+                                  ${product.price}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          ) : (
+                            <Typography color="primary">
+                              ${product.price}
+                            </Typography>
+                          )}
+                        </CardContent>
+
+                        <CardActions>
+                          <Grid container justify="center" spacing={2}>
+                            <Grid item>
+                              <Tooltip title="Favorite" aria-label="favorite">
+                                <IconButton
+                                  className={classes.iconBtn}
+                                  size="small"
+                                >
+                                  <FavoriteIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Grid>
+                            <Grid item>
+                              <Tooltip
+                                title="Quick view"
+                                aria-label="quick-view"
+                                onClick={() => handleOpenQuickView(product._id)}
+                              >
+                                <IconButton
+                                  className={classes.iconBtn}
+                                  size="small"
+                                >
+                                  <PageviewIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Grid>
+                            <Grid item>
+                              <Tooltip
+                                title="Add to cart"
+                                aria-label="add-to-cart"
+                              >
+                                <IconButton
+                                  className={classes.iconBtn}
+                                  size="small"
+                                >
+                                  <AddShoppingCartIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Grid>
+                          </Grid>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))
+                : null}
+            </Grid>
+            <Grid className={classes.marginY} container justify="center">
+              <Grid item>
+                <Pagination count={10} variant="outlined" color="secondary" />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Container>
+
+      <Modal
+        open={openQuickView}
+        onClose={handleCloseQuickView}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        className={classes.modal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openQuickView}>
+          <Paper className={classes.quickViewPaper}>
+            {productQV ? (
+              <Grid container>
+                <Grid item xs={4}>
+                  <img
+                    width={"100%"}
+                    src={
+                      "http://localhost:5000/uploads/" +
+                      productQV.images[0].path
+                    }
+                    alt={productQV.productName}
+                  ></img>
+                </Grid>
                 <Grid
                   item
-                  key={product.id}
-                  style={{ height: dimensions.height }}
-                  className={classes.productCardGrid}
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  //innerRef={ref}
-                  //ref={ref}
+                  style={{ marginLeft: 5 }}
+                  xs={8}
+                  container
+                  direction="column"
+                  spacing={2}
                 >
-                  <Card ref={targetRef} className={classes.card}>
-                    {product.images.length > 0 ? (
-                      <CardMedia
-                        className={classes.cardMedia}
-                        image={
-                          "http://localhost:5000/uploads/" +
-                          product.images[0].path
-                        }
-                        title="Image title"
-                      />
-                    ) : null}
-                    <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {product.productName}
+                  <Grid item>
+                    <Typography variant="h4">
+                      {productQV.productName}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Divider />
+                  </Grid>
+                  <Grid item>
+                    {productQV.discount > 0 ? (
+                      <Grid container alignItems="center" spacing={3}>
+                        <Grid item>
+                          <Typography variant="h5" color="primary">
+                            $
+                            {(productQV.price * (100 - productQV.discount)) /
+                              100}
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography
+                            style={{ textDecoration: "line-through" }}
+                            variant="body1"
+                            color="textSecondary"
+                          >
+                            ${productQV.price}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    ) : (
+                      <Typography variant="h5" color="primary">
+                        ${productQV.price}
                       </Typography>
-                      <Typography>{product.description}</Typography>
-                      <Typography variant="h6">$ {product.price}</Typography>
-                    </CardContent>
-                    <CardActions className={classes.cardActions}>
-                      <Button size="small" color="primary">
-                        View
+                    )}
+                  </Grid>
+                  <Grid item>
+                    <Divider />
+                  </Grid>
+                  <Grid item container alignItems="center" spacing={5}>
+                    <Grid item>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        className={classes.addBtn}
+                        startIcon={<AddShoppingCartIcon />}
+                        onClick={() => handleAddToCart(productQV._id)}
+                      >
+                        Add to cart
                       </Button>
-                      <IconButton color="secondary" aria-label="add-to-cart">
-                        <AddShoppingCartIcon />
-                      </IconButton>
-                    </CardActions>
-                  </Card>
+                    </Grid>
+                    <Grid item>
+                      <Link
+                        href="/products/[id]"
+                        as={`/products/${productQV._id}`}
+                      >
+                        See all features
+                      </Link>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Divider />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="body1">
+                      {productQV.description}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Divider />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="h6">Share this product</Typography>
+                    <Grid className={classes.social} container spacing={2}>
+                      <Grid item>
+                        <IconButton
+                          aria-label="facebook"
+                          className={classes.iconBtn}
+                        >
+                          <FacebookIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item>
+                        <IconButton
+                          aria-label="twitter"
+                          className={classes.iconBtn}
+                        >
+                          <TwitterIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item>
+                        <IconButton
+                          aria-label="instagram"
+                          className={classes.iconBtn}
+                        >
+                          <InstagramIcon />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
-              ))}
-            </Grid>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            Item Two
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            Item Three
-          </TabPanel>
-        </div>
-      </Container>
-
-      {/* Posts */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Posts
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container maxWidth="md">
-        <Grid container spacing={4}>
-          {result.posts.items.map((post) => (
-            <Grid
-              item
-              key={post.id}
-              className={classes.productCardGrid}
-              xs={12}
-              sm={6}
-              //innerRef={ref}
-              //ref={ref}
-            >
-              <Card className={classes.card}>
-                <CardActionArea
-                  component={Link}
-                  href="/posts/[id]"
-                  as={`/posts/${post.id}`}
-                >
-                  {post.images.length > 0 ? (
-                    <CardMedia
-                      className={classes.cardMedia}
-                      image={
-                        "http://localhost:5000/uploads/" +
-                        product.images[0].path
-                      }
-                      title="Image title"
-                    />
-                  ) : null}
-                  <CardContent className={classes.cardContent}>
-                    <Typography variant="h5"> {post.title}</Typography>
-
-                    {/* <Typography>{post.content}</Typography> */}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      {/* </main> */}
+              </Grid>
+            ) : null}
+          </Paper>
+        </Fade>
+      </Modal>
 
       {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="textSecondary"
-          component="p"
-        >
-          An E-Commerce Page make with NEXT-JS + REDUX + MATERIAL-UI
-        </Typography>
-        <Copyright />
-      </footer>
+      <Footer />
       {/* End footer */}
     </React.Fragment>
   );
 };
 
-Products.getInitialProps = async ({ store }) => {
-  let result;
-  await store.dispatch(bannerActions.getAll());
-  await store.dispatch(postActions.getAll());
-  await store
-    .dispatch(productActions.getAll())
-    .then(() => (result = store.getState()));
+Products.getInitialProps = async (ctx) => {
+  checkServerSideCookie(ctx);
 
-  return { result };
+  const token = ctx.store.getState().users.token;
+
+  if (ctx.req) {
+    console.log("on server, need to copy cookies from req");
+  } else {
+    console.log("on client, cookies are automatic");
+  }
+
+  await ctx.store.dispatch(bannerActions.getAll());
+  await ctx.store.dispatch(cartActions.getAll(token));
+  await ctx.store.dispatch(productActions.getAll());
 };
 
 export default Products;

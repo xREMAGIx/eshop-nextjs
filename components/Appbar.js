@@ -143,8 +143,11 @@ export default function Mainbar(props) {
   const [productsInCart, setProductsInCart] = React.useState([]);
 
   useEffect(() => {
+    console.log(cart.items.products);
     setProductsInCart(
-      cart.items && cart.items.products !== undefined
+      cart.items.products !== undefined &&
+        cart.items.products !== null &&
+        products.items
         ? cart.items.products.map((element) =>
             Object.assign(
               products.items.find((product) => product.id === element.product),
@@ -153,7 +156,7 @@ export default function Mainbar(props) {
           )
         : []
     );
-  }, [cart.items]);
+  }, [cart.items, products.items]);
 
   const dispatch = useDispatch();
 
@@ -206,6 +209,7 @@ export default function Mainbar(props) {
                 className={clsx(classes.title, classes.link)}
                 component={Link}
                 href="/"
+                as={`/`}
                 variant="h6"
                 noWrap
               >
@@ -217,7 +221,7 @@ export default function Mainbar(props) {
               <Grid container spacing={5}>
                 {/* Home button */}
                 <Grid item>
-                  <Button component={Link} naked href="/" as={`/`}>
+                  <Button component={Link} href="/" as={`/`}>
                     Home
                   </Button>
                 </Grid>
