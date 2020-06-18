@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkServerSideCookie } from "../actions/user.actions";
 import Private from "../components/PrivateRoute";
 import Footer from "../components/Footer";
+import slugtify from "../src/slugtify";
 
 function Copyright() {
   return (
@@ -490,8 +491,10 @@ const Home = (props) => {
                           <CardActionArea
                             component={Link}
                             naked
-                            href="/products/[id]"
-                            as={`/products/${product.id}`}
+                            href={`/products/[slug]?id=${product.id}`}
+                            as={`/products/${slugtify(
+                              product.productName
+                            )}?sku=${product.sku}&&id=${product.id}`}
                           >
                             {product.images.length > 0 ? (
                               <CardMedia

@@ -15,6 +15,8 @@ import Paper from "@material-ui/core/Paper";
 function MyApp(props) {
   const { Component, pageProps, store } = props;
 
+  console.log(pageProps);
+
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -26,24 +28,21 @@ function MyApp(props) {
   }, []);
 
   Router.onRouteChangeStart = () => {
-    console.log("onRouteChnageStart triggered");
     setLoading(true);
   };
 
   Router.onRouteChangeComplete = () => {
-    console.log("onRouteChnageComplete triggered");
     setLoading(false);
   };
 
   Router.onRouteChangeError = () => {
-    console.log("onRouteChnageError triggered");
     setLoading(false);
   };
 
   return (
     <React.Fragment>
       <Head>
-        <title>NextJS page</title>
+        <title>{pageProps.result.title || "NextJS Page"}</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

@@ -325,8 +325,13 @@ Product.getInitialProps = async (ctx) => {
   let result;
   checkServerSideCookie(ctx);
 
+  console.log(ctx.query);
+
   await ctx.store.dispatch(productActions.getById(ctx.query.id));
 
-  result = ctx.store.getState();
+  result = {
+    ...ctx.store.getState(),
+    title: ctx.store.getState().products.item.productName,
+  };
   return { result };
 };
