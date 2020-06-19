@@ -15,8 +15,6 @@ import Paper from "@material-ui/core/Paper";
 function MyApp(props) {
   const { Component, pageProps, store } = props;
 
-  console.log(pageProps);
-
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -43,7 +41,8 @@ function MyApp(props) {
     <React.Fragment>
       <Head>
         <title>
-          {(pageProps.result && pageProps.result.title) || "NextJS Page"}
+          {(pageProps && pageProps.result && pageProps.result.title) ||
+            "NextJS Page"}
         </title>
         <meta
           name="viewport"

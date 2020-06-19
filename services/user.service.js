@@ -22,7 +22,7 @@ async function login(user) {
   const body = JSON.stringify(user);
 
   return await axios
-    .post(`http://localhost:5000/api/auth/login`, body, requestConfig)
+    .post(`${backendUrl}/api/auth/login`, body, requestConfig)
     .then(handleResponse);
 }
 
@@ -34,13 +34,13 @@ async function getMe(token) {
     },
   };
   return await axios
-    .get(`http://localhost:5000/api/auth/me`, requestConfig)
+    .get(`${backendUrl}/api/auth/me`, requestConfig)
     .then(handleResponse);
 }
 
 async function logout() {
   // remove user from local storage to log user out
-  await axios.post("http://localhost:5000/api/auth/logout");
+  await axios.post(`${backendUrl}/api/auth/logout`);
   localStorage.removeItem("user");
 }
 
@@ -71,7 +71,7 @@ async function register(user) {
 
   const body = JSON.stringify(user);
   await axios
-    .post("http://localhost:5000/api/auth/register", body, config)
+    .post(`${backendUrl}/api/auth/register`, body, config)
     .then(handleResponse);
 }
 
@@ -104,6 +104,5 @@ function handleResponse(response) {
     return Promise.reject(error);
   }
 
-  console.log(data);
   return data;
 }

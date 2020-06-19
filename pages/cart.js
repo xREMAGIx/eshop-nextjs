@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -19,8 +19,6 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-
-const TAX_RATE = 0.1;
 
 const useStyles = makeStyles((theme) => ({
   marginY: {
@@ -60,6 +58,12 @@ function subtotal(items) {
     .reduce((sum, i) => sum + i, 0);
 }
 
+function discounttotal(items) {
+  return items
+    .map(({ price, discount }) => (price * discount) / 100)
+    .reduce((sum, i) => sum + i, 0);
+}
+
 const Cart = (props) => {
   const classes = useStyles();
   const { result } = props;
@@ -73,9 +77,8 @@ const Cart = (props) => {
   const [productsInCart, setProductsInCart] = React.useState([]);
 
   const invoiceSubtotal = subtotal(productsInCart);
-
-  const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-  const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+  const invoiceDiscountTotal = discounttotal(productsInCart);
+  const invoiceTotal = invoiceSubtotal - invoiceDiscountTotal;
 
   useEffect(() => {
     setProductsInCart(
@@ -173,11 +176,10 @@ const Cart = (props) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Tax</TableCell>
-                <TableCell align="right">{`${(TAX_RATE * 100).toFixed(
-                  0
-                )} %`}</TableCell>
-                <TableCell align="right">{ccyFormat(invoiceTaxes)}</TableCell>
+                <TableCell colSpan={2}>Discount total</TableCell>
+                <TableCell align="right">
+                  {ccyFormat(invoiceDiscountTotal)}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell colSpan={2}>Total</TableCell>

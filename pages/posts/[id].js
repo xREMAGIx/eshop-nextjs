@@ -17,16 +17,16 @@ export default function Post(props) {
   );
 }
 
-Post.getInitialProps = async ({ store, query }) => {
-  console.log(store.getState());
-  console.log(query);
+Post.getInitialProps = async (ctx) => {
   let result;
+  checkServerSideCookie(ctx);
 
-  await store.dispatch(postActions.getById(query.id));
+  const token = ctx.store.getState().users.token;
+  await ctx.store.dispatch(postActions.getById(ctx.query.id));
   // .then(() => (result = store.getState()));
 
   result = store.getState();
-  console.log(result);
+
   return { result };
 };
 

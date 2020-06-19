@@ -21,14 +21,9 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Link from "../src/Link";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  userActions,
-  productActions,
-  bannerActions,
-  categoryActions,
-} from "../actions";
+import { userActions } from "../actions";
 import { useEffect } from "react";
-import { cartService } from "../services";
+import backendUrl from "../src/backendUrl";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -410,7 +405,7 @@ export default function Mainbar(props) {
                               >
                                 <img
                                   src={
-                                    "http://localhost:5000/uploads/" +
+                                    `${backendUrl}/uploads/` +
                                     element.images[0].path
                                   }
                                   alt={element.productName}

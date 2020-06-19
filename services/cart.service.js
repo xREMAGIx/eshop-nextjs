@@ -1,7 +1,7 @@
 import { getCookie } from "../helpers";
 import Cookies from "js-cookie";
 import axios from "axios";
-//import setAuthToken from "../helpers/auth-header";
+import backendUrl from "../src/backendUrl";
 
 //setAuthToken(getCookie("token"));
 
@@ -21,7 +21,7 @@ async function getAll(token) {
   };
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return await axios
-    .get(`http://localhost:5000/api/cart`, requestConfig)
+    .get(`${backendUrl}/api/cart`, requestConfig)
     .then(handleResponse);
 }
 
@@ -31,7 +31,7 @@ async function checkOutCart(token) {
   };
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return await axios
-    .post(`http://localhost:5000/api/orders/createOrder`, requestConfig)
+    .post(`${backendUrl}/api/orders/createOrder`, requestConfig)
     .then(handleResponse);
 }
 
@@ -44,7 +44,7 @@ async function addItem(productId, token) {
 
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return await axios
-    .put(`http://localhost:5000/api/cart/${productId}`, requestConfig)
+    .put(`${backendUrl}/api/cart/${productId}`, requestConfig)
     .then(handleResponse);
 }
 
@@ -57,7 +57,7 @@ async function subtractItem(productId, token) {
 
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return await axios
-    .patch(`http://localhost:5000/api/cart/${productId}`, requestConfig)
+    .patch(`${backendUrl}/api/cart/${productId}`, requestConfig)
     .then(handleResponse);
 }
 
@@ -70,7 +70,7 @@ async function deleteItem(productId, token) {
 
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   return await axios
-    .delete(`http://localhost:5000/api/cart/${productId}`, requestConfig)
+    .delete(`${backendUrl}/api/cart/${productId}`, requestConfig)
     .then(handleResponse);
 }
 

@@ -12,7 +12,6 @@ export function categories(
 ) {
   switch (action.type) {
     case categoryConstants.GETALL_REQUEST:
-      console.log(1);
       return {
         ...state,
         loading: true,

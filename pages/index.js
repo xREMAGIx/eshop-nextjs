@@ -33,16 +33,7 @@ import { checkServerSideCookie, userActions } from "../actions/user.actions";
 import Private from "../components/PrivateRoute";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import backendUrl from "../src/backendUrl";
 
 function Project(props) {
   const classes = useStyles();
@@ -51,7 +42,7 @@ function Project(props) {
       {props.item.path && (
         <CardMedia
           className={classes.media}
-          image={"http://localhost:5000/uploads/" + props.item.path}
+          image={`${backendUrl}/uploads/` + props.item.path}
           // title={props.item.name}
         />
       )}
@@ -73,9 +64,7 @@ function GridList(props) {
             {product.images.length > 0 ? (
               <CardMedia
                 className={classes.cardMedia}
-                image={
-                  "http://localhost:5000/uploads/" + product.images[0].path
-                }
+                image={`${backendUrl}/uploads/` + product.images[0].path}
                 title="Image title"
               />
             ) : null}
@@ -500,7 +489,7 @@ const Home = (props) => {
                               <CardMedia
                                 className={classes.cardMedia}
                                 image={
-                                  "http://localhost:5000/uploads/" +
+                                  `${backendUrl}/uploads/` +
                                   product.images[0].path
                                 }
                                 title="Image title"
@@ -574,8 +563,7 @@ const Home = (props) => {
                           <CardMedia
                             className={classes.cardMedia}
                             image={
-                              "http://localhost:5000/uploads/" +
-                              product.images[0].path
+                              `${backendUrl}/uploads/` + product.images[0].path
                             }
                             title="Image title"
                           />

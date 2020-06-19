@@ -27,6 +27,7 @@ import Private from "../../components/PrivateRoute";
 import MainBar from "../../components/Appbar";
 import { cartActions, userActions } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
+import backendUrl from "../../src/backendUrl";
 
 const useStyles = makeStyles((theme) => ({
   cardMedia: {
@@ -136,14 +137,13 @@ export default function Product(props) {
   const [value, setValue] = React.useState(0);
 
   const [imageMain, setImageMain] = React.useState({
-    path: "http://localhost:5000/uploads/" + product.images[0].path,
+    path: `${backendUrl}/uploads/` + product.images[0].path,
     index: 0,
   });
 
   const handleImageChange = (index) => {
-    console.log(index);
     setImageMain({
-      path: "http://localhost:5000/uploads/" + product.images[index].path,
+      path: `${backendUrl}/uploads/` + product.images[index].path,
       index: index,
     });
   };
@@ -184,7 +184,7 @@ export default function Product(props) {
                           key={tile._id}
                         >
                           <img
-                            src={"http://localhost:5000/uploads/" + tile.path}
+                            src={`${backendUrl}/uploads/` + tile.path}
                             alt={tile.title}
                             onClick={() => handleImageChange(index)}
                           />
@@ -291,9 +291,7 @@ export default function Product(props) {
                 {product.images.length > 0 ? (
                   <CardMedia
                     className={classes.cardMedia}
-                    image={
-                      "http://localhost:5000/uploads/" + product.images[0].path
-                    }
+                    image={`${backendUrl}/uploads/` + product.images[0].path}
                     title="Image title"
                   />
                 ) : null}
@@ -325,8 +323,9 @@ Product.getInitialProps = async (ctx) => {
   let result;
   checkServerSideCookie(ctx);
 
-  console.log(ctx.query);
+  const token = ctx.store.getState().users.token;
 
+  await ctx.store.dispatch(userActions.getMe(token));
   await ctx.store.dispatch(productActions.getById(ctx.query.id));
 
   result = {

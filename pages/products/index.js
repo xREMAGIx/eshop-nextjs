@@ -45,6 +45,7 @@ import Footer from "../../components/Footer";
 import { productActions, bannerActions, cartActions } from "../../actions";
 import { checkServerSideCookie } from "../../actions/user.actions";
 import MainBar from "../../components/Appbar";
+import backendUrl from "../../src/backendUrl";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -305,8 +306,7 @@ const Products = () => {
                             component="img"
                             width={"100%"}
                             image={
-                              "http://localhost:5000/uploads/" +
-                              product.images[0].path
+                              `${backendUrl}/uploads/` + product.images[0].path
                             }
                             title={product.productName}
                           />
@@ -416,10 +416,7 @@ const Products = () => {
                 <Grid item xs={4}>
                   <img
                     width={"100%"}
-                    src={
-                      "http://localhost:5000/uploads/" +
-                      productQV.images[0].path
-                    }
+                    src={`${backendUrl}/uploads/` + productQV.images[0].path}
                     alt={productQV.productName}
                   ></img>
                 </Grid>
