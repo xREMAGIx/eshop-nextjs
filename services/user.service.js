@@ -1,5 +1,6 @@
 import axios from "axios";
 import setAuthToken from "../helpers/auth-header";
+import backendUrl from "../src/backendUrl";
 
 export const userService = {
   login,
@@ -52,15 +53,13 @@ function getAll() {
   return fetch(`/api/users`, requestOptions).then(handleResponse);
 }
 
-function getById(id) {
-  const requestOptions = {
-    method: "GET",
+async function getById(id) {
+  const requestConfig = {
     //headers: authHeader(),
   };
-
-  return fetch(`/api/users/${id}`, requestOptions)
-    .then(handleResponse)
-    .catch(handleResponse);
+  return await axios
+    .get(`${backendUrl}/api/users/${id}`, requestConfig)
+    .then(handleResponse);
 }
 
 async function register(user) {
@@ -97,14 +96,14 @@ function _delete(id) {
 }
 
 function handleResponse(response) {
-  console.log(response);
   let data;
   data = response.data;
 
-  if (response.status === 404) {
+  if (response.status > 400) {
     const error = (response && response.message) || response.statusText;
     return Promise.reject(error);
   }
 
+  console.log(data);
   return data;
 }

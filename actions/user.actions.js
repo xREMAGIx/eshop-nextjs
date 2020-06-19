@@ -9,15 +9,16 @@ export const userActions = {
   logout,
   register,
   getAll,
+  getById,
   delete: _delete,
   getMe,
 };
 
-function getMe() {
-  return (dispatch) => {
+function getMe(token) {
+  return async (dispatch) => {
     dispatch(request());
 
-    userService.getMe().then(
+    await userService.getMe(token).then(
       (user) => {
         dispatch(success(user));
       },
@@ -148,6 +149,36 @@ function getAll() {
   }
   function failure(error) {
     return { type: userConstants.GETALL_FAILURE, error };
+  }
+}
+
+function getById(id) {
+  return async (dispatch) => {
+    dispatch(request(id));
+    await userService.getById(id).then(
+      (user) => dispatch(success(user)),
+      (error) => {
+        if (error.response && error.response.data) {
+          let errorkey = Object.keys(error.response.data)[0];
+
+          let errorValue = error.response.data[errorkey][0];
+
+          dispatch(failure(errorkey.toUpperCase() + ": " + errorValue));
+        } else {
+          dispatch(failure(error.toString()));
+        }
+      }
+    );
+  };
+
+  function request(id) {
+    return { type: userConstants.GETBYID_REQUEST, id };
+  }
+  function success(user) {
+    return { type: userConstants.GETBYID_SUCCESS, user };
+  }
+  function failure(error) {
+    return { type: userConstants.GETBYID_FAILURE, error };
   }
 }
 

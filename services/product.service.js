@@ -1,5 +1,6 @@
 //import { authHeader } from "../helpers";
 import axios from "axios";
+import backendUrl from "../src/backendUrl";
 
 export const productService = {
   getAll,

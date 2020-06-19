@@ -16,7 +16,7 @@ import Popover from "@material-ui/core/Popover";
 import clsx from "clsx";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import Badge from "@material-ui/core/Badge";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
 import Link from "../src/Link";
@@ -134,11 +134,14 @@ export default function Mainbar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openCategories, setOpenCategories] = React.useState(false);
   const [openBrands, setOpenBrands] = React.useState(false);
+  const [profileAnchorEl, setProfileAnchorEl] = React.useState(null);
+  const openProfile = Boolean(profileAnchorEl);
 
   const categories = useSelector((state) => state.categories);
   const brands = useSelector((state) => state.brands);
   const cart = useSelector((state) => state.cart);
   const products = useSelector((state) => state.products);
+  const users = useSelector((state) => state.users);
 
   const [productsInCart, setProductsInCart] = React.useState([]);
 
@@ -188,6 +191,14 @@ export default function Mainbar(props) {
     setOpenBrands(false);
   };
 
+  const handleMenu = (event) => {
+    setProfileAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setProfileAnchorEl(null);
+  };
+
   return (
     <React.Fragment>
       <div className={classes.root}>
@@ -221,7 +232,7 @@ export default function Mainbar(props) {
               <Grid container spacing={5}>
                 {/* Home button */}
                 <Grid item>
-                  <Button component={Link} href="/" as={`/`}>
+                  <Button naked component={Link} href="/" as={`/`}>
                     Home
                   </Button>
                 </Grid>
@@ -467,9 +478,50 @@ export default function Mainbar(props) {
 
               {/* Account Button */}
               <Grid item>
-                <IconButton aria-label="acount-icon" onClick={() => logout()}>
-                  <AccountCircleIcon />
-                </IconButton>
+                <div>
+                  <IconButton
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={profileAnchorEl}
+                    getContentAnchorEl={null}
+                    // anchorOrigin={{
+                    //   vertical: "top",
+                    //   horizontal: "right"
+                    // }}
+                    keepMounted
+                    // transformOrigin={{
+                    //   vertical: "top",
+                    //   horizontal: "right"
+                    // }}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                    open={openProfile}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem
+                      component={Link}
+                      href="/users/[id]"
+                      as={`/users/${users.user ? users.user._id : null}`}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem onClick={() => logout()}>Logout</MenuItem>
+                  </Menu>
+                </div>
               </Grid>
             </Grid>
           </Toolbar>

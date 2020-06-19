@@ -27,22 +27,24 @@ function MyApp(props) {
     }
   }, []);
 
-  Router.onRouteChangeStart = () => {
-    setLoading(true);
-  };
+  // Router.onRouteChangeStart = () => {
+  //   setLoading(true);
+  // };
 
-  Router.onRouteChangeComplete = () => {
-    setLoading(false);
-  };
+  // Router.onRouteChangeComplete = () => {
+  //   setLoading(false);
+  // };
 
-  Router.onRouteChangeError = () => {
-    setLoading(false);
-  };
+  // Router.onRouteChangeError = () => {
+  //   setLoading(false);
+  // };
 
   return (
     <React.Fragment>
       <Head>
-        <title>{pageProps.result.title || "NextJS Page"}</title>
+        <title>
+          {(pageProps.result && pageProps.result.title) || "NextJS Page"}
+        </title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

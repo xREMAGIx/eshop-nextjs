@@ -29,7 +29,7 @@ import Carousel from "../components/Carousel";
 import ListItemHorizontal from "../src/ListItemHorizontal";
 import Link from "../src/Link";
 import { useDispatch, useSelector } from "react-redux";
-import { checkServerSideCookie } from "../actions/user.actions";
+import { checkServerSideCookie, userActions } from "../actions/user.actions";
 import Private from "../components/PrivateRoute";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
@@ -618,8 +618,8 @@ Home.getInitialProps = async (ctx) => {
   await ctx.store.dispatch(bannerActions.getAll());
   await ctx.store.dispatch(postActions.getAll());
   await ctx.store.dispatch(categoryActions.getAll());
+  await ctx.store.dispatch(userActions.getMe(token));
   await ctx.store.dispatch(cartActions.getAll(token));
-
   await ctx.store
     .dispatch(productActions.getAll())
     .then(() => (result = ctx.store.getState()));

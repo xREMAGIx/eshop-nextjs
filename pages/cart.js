@@ -9,13 +9,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import MainBar from "../components/Appbar";
 import { checkServerSideCookie } from "../actions/user.actions";
-import {
-  productActions,
-  bannerActions,
-  postActions,
-  userActions,
-  cartActions,
-} from "../actions";
+import Footer from "../components/Footer";
+import { productActions, cartActions } from "../actions";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "../src/Link";
 
@@ -227,6 +222,9 @@ const Cart = (props) => {
           </Grid>
         </Grid>
       </Container>
+      <footer>
+        <Footer />
+      </footer>
     </React.Fragment>
   );
 };
@@ -241,7 +239,7 @@ Cart.getInitialProps = async (ctx) => {
   await ctx.store.dispatch(cartActions.getAll(token));
   await ctx.store
     .dispatch(productActions.getAll())
-    .then(() => (result = ctx.store.getState()));
+    .then(() => (result = { ...ctx.store.getState(), title: "Cart" }));
 
   return { result };
 };
