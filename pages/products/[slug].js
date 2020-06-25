@@ -28,6 +28,7 @@ import MainBar from "../../components/Appbar";
 import { cartActions, userActions } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import backendUrl from "../../src/backendUrl";
+import Router from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   cardMedia: {
@@ -123,14 +124,16 @@ export default function Product(props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const { result } = props;
-  const product = result.products.item;
-  const category = result.categories.items.find(
-    (element) => element.id === product.category
-  );
-  const brand = result.brands.items.find(
-    (element) => element.id === product.brand
-  );
+  const products = useSelector((state) => state.products);
+  const categories = useSelector((state) => state.categories);
+  const brands = useSelector((state) => state.brands);
+  const users = useSelector((state) => state.users);
+
+  const product = products.item;
+  const category =
+    categories.items.find((element) => element.id === product.category) || null;
+  const brand =
+    brands.items.find((element) => element.id === product.brand) || null;
 
   const dispatch = useDispatch();
 
@@ -157,164 +160,165 @@ export default function Product(props) {
   };
 
   const handleAddToCart = (event) => {
-    dispatch(cartActions.addItem(result.products.item.id, result.users.token));
+    if (users.token) dispatch(cartActions.addItem(product.id, users.token));
+    else Router.push(`/login`);
   };
 
   return (
     <React.Fragment>
-      <Private>
-        <MainBar />
-        <Container style={{ marginTop: "100px" }} maxWidth="lg">
-          <Grid container spacing={5}>
-            <Grid item xs={12} sm={6}>
-              {product.images.length > 0 ? (
-                <React.Fragment>
-                  <CardMedia
-                    className={classes.cardMedia}
-                    image={imageMain.path}
-                    title="Image title"
-                  />
-                  <div className={classes.gridRoot}>
-                    <GridList className={classes.gridList} cols={2.5}>
-                      {product.images.map((tile, index) => (
-                        <GridListTile
-                          className={clsx(classes.imgGrid, {
-                            [classes.activeImg]: index === imageMain.index,
-                          })}
-                          key={tile._id}
-                        >
-                          <img
-                            src={`${backendUrl}/uploads/` + tile.path}
-                            alt={tile.title}
-                            onClick={() => handleImageChange(index)}
-                          />
-                        </GridListTile>
-                      ))}
-                    </GridList>
-                  </div>
-                </React.Fragment>
-              ) : null}
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h3" gutterBottom>
-                {product.productName}
-              </Typography>
-
-              <Typography variant="subtitle1" gutterBottom>
-                <Box
-                  fontWeight="fontWeightBold"
-                  m={1}
-                  className={classes.boxMargin}
-                >
-                  SKU: {product.sku}
-                </Box>
-              </Typography>
-
-              <Divider />
-
-              <Typography variant="h5" gutterBottom>
-                <Box fontWeight={500} m={1} className={classes.boxMargin}>
-                  Price: $ {product.price.toLocaleString()}
-                </Box>
-              </Typography>
-              <Divider />
-              <Button
-                style={{ marginTop: "50px" }}
-                variant="contained"
-                color="primary"
-                startIcon={<AddShoppingCartIcon />}
-                onClick={handleAddToCart}
-              >
-                Add to cart
-              </Button>
-            </Grid>
+      {/* <Private> */}
+      <MainBar />
+      <Container style={{ marginTop: "100px" }} maxWidth="lg">
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={6}>
+            {product.images.length > 0 ? (
+              <React.Fragment>
+                <CardMedia
+                  className={classes.cardMedia}
+                  image={imageMain.path}
+                  title="Image title"
+                />
+                <div className={classes.gridRoot}>
+                  <GridList className={classes.gridList} cols={2.5}>
+                    {product.images.map((tile, index) => (
+                      <GridListTile
+                        className={clsx(classes.imgGrid, {
+                          [classes.activeImg]: index === imageMain.index,
+                        })}
+                        key={tile._id}
+                      >
+                        <img
+                          src={`${backendUrl}/uploads/` + tile.path}
+                          alt={tile.title}
+                          onClick={() => handleImageChange(index)}
+                        />
+                      </GridListTile>
+                    ))}
+                  </GridList>
+                </div>
+              </React.Fragment>
+            ) : null}
           </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h3" gutterBottom>
+              {product.productName}
+            </Typography>
 
-          <div className={classes.tabRoot}>
-            <AppBar position="static" color="default">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                aria-label="full width tabs example"
+            <Typography variant="subtitle1" gutterBottom>
+              <Box
+                fontWeight="fontWeightBold"
+                m={1}
+                className={classes.boxMargin}
               >
-                <Tab label="Description" {...a11yProps(0)} />
-                <Tab label="Information" {...a11yProps(1)} />
-                <Tab label="Reviews" {...a11yProps(2)} />
-              </Tabs>
-            </AppBar>
-            <SwipeableViews
-              axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-              index={value}
-              onChangeIndex={handleChangeIndex}
+                SKU: {product.sku}
+              </Box>
+            </Typography>
+
+            <Divider />
+
+            <Typography variant="h5" gutterBottom>
+              <Box fontWeight={500} m={1} className={classes.boxMargin}>
+                Price: $ {product.price.toLocaleString()}
+              </Box>
+            </Typography>
+            <Divider />
+            <Button
+              style={{ marginTop: "50px" }}
+              variant="contained"
+              color="primary"
+              startIcon={<AddShoppingCartIcon />}
+              onClick={handleAddToCart}
             >
-              <TabPanel value={value} index={0} dir={theme.direction}>
-                <Typography variant="body1" component="span">
-                  Description: {product.description}
-                </Typography>
-                <Typography variant="body1" component="span">
-                  There are many variations of passages of Lorem Ipsum
-                  available, but the majo Rity have be suffered alteration in
-                  some form, by injected humou or randomis Rity have be suffered
-                  alteration in some form, by injected humou or randomis words
-                  which donot look even slightly believable. If you are going to
-                  use a passage Lorem Ipsum. rerum blanditiis dolore dignissimos
-                  expedita consequatur deleniti consectetur non exercitationem.
-                  rerum blanditiis dolore dignissimos expedita consequatur
-                  deleniti consectetur non exercitationem.
-                </Typography>
-              </TabPanel>
-              <TabPanel value={value} index={1} dir={theme.direction}>
-                <Typography variant="h6" gutterBottom>
-                  Category: {category.name}
-                </Typography>
-                <Divider />
-                <Typography variant="h6">
-                  Brand: {brand ? brand.name : ""}
-                </Typography>
-              </TabPanel>
-              <TabPanel value={value} index={2} dir={theme.direction}>
-                Item Three
-              </TabPanel>
-            </SwipeableViews>
-          </div>
-
-          <Typography className={classes.sectionTitle} variant="h5">
-            Relate Products
-            <span className={classes.sectionTitleBar}></span>
-          </Typography>
-
-          <Grid container>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card className={classes.card}>
-                {product.images.length > 0 ? (
-                  <CardMedia
-                    className={classes.cardMedia}
-                    image={`${backendUrl}/uploads/` + product.images[0].path}
-                    title="Image title"
-                  />
-                ) : null}
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {product.productName}
-                  </Typography>
-                  <Typography>{product.description}</Typography>
-                  <Typography variant="h6">$ {product.price}</Typography>
-                </CardContent>
-                <CardActions className={classes.cardActions}>
-                  <Button size="small" color="primary">
-                    View
-                  </Button>
-                  <IconButton color="secondary" aria-label="add-to-cart">
-                    <AddShoppingCartIcon />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </Grid>
+              Add to cart
+            </Button>
           </Grid>
-        </Container>
-      </Private>
+        </Grid>
+
+        <div className={classes.tabRoot}>
+          <AppBar position="static" color="default">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              aria-label="full width tabs example"
+            >
+              <Tab label="Description" {...a11yProps(0)} />
+              <Tab label="Information" {...a11yProps(1)} />
+              <Tab label="Reviews" {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
+          <SwipeableViews
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={value}
+            onChangeIndex={handleChangeIndex}
+          >
+            <TabPanel value={value} index={0} dir={theme.direction}>
+              <Typography variant="body1" component="span">
+                Description: {product.description}
+              </Typography>
+              <Typography variant="body1" component="span">
+                There are many variations of passages of Lorem Ipsum available,
+                but the majo Rity have be suffered alteration in some form, by
+                injected humou or randomis Rity have be suffered alteration in
+                some form, by injected humou or randomis words which donot look
+                even slightly believable. If you are going to use a passage
+                Lorem Ipsum. rerum blanditiis dolore dignissimos expedita
+                consequatur deleniti consectetur non exercitationem. rerum
+                blanditiis dolore dignissimos expedita consequatur deleniti
+                consectetur non exercitationem.
+              </Typography>
+            </TabPanel>
+            <TabPanel value={value} index={1} dir={theme.direction}>
+              <Typography variant="h6" gutterBottom>
+                Category: {category.name}
+              </Typography>
+              <Divider />
+              <Typography variant="h6">
+                Brand: {brand ? brand.name : ""}
+              </Typography>
+            </TabPanel>
+            <TabPanel value={value} index={2} dir={theme.direction}>
+              Item Three
+            </TabPanel>
+          </SwipeableViews>
+        </div>
+
+        <Typography className={classes.sectionTitle} variant="h5">
+          Relate Products
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+
+        <Grid container>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card className={classes.card}>
+              {product.images.length > 0 ? (
+                <CardMedia
+                  className={classes.cardMedia}
+                  image={`${backendUrl}/uploads/` + product.images[0].path}
+                  title="Image title"
+                />
+              ) : null}
+              <CardContent className={classes.cardContent}>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {product.productName}
+                </Typography>
+                <Typography>{product.description}</Typography>
+                <Typography variant="h6">$ {product.price}</Typography>
+              </CardContent>
+              <CardActions className={classes.cardActions}>
+                <Button size="small" color="primary">
+                  View
+                </Button>
+                <IconButton color="secondary" aria-label="add-to-cart">
+                  <AddShoppingCartIcon />
+                </IconButton>
+              </CardActions>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+      {/* </Private> */}
     </React.Fragment>
   );
 }
@@ -324,8 +328,7 @@ Product.getInitialProps = async (ctx) => {
   checkServerSideCookie(ctx);
 
   const token = ctx.store.getState().users.token;
-
-  await ctx.store.dispatch(userActions.getMe(token));
+  if (token) await ctx.store.dispatch(userActions.getMe(token));
   await ctx.store.dispatch(productActions.getById(ctx.query.id));
 
   result = {

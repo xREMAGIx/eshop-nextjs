@@ -40,7 +40,7 @@ function getMe(token) {
   }
 }
 
-function login(user) {
+function login(user, history) {
   let auth = { token: "", user_data: "" };
 
   return async (dispatch) => {
@@ -60,7 +60,11 @@ function login(user) {
             auth.user_data = userData.data;
             dispatch(successGetMe(userData));
             authenticate(auth, () => {
-              Router.push("/");
+              if (!history || !history.length) {
+                Router.push("/");
+              } else {
+                Router.push(history[history.length - 2]);
+              }
             });
           },
           (error) => {
@@ -101,7 +105,7 @@ function logout() {
   if (typeof window !== "undefined") {
     localStorage.removeItem("user");
   }
-  Router.push("/login");
+  Router.push("/");
   return { type: userConstants.LOGOUT };
 }
 

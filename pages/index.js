@@ -326,266 +326,266 @@ const Home = (props) => {
 
   return (
     <React.Fragment>
-      <Private>
-        <MainBar />
+      {/* <Private> */}
+      <MainBar />
 
-        {/* Simple Carousel */}
-        {banners.items !== undefined && (
-          <Carousel
-            style={{ zIndex: -1 }}
-            autoPlay={autoPlay}
-            timer={timer}
-            animation={animation}
-            indicators={indicators}
-          >
-            {banners.items.map((item, index) => {
-              return <Project item={item} key={index} />;
-            })}
-          </Carousel>
-        )}
+      {/* Simple Carousel */}
+      {banners.items !== undefined && (
+        <Carousel
+          style={{ zIndex: -1 }}
+          autoPlay={autoPlay}
+          timer={timer}
+          animation={animation}
+          indicators={indicators}
+        >
+          {banners.items.map((item, index) => {
+            return <Project item={item} key={index} />;
+          })}
+        </Carousel>
+      )}
 
-        {/* Arcticles */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Feature Arcticles
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container className={classes.arcticlesContainer} maxWidth="lg">
-          <Grid
-            className={classes.arcticlesGrid}
-            container
-            direction="row"
-            spacing={4}
-          >
-            <Grid item xs={12} sm={6} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
+      {/* Arcticles */}
+      <Typography className={classes.sectionTitle} variant="h4">
+        Feature Arcticles
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <Container className={classes.arcticlesContainer} maxWidth="lg">
+        <Grid
+          className={classes.arcticlesGrid}
+          container
+          direction="row"
+          spacing={4}
+        >
+          <Grid item xs={12} sm={6} md={4}>
+            <Card className={classes.arcticlesRoot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.arcticlesMedia}
+                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                  title="Contemplative Reptile"
+                />
+              </CardActionArea>
+            </Card>
           </Grid>
-        </Container>
-
-        {/* New products */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          New Products
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container className={classes.newProductsContainer} maxWidth="lg">
-          <ListItemHorizontal style={{ zIndex: -1 }}>
-            {arraySplitted.map((product, index) => {
-              return <GridList product={product} key={index} />;
-            })}
-          </ListItemHorizontal>
-        </Container>
-
-        {/* Feature Sale Products */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Feature Sale Products
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container className={classes.arcticlesContainer} maxWidth="lg">
-          <Grid
-            className={classes.arcticlesGrid}
-            container
-            direction="row"
-            spacing={4}
-          >
-            <Grid item xs={12} md={8}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card className={classes.arcticlesRoot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.arcticlesMedia}
+                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                  title="Contemplative Reptile"
+                />
+              </CardActionArea>
+            </Card>
           </Grid>
-        </Container>
-
-        {/* Products */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Products
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container maxWidth="md">
-          <div className={classes.tabRoot}>
-            <AppBar position="static">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="simple tabs example"
-                centered
-              >
-                <Tab label="New Products" {...a11yProps(0)} />
-                <Tab label="Best Seller" {...a11yProps(1)} />
-                <Tab label="Special Offer" {...a11yProps(2)} />
-              </Tabs>
-            </AppBar>
-            <TabPanel className={classes.tabPanel} value={value} index={0}>
-              <Grid container spacing={4}>
-                {products.items
-                  ? products.items.map((product) => (
-                      <Grid
-                        item
-                        key={product.id}
-                        style={{ height: dimensions.height }}
-                        className={classes.productCardGrid}
-                        xs={12}
-                        sm={6}
-                        md={4}
-                        //innerRef={ref}
-                        //ref={ref}
-                      >
-                        <Card ref={targetRef} className={classes.card}>
-                          <CardActionArea
-                            component={Link}
-                            naked
-                            href={`/products/[slug]?id=${product.id}`}
-                            as={`/products/${slugtify(
-                              product.productName
-                            )}?sku=${product.sku}&&id=${product.id}`}
-                          >
-                            {product.images.length > 0 ? (
-                              <CardMedia
-                                className={classes.cardMedia}
-                                image={
-                                  `${backendUrl}/uploads/` +
-                                  product.images[0].path
-                                }
-                                title="Image title"
-                              />
-                            ) : null}
-                            <CardContent className={classes.cardContent}>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="h2"
-                              >
-                                {product.productName}
-                              </Typography>
-                              <Typography>{product.description}</Typography>
-                              <Typography variant="h6">
-                                $ {product.price}
-                              </Typography>
-                            </CardContent>
-                            <CardActions className={classes.cardActions}>
-                              <Button size="small" color="primary">
-                                View
-                              </Button>
-                              <IconButton
-                                color="secondary"
-                                aria-label="add-to-cart"
-                              >
-                                <AddShoppingCartIcon />
-                              </IconButton>
-                            </CardActions>
-                          </CardActionArea>
-                        </Card>
-                      </Grid>
-                    ))
-                  : null}
-              </Grid>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              Item Two
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              Item Three
-            </TabPanel>
-          </div>
-        </Container>
-
-        {/* Posts */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Posts
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container maxWidth="md">
-          <Grid container spacing={4}>
-            {posts.items
-              ? posts.items.map((post) => (
-                  <Grid
-                    item
-                    key={post.id}
-                    className={classes.productCardGrid}
-                    xs={12}
-                    sm={6}
-                    //innerRef={ref}
-                    //ref={ref}
-                  >
-                    <Card className={classes.card}>
-                      <CardActionArea
-                        component={Link}
-                        href="/posts/[id]"
-                        as={`/posts/${post.id}`}
-                      >
-                        {post.images.length > 0 ? (
-                          <CardMedia
-                            className={classes.cardMedia}
-                            image={
-                              `${backendUrl}/uploads/` + product.images[0].path
-                            }
-                            title="Image title"
-                          />
-                        ) : null}
-                        <CardContent className={classes.cardContent}>
-                          <Typography variant="h5"> {post.title}</Typography>
-
-                          {/* <Typography>{post.content}</Typography> */}
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
-                  </Grid>
-                ))
-              : null}
+          <Grid item xs={12} sm={6} md={4}>
+            <Card className={classes.arcticlesRoot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.arcticlesMedia}
+                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                  title="Contemplative Reptile"
+                />
+              </CardActionArea>
+            </Card>
           </Grid>
-        </Container>
+        </Grid>
+      </Container>
 
-        {/* </main> */}
+      {/* New products */}
+      <Typography className={classes.sectionTitle} variant="h4">
+        New Products
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <Container className={classes.newProductsContainer} maxWidth="lg">
+        <ListItemHorizontal style={{ zIndex: -1 }}>
+          {arraySplitted.map((product, index) => {
+            return <GridList product={product} key={index} />;
+          })}
+        </ListItemHorizontal>
+      </Container>
 
-        {/* Footer */}
-        <Footer />
-      </Private>
+      {/* Feature Sale Products */}
+      <Typography className={classes.sectionTitle} variant="h4">
+        Feature Sale Products
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <Container className={classes.arcticlesContainer} maxWidth="lg">
+        <Grid
+          className={classes.arcticlesGrid}
+          container
+          direction="row"
+          spacing={4}
+        >
+          <Grid item xs={12} md={8}>
+            <Card className={classes.arcticlesRoot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.arcticlesMedia}
+                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                  title="Contemplative Reptile"
+                />
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Card className={classes.arcticlesRoot}>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.arcticlesMedia}
+                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                  title="Contemplative Reptile"
+                />
+              </CardActionArea>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+
+      {/* Products */}
+      <Typography className={classes.sectionTitle} variant="h4">
+        Products
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <Container maxWidth="md">
+        <div className={classes.tabRoot}>
+          <AppBar position="static">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+              centered
+            >
+              <Tab label="New Products" {...a11yProps(0)} />
+              <Tab label="Best Seller" {...a11yProps(1)} />
+              <Tab label="Special Offer" {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
+          <TabPanel className={classes.tabPanel} value={value} index={0}>
+            <Grid container spacing={4}>
+              {products.items
+                ? products.items.map((product) => (
+                    <Grid
+                      item
+                      key={product.id}
+                      style={{ height: dimensions.height }}
+                      className={classes.productCardGrid}
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      //innerRef={ref}
+                      //ref={ref}
+                    >
+                      <Card ref={targetRef} className={classes.card}>
+                        <CardActionArea
+                          component={Link}
+                          naked
+                          href={`/products/[slug]?id=${product.id}`}
+                          as={`/products/${slugtify(product.productName)}?sku=${
+                            product.sku
+                          }&&id=${product.id}`}
+                        >
+                          {product.images.length > 0 ? (
+                            <CardMedia
+                              className={classes.cardMedia}
+                              image={
+                                `${backendUrl}/uploads/` +
+                                product.images[0].path
+                              }
+                              title="Image title"
+                            />
+                          ) : null}
+                          <CardContent className={classes.cardContent}>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="h2"
+                            >
+                              {product.productName}
+                            </Typography>
+                            <Typography>{product.description}</Typography>
+                            <Typography variant="h6">
+                              $ {product.price}
+                            </Typography>
+                          </CardContent>
+                          <CardActions className={classes.cardActions}>
+                            <Button size="small" color="primary">
+                              View
+                            </Button>
+                            <IconButton
+                              color="secondary"
+                              aria-label="add-to-cart"
+                            >
+                              <AddShoppingCartIcon />
+                            </IconButton>
+                          </CardActions>
+                        </CardActionArea>
+                      </Card>
+                    </Grid>
+                  ))
+                : null}
+            </Grid>
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            Item Two
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            Item Three
+          </TabPanel>
+        </div>
+      </Container>
+
+      {/* Posts */}
+      <Typography className={classes.sectionTitle} variant="h4">
+        Posts
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <Container maxWidth="md">
+        <Grid container spacing={4}>
+          {posts.items
+            ? posts.items.map((post) => (
+                <Grid
+                  item
+                  key={post.id}
+                  className={classes.productCardGrid}
+                  xs={12}
+                  sm={6}
+                  //innerRef={ref}
+                  //ref={ref}
+                >
+                  <Card className={classes.card}>
+                    <CardActionArea
+                      component={Link}
+                      href="/posts/[id]"
+                      as={`/posts/${post.id}`}
+                    >
+                      {post.images.length > 0 ? (
+                        <CardMedia
+                          className={classes.cardMedia}
+                          image={
+                            `${backendUrl}/uploads/` + product.images[0].path
+                          }
+                          title="Image title"
+                        />
+                      ) : null}
+                      <CardContent className={classes.cardContent}>
+                        <Typography variant="h5"> {post.title}</Typography>
+
+                        {/* <Typography>{post.content}</Typography> */}
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Grid>
+              ))
+            : null}
+        </Grid>
+      </Container>
+
+      {/* </main> */}
+
+      {/* Footer */}
+      <Footer />
+      {/* </Private> */}
     </React.Fragment>
   );
 };
@@ -596,6 +596,10 @@ Home.getInitialProps = async (ctx) => {
   checkServerSideCookie(ctx);
 
   const token = ctx.store.getState().users.token;
+  if (token) {
+    await ctx.store.dispatch(userActions.getMe(token));
+    await ctx.store.dispatch(cartActions.getAll(token));
+  }
 
   if (ctx.req) {
     console.log("on server, need to copy cookies from req");
@@ -606,8 +610,7 @@ Home.getInitialProps = async (ctx) => {
   await ctx.store.dispatch(bannerActions.getAll());
   await ctx.store.dispatch(postActions.getAll());
   await ctx.store.dispatch(categoryActions.getAll());
-  await ctx.store.dispatch(userActions.getMe(token));
-  await ctx.store.dispatch(cartActions.getAll(token));
+
   await ctx.store
     .dispatch(productActions.getAll())
     .then(() => (result = ctx.store.getState()));

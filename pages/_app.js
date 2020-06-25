@@ -16,6 +16,8 @@ function MyApp(props) {
   const { Component, pageProps, store } = props;
 
   const [loading, setLoading] = React.useState(false);
+  const [history, setHistory] = React.useState([]);
+  const asPath = props.router.asPath;
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -25,6 +27,13 @@ function MyApp(props) {
     }
   }, []);
 
+  React.useEffect(() => {
+    console.log(history);
+    console.log(history[history.length - 1] !== asPath);
+    if (history[history.length - 1] !== asPath) {
+      setHistory((prevHistory) => [...prevHistory, asPath]);
+    }
+  }, [history, asPath]);
   // Router.onRouteChangeStart = () => {
   //   setLoading(true);
   // };
@@ -70,7 +79,7 @@ function MyApp(props) {
               <CircularProgress color="secondary" />
             </Modal>
           )}
-          <Component {...pageProps} />
+          <Component history={history} {...pageProps} />
         </Provider>
       </ThemeProvider>
     </React.Fragment>

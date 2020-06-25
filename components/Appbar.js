@@ -141,20 +141,23 @@ export default function Mainbar(props) {
   const [productsInCart, setProductsInCart] = React.useState([]);
 
   useEffect(() => {
-    setProductsInCart(
-      cart.items &&
-        cart.items !== null &&
-        products.items &&
-        products.items.length > 0
-        ? cart.items.products.map((element) =>
-            Object.assign(
-              products.items.find((product) => product.id === element.product),
-              { amount: element.amount }
+    if (cart.items.products)
+      setProductsInCart(
+        cart.items &&
+          cart.items !== null &&
+          products.items &&
+          products.items.length > 0
+          ? cart.items.products.map((element) =>
+              Object.assign(
+                products.items.find(
+                  (product) => product.id === element.product
+                ),
+                { amount: element.amount }
+              )
             )
-          )
-        : []
-    );
-  }, [cart.items, products.items]);
+          : []
+      );
+  }, [cart, cart.items, products.items]);
 
   const dispatch = useDispatch();
 

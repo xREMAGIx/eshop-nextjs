@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   cardRoot: {
     transition: "box-shadow 0.3s",
     "&:hover": {
-      boxShadow: ` 2px 3px 10px ${theme.palette.secondary.main}`,
+      boxShadow: ` 2px 3px 10px ${theme.palette.grey[500]}`,
     },
   },
   iconBtn: {
@@ -304,7 +304,7 @@ const Products = () => {
                         >
                           <CardMedia
                             component="img"
-                            width={"100%"}
+                            height={200}
                             image={
                               `${backendUrl}/uploads/` + product.images[0].path
                             }
@@ -336,9 +336,13 @@ const Products = () => {
                               </Grid>
                             </Grid>
                           ) : (
-                            <Typography color="primary">
-                              ${product.price}
-                            </Typography>
+                            <Grid container spacing={3}>
+                              <Grid item>
+                                <Typography variant="h6" color="primary">
+                                  ${product.price}
+                                </Typography>
+                              </Grid>
+                            </Grid>
                           )}
                         </CardContent>
 

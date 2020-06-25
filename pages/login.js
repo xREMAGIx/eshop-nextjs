@@ -19,7 +19,7 @@ import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import Snackbar from "@material-ui/core/Snackbar";
 import Link from "../src/Link";
-import { checkServerSideCookie } from "../actions/user.actions";
+import Router from "next/router";
 
 function Copyright() {
   return (
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignIn() {
+function SignIn(props) {
   const classes = useStyles();
 
   const [formData, setFormData] = React.useState({
@@ -66,6 +66,8 @@ function SignIn() {
 
   const [errorOpen, setErrorOpen] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
+
+  const history = props.history;
 
   const users = useSelector((state) => state.users);
   const dispatch = useDispatch();
@@ -91,11 +93,7 @@ function SignIn() {
       setErrorOpen(true);
       setErrorMessage("Please fill out all required field");
     } else {
-      dispatch(userActions.login(formData));
-      if (!users.user && users.error) {
-        setErrorOpen(true);
-        setErrorMessage("Wrong email or password!");
-      }
+      dispatch(userActions.login(formData, history));
     }
   };
 
