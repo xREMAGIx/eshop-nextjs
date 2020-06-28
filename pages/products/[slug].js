@@ -19,8 +19,15 @@ import CardActions from "@material-ui/core/CardActions";
 import IconButton from "@material-ui/core/IconButton";
 import SwipeableViews from "react-swipeable-views";
 import ButtonBase from "@material-ui/core/ButtonBase";
+import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 
 import { checkServerSideCookie } from "../../actions/user.actions";
 import Private from "../../components/PrivateRoute";
@@ -49,6 +56,8 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "nowrap",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
     transform: "translateZ(0)",
+    background: theme.palette.grey[200],
+    width: "100%",
   },
   title: {
     color: theme.palette.primary.light,
@@ -85,6 +94,9 @@ const useStyles = makeStyles((theme) => ({
   activeImg: {
     opacity: 1,
   },
+  productInfoSection: {
+    background: theme.palette.secondary.light,
+  },
 }));
 
 function TabPanel(props) {
@@ -98,13 +110,21 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
+}
+
+function createInfoData(name, detail) {
+  if (detail) return { name, detail };
+  else
+    return {
+      name: (
+        <Typography style={{ fontWeight: "bolder" }} variant="subtitle1">
+          {name}
+        </Typography>
+      ),
+    };
 }
 
 TabPanel.propTypes = {
@@ -120,7 +140,7 @@ function a11yProps(index) {
   };
 }
 
-export default function Product(props) {
+export default function Product() {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -130,19 +150,57 @@ export default function Product(props) {
   const users = useSelector((state) => state.users);
 
   const product = products.item;
-  const category =
-    categories.items.find((element) => element.id === product.category) || null;
-  const brand =
-    brands.items.find((element) => element.id === product.brand) || null;
+  var category;
+  var brand;
+  if (product) {
+    category =
+      categories.items.find((element) => element.id === product.category) ||
+      null;
+    brand =
+      brands.items.find((element) => element.id === product.brand) || null;
+  }
 
   const dispatch = useDispatch();
 
   const [value, setValue] = React.useState(0);
 
-  const [imageMain, setImageMain] = React.useState({
-    path: `${backendUrl}/uploads/` + product.images[0].path,
-    index: 0,
-  });
+  const [imageMain, setImageMain] = React.useState(
+    product && product.images.length > 0
+      ? { path: `${backendUrl}/uploads/` + product.images[0].path, index: 0 }
+      : null
+  );
+
+  var rows;
+  product && brand && category
+    ? (rows = [
+        createInfoData("General"),
+        createInfoData("Brand", brand.name),
+        createInfoData("Category", category.name),
+        createInfoData("Configurations"),
+        createInfoData("CPU", product.cpu),
+        createInfoData("GPU", product.gpu),
+        createInfoData("OS", product.os),
+        createInfoData("RAM", product.ram),
+        createInfoData("Storage", product.storage),
+        createInfoData("New Features", product.newFeature),
+        createInfoData("Display"),
+        createInfoData("Display", product.display),
+        createInfoData("Display Resolution", product.displayResolution),
+        createInfoData("Display Screen", product.displayScreen),
+        createInfoData("Camera"),
+        createInfoData("Camera", product.camera),
+        createInfoData("Video", product.video),
+        createInfoData("Connectivity"),
+        createInfoData("Wifi", product.wifi),
+        createInfoData("Bluetooth", product.bluetooth),
+        createInfoData("Ports", product.ports),
+        createInfoData("Physical details"),
+        createInfoData("Size", product.size),
+        createInfoData("Weight", product.weight),
+        createInfoData("Material", product.material),
+        createInfoData("Battery Capacity", product.batteryCapacity),
+      ])
+    : (rows = []);
 
   const handleImageChange = (index) => {
     setImageMain({
@@ -168,156 +226,228 @@ export default function Product(props) {
     <React.Fragment>
       {/* <Private> */}
       <MainBar />
-      <Container style={{ marginTop: "100px" }} maxWidth="lg">
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={6}>
-            {product.images.length > 0 ? (
-              <React.Fragment>
-                <CardMedia
-                  className={classes.cardMedia}
-                  image={imageMain.path}
-                  title="Image title"
-                />
-                <div className={classes.gridRoot}>
-                  <GridList className={classes.gridList} cols={2.5}>
-                    {product.images.map((tile, index) => (
-                      <GridListTile
-                        className={clsx(classes.imgGrid, {
-                          [classes.activeImg]: index === imageMain.index,
-                        })}
-                        key={tile._id}
-                      >
-                        <img
-                          src={`${backendUrl}/uploads/` + tile.path}
-                          alt={tile.title}
-                          onClick={() => handleImageChange(index)}
-                        />
-                      </GridListTile>
-                    ))}
-                  </GridList>
-                </div>
-              </React.Fragment>
-            ) : null}
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Typography variant="h3" gutterBottom>
-              {product.productName}
-            </Typography>
-
-            <Typography variant="subtitle1" gutterBottom>
-              <Box
-                fontWeight="fontWeightBold"
-                m={1}
-                className={classes.boxMargin}
-              >
-                SKU: {product.sku}
-              </Box>
-            </Typography>
-
-            <Divider />
-
-            <Typography variant="h5" gutterBottom>
-              <Box fontWeight={500} m={1} className={classes.boxMargin}>
-                Price: $ {product.price.toLocaleString()}
-              </Box>
-            </Typography>
-            <Divider />
-            <Button
-              style={{ marginTop: "50px" }}
-              variant="contained"
-              color="primary"
-              startIcon={<AddShoppingCartIcon />}
-              onClick={handleAddToCart}
-            >
-              Add to cart
-            </Button>
-          </Grid>
-        </Grid>
-
-        <div className={classes.tabRoot}>
-          <AppBar position="static" color="default">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="full width tabs example"
-            >
-              <Tab label="Description" {...a11yProps(0)} />
-              <Tab label="Information" {...a11yProps(1)} />
-              <Tab label="Reviews" {...a11yProps(2)} />
-            </Tabs>
-          </AppBar>
-          <SwipeableViews
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={value}
-            onChangeIndex={handleChangeIndex}
-          >
-            <TabPanel value={value} index={0} dir={theme.direction}>
-              <Typography variant="body1" component="span">
-                Description: {product.description}
-              </Typography>
-              <Typography variant="body1" component="span">
-                There are many variations of passages of Lorem Ipsum available,
-                but the majo Rity have be suffered alteration in some form, by
-                injected humou or randomis Rity have be suffered alteration in
-                some form, by injected humou or randomis words which donot look
-                even slightly believable. If you are going to use a passage
-                Lorem Ipsum. rerum blanditiis dolore dignissimos expedita
-                consequatur deleniti consectetur non exercitationem. rerum
-                blanditiis dolore dignissimos expedita consequatur deleniti
-                consectetur non exercitationem.
-              </Typography>
-            </TabPanel>
-            <TabPanel value={value} index={1} dir={theme.direction}>
-              <Typography variant="h6" gutterBottom>
-                Category: {category.name}
-              </Typography>
-              <Divider />
-              <Typography variant="h6">
-                Brand: {brand ? brand.name : ""}
-              </Typography>
-            </TabPanel>
-            <TabPanel value={value} index={2} dir={theme.direction}>
-              Item Three
-            </TabPanel>
-          </SwipeableViews>
-        </div>
-
-        <Typography className={classes.sectionTitle} variant="h5">
-          Relate Products
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-
-        <Grid container>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card className={classes.card}>
+      {product ? (
+        <Container style={{ marginTop: "100px" }} maxWidth="lg">
+          <Grid container spacing={5}>
+            <Grid item xs={12} sm={6}>
               {product.images.length > 0 ? (
-                <CardMedia
-                  className={classes.cardMedia}
-                  image={`${backendUrl}/uploads/` + product.images[0].path}
-                  title="Image title"
-                />
+                <React.Fragment>
+                  <CardMedia
+                    className={classes.cardMedia}
+                    image={imageMain.path}
+                    title="Image title"
+                  />
+                  <div className={classes.gridRoot}>
+                    <GridList
+                      className={classes.gridList}
+                      cellHeight={100}
+                      cols={4.5}
+                    >
+                      {product.images.map((tile, index) => (
+                        <GridListTile
+                          className={clsx(classes.imgGrid, {
+                            [classes.activeImg]: index === imageMain.index,
+                          })}
+                          key={tile._id}
+                        >
+                          <img
+                            src={`${backendUrl}/uploads/` + tile.path}
+                            alt={tile.title}
+                            onClick={() => handleImageChange(index)}
+                          />
+                        </GridListTile>
+                      ))}
+                    </GridList>
+                  </div>
+                </React.Fragment>
               ) : null}
-              <CardContent className={classes.cardContent}>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {product.productName}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h3" gutterBottom>
+                {product.productName}
+              </Typography>
+
+              <Typography variant="subtitle1" gutterBottom>
+                <Box
+                  fontWeight="fontWeightBold"
+                  m={1}
+                  className={classes.boxMargin}
+                >
+                  SKU: {product.sku}
+                </Box>
+              </Typography>
+
+              <Divider />
+              {product.discount > 0 ? (
+                <Typography variant="h5" gutterBottom>
+                  <Box fontWeight={500} m={1} className={classes.boxMargin}>
+                    <Grid container>
+                      <Grid item xs={12} sm={12} md={6}>
+                        <Typography
+                          display="inline"
+                          variant="h4"
+                          color="primary"
+                        >
+                          {(
+                            (product.price * (100 - product.discount)) /
+                            100
+                          ).toLocaleString()}{" "}
+                          <div
+                            style={{
+                              display: "inline",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            đ
+                          </div>
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                        <Typography
+                          style={{ textDecoration: "line-through" }}
+                          display="inline"
+                          variant="h6"
+                          color="textSecondary"
+                        >
+                          {product.price.toLocaleString()} đ
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
                 </Typography>
-                <Typography>{product.description}</Typography>
-                <Typography variant="h6">$ {product.price}</Typography>
-              </CardContent>
-              <CardActions className={classes.cardActions}>
-                <Button size="small" color="primary">
-                  View
-                </Button>
-                <IconButton color="secondary" aria-label="add-to-cart">
-                  <AddShoppingCartIcon />
-                </IconButton>
-              </CardActions>
-            </Card>
+              ) : (
+                <Typography variant="h5" gutterBottom>
+                  <Box fontWeight={500} m={1} className={classes.boxMargin}>
+                    $ {product.price.toLocaleString()}
+                  </Box>
+                </Typography>
+              )}
+              <Divider />
+              <Button
+                style={{ marginTop: "50px" }}
+                variant="contained"
+                color="primary"
+                startIcon={<AddShoppingCartIcon />}
+                onClick={handleAddToCart}
+              >
+                Add to cart
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+
+          <div className={classes.tabRoot}>
+            <AppBar position="static" color="default">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                aria-label="full width tabs example"
+              >
+                <Tab label="Description" {...a11yProps(0)} />
+                <Tab label="Information" {...a11yProps(1)} />
+                <Tab label="Reviews" {...a11yProps(2)} />
+              </Tabs>
+            </AppBar>
+            <SwipeableViews
+              axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+              index={value}
+              onChangeIndex={handleChangeIndex}
+            >
+              <TabPanel value={value} index={0} dir={theme.direction}>
+                <Typography variant="body1" component="span">
+                  Description: {product.description}
+                </Typography>
+                <Typography variant="body1" component="span">
+                  There are many variations of passages of Lorem Ipsum
+                  available, but the majo Rity have be suffered alteration in
+                  some form, by injected humou or randomis Rity have be suffered
+                  alteration in some form, by injected humou or randomis words
+                  which donot look even slightly believable. If you are going to
+                  use a passage Lorem Ipsum. rerum blanditiis dolore dignissimos
+                  expedita consequatur deleniti consectetur non exercitationem.
+                  rerum blanditiis dolore dignissimos expedita consequatur
+                  deleniti consectetur non exercitationem.
+                </Typography>
+              </TabPanel>
+
+              {/* Information Panel */}
+              <TabPanel value={value} index={1} dir={theme.direction}>
+                <TableContainer component={Paper}>
+                  <Table className={classes.table} aria-label="simple table">
+                    {/* <TableHead>
+                    <TableRow>
+                      <TableCell>Information</TableCell>
+                      <TableCell align="right">Detail</TableCell>
+                    </TableRow>
+                  </TableHead> */}
+                    <TableBody>
+                      {rows.map((row, index) => (
+                        <TableRow key={index}>
+                          {row.detail ? (
+                            <React.Fragment>
+                              <TableCell component="th" scope="row">
+                                {row.name}
+                              </TableCell>
+                              <TableCell align="left">{row.detail}</TableCell>
+                            </React.Fragment>
+                          ) : (
+                            <TableCell
+                              className={classes.productInfoSection}
+                              colSpan={2}
+                              component="th"
+                              scope="row"
+                            >
+                              {row.name}
+                            </TableCell>
+                          )}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </TabPanel>
+              <TabPanel value={value} index={2} dir={theme.direction}>
+                Item Three
+              </TabPanel>
+            </SwipeableViews>
+          </div>
+
+          <Typography className={classes.sectionTitle} variant="h5">
+            Relate Products
+            <span className={classes.sectionTitleBar}></span>
+          </Typography>
+
+          <Grid container>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card className={classes.card}>
+                {product.images.length > 0 ? (
+                  <CardMedia
+                    className={classes.cardMedia}
+                    image={`${backendUrl}/uploads/` + product.images[0].path}
+                    title="Image title"
+                  />
+                ) : null}
+                <CardContent className={classes.cardContent}>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    {product.productName}
+                  </Typography>
+                  <Typography>{product.description}</Typography>
+                  <Typography variant="h6">$ {product.price}</Typography>
+                </CardContent>
+                <CardActions className={classes.cardActions}>
+                  <Button size="small" color="primary">
+                    View
+                  </Button>
+                  <IconButton color="secondary" aria-label="add-to-cart">
+                    <AddShoppingCartIcon />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
+      ) : null}
       {/* </Private> */}
     </React.Fragment>
   );
