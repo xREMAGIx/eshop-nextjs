@@ -38,7 +38,7 @@ const createSitemap = (products) => `<?xml version="1.0" encoding="UTF-8"?>
 
 const Sitemap = () => {};
 
-export const getServerSideProps = async ({ res }) => {
+Sitemap.getInitialProps = async ({ res }) => {
   var products;
   await axios
     .get(`${backendUrl}/api/products`)
