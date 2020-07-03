@@ -40,17 +40,12 @@ function MyApp(props) {
   };
 
   Router.onRouteChangeComplete = () => {
-    console.log(2);
     setLoading(false);
   };
 
   Router.onRouteChangeError = () => {
     setLoading(false);
   };
-
-  useEffect(() => {
-    console.log(changingLocation);
-  }, [changingLocation]);
 
   return (
     <React.Fragment>
@@ -99,19 +94,23 @@ function MyApp(props) {
                         <Skeleton
                           animation="wave"
                           variant="rect"
-                          height={500}
+                          height={"50vh"}
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <Skeleton
                           animation="wave"
                           variant="rect"
-                          height={500}
+                          height={"50vh"}
                         />
                       </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                      <Skeleton animation="wave" variant="rect" height={300} />
+                      <Skeleton
+                        animation="wave"
+                        variant="rect"
+                        height={"30vh"}
+                      />
                     </Grid>
                   </Grid>
                 </Container>
