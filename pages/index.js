@@ -198,7 +198,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     // padding: "20px",
     color: "white",
-    height: "100vh",
+    height: "70vh",
   },
   sectionTitle: {
     textAlign: "center",
@@ -256,9 +256,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home = (props) => {
+const Home = () => {
   const classes = useStyles();
-  const { result } = props;
 
   const autoPlay = false;
   const timer = 500;
@@ -329,172 +328,174 @@ const Home = (props) => {
       {/* <Private> */}
       <MainBar />
 
-      {/* Simple Carousel */}
-      {banners.items !== undefined && (
-        <Carousel
-          style={{ zIndex: -1 }}
-          autoPlay={autoPlay}
-          timer={timer}
-          animation={animation}
-          indicators={indicators}
-        >
-          {banners.items.map((item, index) => {
-            return <Project item={item} key={index} />;
-          })}
-        </Carousel>
-      )}
+      <Container maxWidth="lg">
+        {/* Simple Carousel */}
+        {banners.items !== undefined && (
+          <Carousel
+            style={{ zIndex: -1 }}
+            autoPlay={autoPlay}
+            timer={timer}
+            animation={animation}
+            indicators={indicators}
+          >
+            {banners.items.map((item, index) => {
+              return <Project item={item} key={index} />;
+            })}
+          </Carousel>
+        )}
 
-      {/* Arcticles */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Feature Arcticles
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.arcticlesContainer} maxWidth="lg">
-        <Grid
-          className={classes.arcticlesGrid}
-          container
-          direction="row"
-          spacing={4}
-        >
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
+        {/* Arcticles */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Feature Arcticles
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container className={classes.arcticlesContainer} maxWidth="lg">
+          <Grid
+            className={classes.arcticlesGrid}
+            container
+            direction="row"
+            spacing={4}
+          >
+            <Grid item xs={12} sm={6} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
 
-      {/* New products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        New Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.newProductsContainer} maxWidth="lg">
-        <ListItemHorizontal style={{ zIndex: -1 }}>
-          {arraySplitted.map((product, index) => {
-            return <GridList product={product} key={index} />;
-          })}
-        </ListItemHorizontal>
-      </Container>
+        {/* New products */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          New Products
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container className={classes.newProductsContainer} maxWidth="lg">
+          <ListItemHorizontal style={{ zIndex: -1 }}>
+            {arraySplitted.map((product, index) => {
+              return <GridList product={product} key={index} />;
+            })}
+          </ListItemHorizontal>
+        </Container>
 
-      {/* Feature Sale Products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Feature Sale Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container className={classes.arcticlesContainer} maxWidth="lg">
-        <Grid
-          className={classes.arcticlesGrid}
-          container
-          direction="row"
-          spacing={4}
-        >
-          <Grid item xs={12} md={8}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
+        {/* Feature Sale Products */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Feature Sale Products
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container className={classes.arcticlesContainer} maxWidth="lg">
+          <Grid
+            className={classes.arcticlesGrid}
+            container
+            direction="row"
+            spacing={4}
+          >
+            <Grid item xs={12} md={8}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card className={classes.arcticlesRoot}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.arcticlesMedia}
+                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <Card className={classes.arcticlesRoot}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.arcticlesMedia}
-                  image="https://source.unsplash.com/featured/?{laptop},{computer}"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
 
-      {/* Products */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Products
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container maxWidth="md">
-        <div className={classes.tabRoot}>
-          <AppBar position="static">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-              centered
-            >
-              <Tab label="New Products" {...a11yProps(0)} />
-              <Tab label="Best Seller" {...a11yProps(1)} />
-              <Tab label="Special Offer" {...a11yProps(2)} />
-            </Tabs>
-          </AppBar>
-          <TabPanel className={classes.tabPanel} value={value} index={0}>
-            <Grid container spacing={4}>
-              {products.items
-                ? products.items.map((product) => (
-                    <Grid
-                      item
-                      key={product.id}
-                      style={{ height: dimensions.height }}
-                      className={classes.productCardGrid}
-                      xs={12}
-                      sm={6}
-                      md={4}
-                      //innerRef={ref}
-                      //ref={ref}
-                    >
-                      <Card ref={targetRef} className={classes.card}>
-                        <CardActionArea
-                          component={Link}
-                          naked
-                          href={`/products/[slug]?id=${product.id}`}
-                          as={`/products/${slugtify(product.productName)}?sku=${
-                            product.sku
-                          }&&id=${product.id}`}
-                        >
-                          {product.images.length > 0 ? (
-                            <CardMedia
-                              className={classes.cardMedia}
-                              image={
-                                `${backendUrl}/uploads/` +
-                                product.images[0].path
-                              }
-                              title="Image title"
-                            />
-                          ) : null}
+        {/* Products */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Products
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container maxWidth="md">
+          <div className={classes.tabRoot}>
+            <AppBar position="static">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="simple tabs example"
+                centered
+              >
+                <Tab label="New Products" {...a11yProps(0)} />
+                <Tab label="Best Seller" {...a11yProps(1)} />
+                <Tab label="Special Offer" {...a11yProps(2)} />
+              </Tabs>
+            </AppBar>
+            <TabPanel className={classes.tabPanel} value={value} index={0}>
+              <Grid container spacing={4}>
+                {products.items
+                  ? products.items.map((product) => (
+                      <Grid
+                        item
+                        key={product.id}
+                        style={{ height: dimensions.height }}
+                        className={classes.productCardGrid}
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        //innerRef={ref}
+                        //ref={ref}
+                      >
+                        <Card ref={targetRef} className={classes.card}>
+                          <CardActionArea
+                            component={Link}
+                            naked
+                            href={`/products/[slug]?id=${product.id}`}
+                            as={`/products/${slugtify(
+                              product.productName
+                            )}?sku=${product.sku}&&id=${product.id}`}
+                          >
+                            {product.images.length > 0 ? (
+                              <CardMedia
+                                className={classes.cardMedia}
+                                image={
+                                  `${backendUrl}/uploads/` +
+                                  product.images[0].path
+                                }
+                                title="Image title"
+                              />
+                            ) : null}
+                          </CardActionArea>
                           <CardContent className={classes.cardContent}>
                             <Typography
                               gutterBottom
@@ -504,9 +505,44 @@ const Home = (props) => {
                               {product.productName}
                             </Typography>
                             <Typography>{product.description}</Typography>
-                            <Typography variant="h6">
-                              $ {product.price}
-                            </Typography>
+                            {product.discount > 0 ? (
+                              <React.Fragment>
+                                <Typography variant="h6" color="primary">
+                                  {(
+                                    (product.price * (100 - product.discount)) /
+                                    100
+                                  ).toLocaleString()}{" "}
+                                  <div
+                                    style={{
+                                      display: "inline",
+                                      textDecoration: "underline",
+                                    }}
+                                  >
+                                    đ
+                                  </div>
+                                </Typography>
+                                <Typography
+                                  style={{ textDecoration: "line-through" }}
+                                  display="inline"
+                                  variant="subtitle1"
+                                  color="textSecondary"
+                                >
+                                  {product.price.toLocaleString()} đ
+                                </Typography>
+                              </React.Fragment>
+                            ) : (
+                              <Typography variant="h6" color="primary">
+                                {product.price.toLocaleString()}{" "}
+                                <div
+                                  style={{
+                                    display: "inline",
+                                    textDecoration: "underline",
+                                  }}
+                                >
+                                  đ
+                                </div>
+                              </Typography>
+                            )}
                           </CardContent>
                           <CardActions className={classes.cardActions}>
                             <Button size="small" color="primary">
@@ -519,68 +555,67 @@ const Home = (props) => {
                               <AddShoppingCartIcon />
                             </IconButton>
                           </CardActions>
-                        </CardActionArea>
-                      </Card>
-                    </Grid>
-                  ))
-                : null}
-            </Grid>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            Item Two
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            Item Three
-          </TabPanel>
-        </div>
+                        </Card>
+                      </Grid>
+                    ))
+                  : null}
+              </Grid>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              Item Two
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              Item Three
+            </TabPanel>
+          </div>
+        </Container>
+
+        {/* Posts */}
+        <Typography className={classes.sectionTitle} variant="h4">
+          Posts
+          <span className={classes.sectionTitleBar}></span>
+        </Typography>
+        <Container maxWidth="md">
+          <Grid container spacing={4}>
+            {posts.items
+              ? posts.items.map((post) => (
+                  <Grid
+                    item
+                    key={post.id}
+                    className={classes.productCardGrid}
+                    xs={12}
+                    sm={6}
+                    //innerRef={ref}
+                    //ref={ref}
+                  >
+                    <Card className={classes.card}>
+                      <CardActionArea
+                        component={Link}
+                        href="/posts/[id]"
+                        as={`/posts/${post.id}`}
+                      >
+                        {post.images.length > 0 ? (
+                          <CardMedia
+                            className={classes.cardMedia}
+                            image={
+                              `${backendUrl}/uploads/` + product.images[0].path
+                            }
+                            title="Image title"
+                          />
+                        ) : null}
+                        <CardContent className={classes.cardContent}>
+                          <Typography variant="h5"> {post.title}</Typography>
+
+                          {/* <Typography>{post.content}</Typography> */}
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                ))
+              : null}
+          </Grid>
+        </Container>
       </Container>
-
-      {/* Posts */}
-      <Typography className={classes.sectionTitle} variant="h4">
-        Posts
-        <span className={classes.sectionTitleBar}></span>
-      </Typography>
-      <Container maxWidth="md">
-        <Grid container spacing={4}>
-          {posts.items
-            ? posts.items.map((post) => (
-                <Grid
-                  item
-                  key={post.id}
-                  className={classes.productCardGrid}
-                  xs={12}
-                  sm={6}
-                  //innerRef={ref}
-                  //ref={ref}
-                >
-                  <Card className={classes.card}>
-                    <CardActionArea
-                      component={Link}
-                      href="/posts/[id]"
-                      as={`/posts/${post.id}`}
-                    >
-                      {post.images.length > 0 ? (
-                        <CardMedia
-                          className={classes.cardMedia}
-                          image={
-                            `${backendUrl}/uploads/` + product.images[0].path
-                          }
-                          title="Image title"
-                        />
-                      ) : null}
-                      <CardContent className={classes.cardContent}>
-                        <Typography variant="h5"> {post.title}</Typography>
-
-                        {/* <Typography>{post.content}</Typography> */}
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </Grid>
-              ))
-            : null}
-        </Grid>
-      </Container>
-
       {/* </main> */}
 
       {/* Footer */}

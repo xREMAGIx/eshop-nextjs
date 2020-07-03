@@ -26,7 +26,6 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 import { checkServerSideCookie } from "../../actions/user.actions";
@@ -140,7 +139,7 @@ function a11yProps(index) {
   };
 }
 
-export default function Product() {
+const Product = () => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -226,6 +225,7 @@ export default function Product() {
     <React.Fragment>
       {/* <Private> */}
       <MainBar />
+
       {product ? (
         <Container style={{ marginTop: "100px" }} maxWidth="lg">
           <Grid container spacing={5}>
@@ -448,10 +448,11 @@ export default function Product() {
           </Grid>
         </Container>
       ) : null}
+
       {/* </Private> */}
     </React.Fragment>
   );
-}
+};
 
 Product.getInitialProps = async (ctx) => {
   let result;
@@ -459,11 +460,15 @@ Product.getInitialProps = async (ctx) => {
 
   const token = ctx.store.getState().users.token;
   if (token) await ctx.store.dispatch(userActions.getMe(token));
-  await ctx.store.dispatch(productActions.getById(ctx.query.id));
+  await ctx.store.dispatch(productActions.getById(ctx.query.id)).then();
 
   result = {
     ...ctx.store.getState(),
     title: ctx.store.getState().products.item.productName,
+    pageType: 2,
   };
+
   return { result };
 };
+
+export default Product;
