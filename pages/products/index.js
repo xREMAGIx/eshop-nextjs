@@ -9,15 +9,11 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import IconButton from "@material-ui/core/IconButton";
-import Box from "@material-ui/core/Box";
-import PropTypes from "prop-types";
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Collapse from "@material-ui/core/Collapse";
@@ -28,7 +24,6 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Divider from "@material-ui/core/Divider";
 import Pagination from "@material-ui/lab/Pagination";
-
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -39,13 +34,13 @@ import TwitterIcon from "@material-ui/icons/Twitter";
 import InstagramIcon from "@material-ui/icons/Instagram";
 
 import { useDispatch, useSelector } from "react-redux";
-
 import Link from "../../src/Link";
 import Footer from "../../components/Footer";
 import { productActions, bannerActions, cartActions } from "../../actions";
 import { checkServerSideCookie } from "../../actions/user.actions";
 import MainBar from "../../components/Appbar";
 import backendUrl from "../../src/backendUrl";
+import Head from "next/head";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -153,6 +148,14 @@ const Products = () => {
 
   return (
     <React.Fragment>
+      {/* Head meta tag */}
+      <Head>
+        <title>Products Index</title>
+        <meta
+          name="description"
+          content="Shop now at our store with 500+ unique products, just click buy then we will deliver it to you as fast as posible for free."
+        />
+      </Head>
       {/* AppBar */}
       <MainBar />
 

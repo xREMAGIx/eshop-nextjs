@@ -149,20 +149,26 @@ export default function StickyFooter() {
               </Typography>
               <TextField
                 fullWidth
+                id="name-contactfield"
+                aria-label="name-textfield"
                 className={classes.contactField}
                 label="Your name"
                 variant="outlined"
               />
               <TextField
                 fullWidth
+                id="email-contactfield"
+                aria-label="email-textfield"
                 className={classes.contactField}
                 label="Your email"
                 variant="outlined"
               />
               <TextField
                 fullWidth
+                id="message-contactfield"
+                aria-label="message-textfield"
                 className={classes.contactField}
-                label="Your messege"
+                label="Your message"
                 variant="outlined"
                 multiline
                 rows={4}

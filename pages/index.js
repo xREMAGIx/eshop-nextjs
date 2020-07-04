@@ -14,6 +14,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
+import Tooltip from "@material-ui/core/Tooltip";
+
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -26,11 +28,9 @@ import {
 } from "../actions";
 import MainBar from "../components/Appbar";
 import Carousel from "../components/Carousel";
-import ListItemHorizontal from "../src/ListItemHorizontal";
 import Link from "../src/Link";
 import { useDispatch, useSelector } from "react-redux";
 import { checkServerSideCookie, userActions } from "../actions/user.actions";
-import Private from "../components/PrivateRoute";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
 import backendUrl from "../src/backendUrl";
@@ -156,16 +156,23 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     //height: "100%",
-
     display: "flex",
     flexDirection: "column",
+
     "&:hover": {
+      boxShadow: "5px 10px 18px #888888",
       "& .MuiCardActions-root": {
         opacity: 1,
-        height: "50px",
-        // visibility: "visible",
-        // opacity: 1,
       },
+    },
+  },
+  cardActions: {
+    height: "50px",
+    opacity: 0,
+    overflow: "hidden",
+    transition: "opacity 0.5s, height 0.1s linear",
+    [theme.breakpoints.down("sm")]: {
+      opacity: 1,
     },
   },
   cardMedia: {
@@ -224,12 +231,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
     padding: "20px 0",
   },
-  cardActions: {
-    opacity: 0,
-    height: 0,
-    overflow: "hidden",
-    transition: "opacity 0.5s, height 0.1s linear",
-  },
+
   gridList: {
     flexWrap: "nowrap",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
@@ -248,13 +250,69 @@ const useStyles = makeStyles((theme) => ({
   },
   tabPanel: {
     backgroundColor: theme.palette.background.paper,
-
-    // backgroundColor: theme.palette.secondary.light,
   },
   newProductList: {
     height: "320px",
   },
+  productname: {
+    maxWidth: "20rem",
+    overflow: "hidden",
+    position: "relative",
+    lineHeight: "1.2em",
+    maxHeight: "2.4em",
+    marginRight: "-1em",
+    paddingRight: "2em",
+    marginBottom: "1em",
+    "&&:before": {
+      paddingRight: theme.spacing(2),
+      content: '"....."',
+      position: "absolute",
+      right: 0,
+      bottom: 0,
+    },
+    "&&:after": {
+      content: '""',
+      position: "absolute",
+      right: 0,
+      width: "1em",
+      height: "1em",
+      marginTop: "0.2em",
+      background: "white",
+    },
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: "none",
+      maxHeight: "none",
+      "&&:before": { content: '""' },
+    },
+  },
 }));
+
+const TooltipDiv = (props) => {
+  const divRef = React.useRef(null);
+  const [allowTooltip, setAllowTooltip] = React.useState(false);
+  React.useEffect(() => {
+    if (
+      !allowTooltip &&
+      divRef.current.scrollHeight > divRef.current.offsetHeight
+    ) {
+      setAllowTooltip(true);
+    }
+  }, []);
+  if (allowTooltip) {
+    return (
+      <Tooltip title={<Typography>{props.text}</Typography>}>
+        <div ref={divRef} className={props.className}>
+          {props.text}
+        </div>
+      </Tooltip>
+    );
+  }
+  return (
+    <div ref={divRef} className={props.className}>
+      {props.text}
+    </div>
+  );
+};
 
 const Home = () => {
   const classes = useStyles();
@@ -278,50 +336,50 @@ const Home = () => {
 
   const [value, setValue] = React.useState(0);
 
-  //const dispatch = useDispatch();
-
-  const targetRef = React.useRef();
-  const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
-
-  // holds the timer for setTimeout and clearInterval
-  let movement_timer = null;
-
-  // the number of ms the window size must stay the same size before the
-  // dimension state variable is reset
-  const RESET_TIMEOUT = 100;
-
-  const changeDimension = () => {
-    // For some reason targetRef.current.getBoundingClientRect was not available
-    // I found this worked for me, but unfortunately I can't find the
-    // documentation to explain this experience
-
-    if (targetRef.current) {
-      setDimensions({
-        width: targetRef.current.offsetWidth,
-        height: targetRef.current.offsetHeight + 50,
-      });
-    }
-  };
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  React.useEffect(() => {
-    changeDimension();
-  }, []);
+  // //const dispatch = useDispatch();
 
-  // every time the window is resized, the timer is cleared and set again
-  // the net effect is the component will only reset after the window size
-  // is at rest for the duration set in RESET_TIMEOUT.  This prevents rapid
-  // redrawing of the component for more complex components such as charts
-  if (typeof window !== "undefined") {
-    // it's safe to use window now
-    window.addEventListener("resize", () => {
-      clearInterval(movement_timer);
-      movement_timer = setTimeout(changeDimension, RESET_TIMEOUT);
-    });
-  }
+  // const targetRef = React.useRef();
+  // const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
+
+  // // holds the timer for setTimeout and clearInterval
+  // let movement_timer = null;
+
+  // // the number of ms the window size must stay the same size before the
+  // // dimension state variable is reset
+  // const RESET_TIMEOUT = 100;
+
+  // const changeDimension = () => {
+  //   // For some reason targetRef.current.getBoundingClientRect was not available
+  //   // I found this worked for me, but unfortunately I can't find the
+  //   // documentation to explain this experience
+
+  //   if (targetRef.current) {
+  //     setDimensions({
+  //       width: targetRef.current.offsetWidth,
+  //       height: targetRef.current.offsetHeight + 50,
+  //     });
+  //   }
+  // };
+
+  // React.useEffect(() => {
+  //   changeDimension();
+  // }, []);
+
+  // // every time the window is resized, the timer is cleared and set again
+  // // the net effect is the component will only reset after the window size
+  // // is at rest for the duration set in RESET_TIMEOUT.  This prevents rapid
+  // // redrawing of the component for more complex components such as charts
+  // if (typeof window !== "undefined") {
+  //   // it's safe to use window now
+  //   window.addEventListener("resize", () => {
+  //     clearInterval(movement_timer);
+  //     movement_timer = setTimeout(changeDimension, RESET_TIMEOUT);
+  //   });
+  // }
 
   return (
     <React.Fragment>
@@ -392,7 +450,7 @@ const Home = () => {
           </Grid>
         </Container>
 
-        {/* New products */}
+        {/* New products
         <Typography className={classes.sectionTitle} variant="h4">
           New Products
           <span className={classes.sectionTitleBar}></span>
@@ -403,7 +461,7 @@ const Home = () => {
               return <GridList product={product} key={index} />;
             })}
           </ListItemHorizontal>
-        </Container>
+        </Container> */}
 
         {/* Feature Sale Products */}
         <Typography className={classes.sectionTitle} variant="h4">
@@ -468,7 +526,6 @@ const Home = () => {
                       <Grid
                         item
                         key={product.id}
-                        style={{ height: dimensions.height }}
                         className={classes.productCardGrid}
                         xs={12}
                         sm={6}
@@ -476,7 +533,7 @@ const Home = () => {
                         //innerRef={ref}
                         //ref={ref}
                       >
-                        <Card ref={targetRef} className={classes.card}>
+                        <Card className={classes.card}>
                           <CardActionArea
                             component={Link}
                             naked
@@ -502,7 +559,10 @@ const Home = () => {
                               variant="h5"
                               component="h2"
                             >
-                              {product.productName}
+                              <TooltipDiv
+                                text={product.productName}
+                                className={classes.productname}
+                              />
                             </Typography>
                             <Typography>{product.description}</Typography>
                             {product.discount > 0 ? (

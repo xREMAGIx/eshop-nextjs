@@ -2633,6 +2633,11 @@ follow-redirects@1.5.10:
   dependencies:
     debug "=3.1.0"
 
+fontsource-lato@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/fontsource-lato/-/fontsource-lato-2.1.4.tgz#7eb84399bd59bf84193f7ee3f2a6c7e4531a4316"
+  integrity sha512-SoJL4YDC/8RHQrLAM93jMM2wxbRhZSmDSIqxbOBC+0avgn0aQbyYjhOGDkUUGTOTM0/rsGW27SE0X8TfhuJl4w==
+
 for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"

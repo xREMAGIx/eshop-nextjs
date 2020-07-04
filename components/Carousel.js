@@ -166,6 +166,7 @@ export default function Carousel(props) {
 
       <div className={`${classes.buttonWrapper} ${classes.next}`}>
         <IconButton
+          aria-label="next-button"
           className={`${classes.button} ${classes.next}`}
           onClick={() => next()}
         >
@@ -175,6 +176,7 @@ export default function Carousel(props) {
 
       <div className={`${classes.buttonWrapper} ${classes.prev}`}>
         <IconButton
+          aria-label="previous-button"
           className={`${classes.button} ${classes.prev}`}
           onClick={() => prev()}
         >

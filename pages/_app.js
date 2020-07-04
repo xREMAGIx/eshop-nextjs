@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
 import { Provider } from "react-redux";
@@ -11,6 +11,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
+import "fontsource-lato/latin-400-italic.css"; // Select either normal or italic.
 
 function MyApp(props) {
   const { Component, pageProps, store } = props;
@@ -54,6 +55,10 @@ function MyApp(props) {
           {(pageProps && pageProps.result && pageProps.result.title) ||
             "NextJS Page"}
         </title>
+        <meta
+          name="description"
+          content="Eshop-NextJS is an eshop page using NextJS, we will bring you best experience on our site. Fast, convient, reliable are our top priority"
+        />
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

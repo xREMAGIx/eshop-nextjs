@@ -169,6 +169,9 @@ const Product = () => {
       : null
   );
 
+  console.log(brand);
+  console.log(category);
+
   var rows;
   product && brand && category
     ? (rows = [
@@ -235,7 +238,7 @@ const Product = () => {
                   <CardMedia
                     className={classes.cardMedia}
                     image={imageMain.path}
-                    title="Image title"
+                    title={product.productName}
                   />
                   <div className={classes.gridRoot}>
                     <GridList
@@ -252,7 +255,7 @@ const Product = () => {
                         >
                           <img
                             src={`${backendUrl}/uploads/` + tile.path}
-                            alt={tile.title}
+                            alt={tile.path}
                             onClick={() => handleImageChange(index)}
                           />
                         </GridListTile>
@@ -375,12 +378,6 @@ const Product = () => {
               <TabPanel value={value} index={1} dir={theme.direction}>
                 <TableContainer component={Paper}>
                   <Table className={classes.table} aria-label="simple table">
-                    {/* <TableHead>
-                    <TableRow>
-                      <TableCell>Information</TableCell>
-                      <TableCell align="right">Detail</TableCell>
-                    </TableRow>
-                  </TableHead> */}
                     <TableBody>
                       {rows.map((row, index) => (
                         <TableRow key={index}>
