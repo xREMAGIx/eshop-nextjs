@@ -1,0 +1,14 @@
+{
+  "name": "eshop-nextjs",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "x-robots-tag",
+          "value": "index"
+        }
+      ]
+    }
+  ]
+}

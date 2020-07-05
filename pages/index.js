@@ -34,6 +34,7 @@ import { checkServerSideCookie, userActions } from "../actions/user.actions";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
 import backendUrl from "../src/backendUrl";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 function Project(props) {
   const classes = useStyles();
@@ -171,7 +172,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0,
     overflow: "hidden",
     transition: "opacity 0.5s, height 0.1s linear",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       opacity: 1,
     },
   },
@@ -219,7 +220,9 @@ const useStyles = makeStyles((theme) => ({
     display: "block",
     backgroundColor: theme.palette.secondary.dark,
   },
-  arcticlesRoot: {},
+  arcticlesRoot: {
+    margin: theme.spacing(1),
+  },
   arcticlesMedia: {
     height: 300,
   },
@@ -279,7 +282,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: "0.2em",
       background: "white",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       maxWidth: "none",
       maxHeight: "none",
       "&&:before": { content: '""' },
@@ -408,12 +411,7 @@ const Home = () => {
           <span className={classes.sectionTitleBar}></span>
         </Typography>
         <Container className={classes.arcticlesContainer} maxWidth="lg">
-          <Grid
-            className={classes.arcticlesGrid}
-            container
-            direction="row"
-            spacing={4}
-          >
+          <Grid className={classes.arcticlesGrid} container direction="row">
             <Grid item xs={12} sm={6} md={4}>
               <Card className={classes.arcticlesRoot}>
                 <CardActionArea>
@@ -469,12 +467,7 @@ const Home = () => {
           <span className={classes.sectionTitleBar}></span>
         </Typography>
         <Container className={classes.arcticlesContainer} maxWidth="lg">
-          <Grid
-            className={classes.arcticlesGrid}
-            container
-            direction="row"
-            spacing={4}
-          >
+          <Grid className={classes.arcticlesGrid} container direction="row">
             <Grid item xs={12} md={8}>
               <Card className={classes.arcticlesRoot}>
                 <CardActionArea>
@@ -544,13 +537,20 @@ const Home = () => {
                           >
                             {product.images.length > 0 ? (
                               <CardMedia
-                                className={classes.cardMedia}
-                                image={
-                                  `${backendUrl}/uploads/` +
-                                  product.images[0].path
-                                }
-                                title="Image title"
-                              />
+                                style={{ display: "flex", width: "100%" }}
+                              >
+                                <img
+                                  style={{ margin: "0 auto" }}
+                                  loading="lazy"
+                                  src={
+                                    `${backendUrl}/uploads/` +
+                                    product.images[0].path
+                                  }
+                                  alt={product.productName}
+                                  height={150}
+                                  //width={"100%"}
+                                ></img>
+                              </CardMedia>
                             ) : null}
                           </CardActionArea>
                           <CardContent className={classes.cardContent}>
