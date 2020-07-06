@@ -8,9 +8,25 @@ export default function Post(props) {
   // console.log(id);
   //const classes = useStyles();
   const { result } = props;
-  console.log(result);
   return (
     <React.Fragment>
+      <Head>
+        {/* Global site tag (gtag.js) - Google Analytics */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=UA-171517078-1"
+        ></script>
+        <script>
+          {
+            ((window.dataLayer = window.dataLayer || []),
+            function gtag() {
+              dataLayer.push(arguments);
+            },
+            gtag("js", new Date()),
+            gtag("config", "UA-171517078-1"))
+          }
+        </script>
+      </Head>
       <Typography variant="h1">{result.posts.items.title}</Typography>
       <Typography variant="subtitle1">{result.posts.items.content}</Typography>
     </React.Fragment>

@@ -169,9 +169,6 @@ const Product = () => {
       : null
   );
 
-  console.log(brand);
-  console.log(category);
-
   var rows;
   product && brand && category
     ? (rows = [
@@ -226,6 +223,24 @@ const Product = () => {
 
   return (
     <React.Fragment>
+      <Head>
+        {/* Global site tag (gtag.js) - Google Analytics */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=UA-171517078-1"
+        ></script>
+        <script>
+          {
+            ((window.dataLayer = window.dataLayer || []),
+            function gtag() {
+              dataLayer.push(arguments);
+            },
+            gtag("js", new Date()),
+            gtag("config", "UA-171517078-1"))
+          }
+        </script>
+      </Head>
+
       {/* <Private> */}
       <MainBar />
 

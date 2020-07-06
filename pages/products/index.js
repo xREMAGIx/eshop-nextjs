@@ -155,6 +155,22 @@ const Products = () => {
           name="description"
           content="Shop now at our store with 500+ unique products, just click buy then we will deliver it to you as fast as posible for free."
         />
+
+        {/* Global site tag (gtag.js) - Google Analytics */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=UA-171517078-1"
+        ></script>
+        <script>
+          {
+            ((window.dataLayer = window.dataLayer || []),
+            function gtag() {
+              dataLayer.push(arguments);
+            },
+            gtag("js", new Date()),
+            gtag("config", "UA-171517078-1"))
+          }
+        </script>
       </Head>
       {/* AppBar */}
       <MainBar />
