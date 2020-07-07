@@ -160,6 +160,14 @@ Brands.getInitialProps = async (ctx) => {
 
   await ctx.store.dispatch(cartActions.getAll(token));
   await ctx.store.dispatch(brandActions.getAll());
+
+  var result = {
+    title: "Categories Catalog",
+    description:
+      "In our shop, we offer you with 10+ brands products from around the world",
+    canonical: "brands",
+  };
+  return { result };
 };
 
 export default Brands;

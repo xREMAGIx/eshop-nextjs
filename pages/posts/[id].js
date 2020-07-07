@@ -24,8 +24,10 @@ Post.getInitialProps = async (ctx) => {
   const token = ctx.store.getState().users.token;
   await ctx.store.dispatch(postActions.getById(ctx.query.id));
   // .then(() => (result = store.getState()));
-
-  result = store.getState();
+  result = {
+    ...ctx.store.getState(),
+    title: ctx.store.getState().posts.items.title,
+  };
 
   return { result };
 };

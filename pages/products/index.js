@@ -148,38 +148,21 @@ const Products = () => {
 
   return (
     <React.Fragment>
-      {/* Head meta tag */}
-      <Head>
-        <title>Products Index</title>
-        <meta
-          name="description"
-          content="Shop now at our store with 500+ unique products, just click buy then we will deliver it to you as fast as posible for free."
-        />
-
-        {/* Global site tag (gtag.js) - Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=UA-171517078-1"
-        ></script>
-        <script>
-          {
-            ((window.dataLayer = window.dataLayer || []),
-            function gtag() {
-              dataLayer.push(arguments);
-            },
-            gtag("js", new Date()),
-            gtag("config", "UA-171517078-1"))
-          }
-        </script>
-      </Head>
       {/* AppBar */}
       <MainBar />
 
       {/* Main */}
       <Container style={{ marginTop: "64px" }} maxWidth="lg">
-        <Typography variant="h3">Products</Typography>
+        <Typography variant="h3" component="h1" gutterBottom>
+          Products Catalog
+        </Typography>
         {/* Search, sort bar */}
-        <Grid container alignItems="center" spacing={2}>
+        <Grid
+          style={{ marginTop: 10 }}
+          container
+          alignItems="center"
+          spacing={2}
+        >
           <Grid item xs={12} sm={12} md={3}>
             <Paper>
               <div className={classes.margin}>
@@ -577,6 +560,13 @@ Products.getInitialProps = async (ctx) => {
   await ctx.store.dispatch(bannerActions.getAll());
   await ctx.store.dispatch(cartActions.getAll(token));
   await ctx.store.dispatch(productActions.getAll());
+  var result = {
+    title: "Product Catalog",
+    description:
+      "Shop now at our store with 500+ unique products, just click buy then we will deliver it to you as fast as posible for free.",
+    canonical: "products",
+  };
+  return { result };
 };
 
 export default Products;

@@ -34,7 +34,6 @@ import { checkServerSideCookie, userActions } from "../actions/user.actions";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
 import backendUrl from "../src/backendUrl";
-import Head from "next/head";
 
 function Project(props) {
   const classes = useStyles();
@@ -140,21 +139,6 @@ var splitArray = function (arr, size) {
 };
 
 const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(9, 0, 6),
-  },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
-  newProductsContainer: {
-    paddingTop: theme.spacing(8),
-    height: "400px",
-    paddingBottom: theme.spacing(8),
-  },
   card: {
     //height: "100%",
     display: "flex",
@@ -182,11 +166,6 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
   },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
-  },
-  container: { width: "500px" },
   media: {
     backgroundColor: "white",
     height: "100%",
@@ -234,7 +213,6 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
     padding: "20px 0",
   },
-
   gridList: {
     flexWrap: "nowrap",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
@@ -335,7 +313,7 @@ const Home = () => {
         .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
     : [];
 
-  const arraySplitted = splitArray(sortedNewProduct, 4);
+  // const arraySplitted = splitArray(sortedNewProduct, 4);
 
   const [value, setValue] = React.useState(0);
 
@@ -686,7 +664,7 @@ const Home = () => {
 };
 
 Home.getInitialProps = async (ctx) => {
-  let result;
+  var result;
 
   checkServerSideCookie(ctx);
 

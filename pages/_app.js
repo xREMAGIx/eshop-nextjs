@@ -68,7 +68,10 @@ function MyApp(props) {
         </title>
         <meta
           name="description"
-          content="Eshop-NextJS is an eshop page using NextJS, we will bring you best experience on our site. Fast, convient, reliable are our top priority"
+          content={
+            (pageProps && pageProps.result && pageProps.result.description) ||
+            "Eshop-NextJS is an eshop page using NextJS, we will bring you best experience on our site. Fast, convient, reliable are our top priority"
+          }
         />
         <meta
           name="viewport"
@@ -77,6 +80,14 @@ function MyApp(props) {
         <meta
           name="google-site-verification"
           content="WDzAzOfBEaHVAoZbgV2VjuCC7Qx9QmPlcqBHjHPpPZo"
+        />
+        <link
+          rel="canonical"
+          href={
+            pageProps && pageProps.result && pageProps.result.canonical
+              ? `https://eshop-nextjs.xremagix.vercel.app/${pageProps.result.canonical}`
+              : "https://eshop-nextjs.xremagix.vercel.app/"
+          }
         />
       </Head>
       <ThemeProvider theme={theme}>
@@ -166,7 +177,7 @@ function MyApp(props) {
                       <Skeleton animation="wave" variant="rect" height={100} />
                     </Grid>
                     <Grid item container spacing={3}>
-                      {[...Array(10)].map((x, i) => (
+                      {[...Array(6)].map((x, i) => (
                         <Grid item key={i} xs={12} sm={6}>
                           <Skeleton
                             animation="wave"

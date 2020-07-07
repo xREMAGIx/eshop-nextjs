@@ -232,16 +232,20 @@ const Cart = (props) => {
 };
 
 Cart.getInitialProps = async (ctx) => {
-  let result;
+  var result;
 
   checkServerSideCookie(ctx);
 
   const token = ctx.store.getState().users.token;
 
   await ctx.store.dispatch(cartActions.getAll(token));
-  await ctx.store
-    .dispatch(productActions.getAll())
-    .then(() => (result = { ...ctx.store.getState(), title: "Cart" }));
+  await ctx.store.dispatch(productActions.getAll()).then(
+    () =>
+      (result = {
+        title: "Your Cart",
+        description: "Check your current cart.",
+      })
+  );
 
   return { result };
 };

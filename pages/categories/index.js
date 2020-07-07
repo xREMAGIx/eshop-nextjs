@@ -77,12 +77,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Categories = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
 
   const categories = useSelector((state) => state.categories);
-  const brands = useSelector((state) => state.brands);
-  const products = useSelector((state) => state.products);
-  const users = useSelector((state) => state.users);
 
   return (
     <React.Fragment>
@@ -91,7 +87,9 @@ const Categories = () => {
 
       {/* Main */}
       <Container style={{ marginTop: "64px" }} maxWidth="lg">
-        <Typography variant="h3">Categories</Typography>
+        <Typography variant="h3" component="h1" gutterBottom>
+          Categories Catalog
+        </Typography>
         {/* Search */}
         <Grid container alignItems="center" spacing={2}>
           <Grid item xs={12}>
@@ -162,6 +160,14 @@ Categories.getInitialProps = async (ctx) => {
   }
   await ctx.store.dispatch(cartActions.getAll(token));
   await ctx.store.dispatch(categoryActions.getAll());
+
+  var result = {
+    title: "Categories Catalog",
+    description:
+      "In our shop, we offer you with 30+ types of product from around the world",
+    canonical: "categories",
+  };
+  return { result };
 };
 
 export default Categories;

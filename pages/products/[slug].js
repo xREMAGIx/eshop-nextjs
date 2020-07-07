@@ -35,6 +35,7 @@ import { useDispatch, useSelector } from "react-redux";
 import backendUrl from "../../src/backendUrl";
 import Router from "next/router";
 import Head from "next/head";
+import slugify from "../../src/slugtify";
 
 const useStyles = makeStyles((theme) => ({
   cardMedia: {
@@ -260,10 +261,12 @@ const Product = () => {
                     </GridList>
                   </div>
                 </React.Fragment>
-              ) : null}
+              ) : (
+                <Typography>No data</Typography>
+              )}
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="h3" gutterBottom>
+              <Typography component="h1" variant="h3" gutterBottom>
                 {product.productName}
               </Typography>
 
@@ -441,7 +444,9 @@ const Product = () => {
             </Grid>
           </Grid>
         </Container>
-      ) : null}
+      ) : (
+        <Typography>Something is not right!!</Typography>
+      )}
 
       {/* </Private> */}
     </React.Fragment>
@@ -449,17 +454,16 @@ const Product = () => {
 };
 
 Product.getInitialProps = async (ctx) => {
-  let result;
   checkServerSideCookie(ctx);
 
   const token = ctx.store.getState().users.token;
   if (token) await ctx.store.dispatch(userActions.getMe(token));
-  await ctx.store.dispatch(productActions.getById(ctx.query.id)).then();
+  await ctx.store.dispatch(productActions.getById(ctx.query.id));
 
-  result = {
-    ...ctx.store.getState(),
+  var result = {
     title: ctx.store.getState().products.item.productName,
-    pageType: 2,
+    description: ctx.store.getState().products.item.description,
+    canonical: slugify(ctx.store.getState().products.item.productName),
   };
 
   return { result };
