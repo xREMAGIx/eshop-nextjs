@@ -103,10 +103,15 @@ const Cart = (props) => {
           <img
             style={{ width: "20%" }}
             src="/images/animation-vector-shopping-6.png"
-            alt="Cart"
+            alt="Image Cart"
           ></img>
-          <Typography className={classes.typography} variant="h3" gutterBottom>
-            Cart
+          <Typography
+            className={classes.typography}
+            variant="h3"
+            component="h1"
+            gutterBottom
+          >
+            Your Cart
           </Typography>
         </div>
         <TableContainer component={Paper}>
@@ -242,7 +247,7 @@ Cart.getInitialProps = async (ctx) => {
   await ctx.store.dispatch(productActions.getAll()).then(
     () =>
       (result = {
-        title: "Your Cart",
+        title: "Your Eshop Cart",
         description: "Check your current cart.",
       })
   );

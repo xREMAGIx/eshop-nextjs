@@ -13,6 +13,8 @@ export default class MyDocument extends Document {
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           {/* Global Site Tag (gtag.js) - Google Analytics */}
+          <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
           <script
             async
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}

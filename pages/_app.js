@@ -59,6 +59,8 @@ function MyApp(props) {
     setLoading(false);
   };
 
+  console.log(asPath);
+
   return (
     <React.Fragment>
       <Head>
@@ -83,11 +85,7 @@ function MyApp(props) {
         />
         <link
           rel="canonical"
-          href={
-            pageProps && pageProps.result && pageProps.result.canonical
-              ? `https://eshop-nextjs.xremagix.vercel.app/${pageProps.result.canonical}`
-              : "https://eshop-nextjs.xremagix.vercel.app/"
-          }
+          href={`https://eshop-nextjs.xremagix.vercel.app${asPath}`}
         />
       </Head>
       <ThemeProvider theme={theme}>

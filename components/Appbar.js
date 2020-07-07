@@ -219,7 +219,7 @@ export default function Mainbar(props) {
                 variant="h6"
                 noWrap
               >
-                Material-UI
+                Eshop-NextJS
               </Typography>
             </Box>
 

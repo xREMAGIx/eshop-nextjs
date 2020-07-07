@@ -40,7 +40,6 @@ import { productActions, bannerActions, cartActions } from "../../actions";
 import { checkServerSideCookie } from "../../actions/user.actions";
 import MainBar from "../../components/Appbar";
 import backendUrl from "../../src/backendUrl";
-import Head from "next/head";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -310,6 +309,7 @@ const Products = () => {
                             image={
                               `${backendUrl}/uploads/` + product.images[0].path
                             }
+                            alt="No data"
                             title={product.productName}
                           />
                         </CardActionArea>

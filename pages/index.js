@@ -15,6 +15,11 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import Tooltip from "@material-ui/core/Tooltip";
+import RestoreIcon from "@material-ui/icons/Restore";
+import Divider from "@material-ui/core/Divider";
+import LocalShippingIcon from "@material-ui/icons/LocalShipping";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import RedeemIcon from "@material-ui/icons/Redeem";
 
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
@@ -266,6 +271,9 @@ const useStyles = makeStyles((theme) => ({
       "&&:before": { content: '""' },
     },
   },
+  services: {
+    padding: theme.spacing(1),
+  },
 }));
 
 const TooltipDiv = (props) => {
@@ -307,11 +315,11 @@ const Home = () => {
   const banners = useSelector((state) => state.banners);
   const posts = useSelector((state) => state.posts);
 
-  const sortedNewProduct = products.items
-    ? products.items
-        .slice()
-        .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
-    : [];
+  // const sortedNewProduct = products.items
+  //   ? products.items
+  //       .slice()
+  //       .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
+  //   : [];
 
   // const arraySplitted = splitArray(sortedNewProduct, 4);
 
@@ -382,6 +390,96 @@ const Home = () => {
             })}
           </Carousel>
         )}
+
+        {/* About Company */}
+        <Typography variant="h3" component="h1" align="center" color="primary">
+          Eshop-NextJS
+        </Typography>
+        <Typography align="center" variant="h6" gutterBottom>
+          We will bring you best experience when shopping in our Eshop.
+        </Typography>
+        <Grid style={{ marginTop: 20 }} container>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            className={classes.services}
+            container
+          >
+            <Grid item xs={3} alignItems="center" justify="center" container>
+              <RestoreIcon fontSize="large" color="primary" />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="h6" color="primary">
+                FREE return
+              </Typography>
+              <Typography variant="subtitle1">
+                We accept return within 7 days.
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            className={classes.services}
+            container
+          >
+            <Grid item xs={3} alignItems="center" justify="center" container>
+              <LocalShippingIcon fontSize="large" color="primary" />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="h6" color="primary">
+                FREE shipping
+              </Typography>
+              <Typography variant="subtitle1">
+                Products will be delivered to you within 2-3 days.
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            className={classes.services}
+            container
+          >
+            <Grid item xs={3} alignItems="center" justify="center" container>
+              <ContactSupportIcon fontSize="large" color="primary" />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="h6" color="primary">
+                24/7 support
+              </Typography>
+              <Typography variant="subtitle1">
+                Contact us immediately via Facebook or telephone.
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            className={classes.services}
+            container
+          >
+            <Grid item xs={3} alignItems="center" justify="center" container>
+              <RedeemIcon fontSize="large" color="primary" />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="h6" color="primary">
+                Lots of prizes every month
+              </Typography>
+              <Typography variant="subtitle1">
+                We give you multiple coupon codes and prizes.
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
 
         {/* Arcticles */}
         <Typography className={classes.sectionTitle} variant="h4">

@@ -88,7 +88,9 @@ const Brands = () => {
 
       {/* Main */}
       <Container style={{ marginTop: "64px" }} maxWidth="lg">
-        <Typography variant="h3">Brands</Typography>
+        <Typography variant="h3" component="h1">
+          Brands Catalog
+        </Typography>
         {/* Search */}
         <Grid container alignItems="center" spacing={2}>
           <Grid item xs={12}>
@@ -162,7 +164,7 @@ Brands.getInitialProps = async (ctx) => {
   await ctx.store.dispatch(brandActions.getAll());
 
   var result = {
-    title: "Categories Catalog",
+    title: "Brands Catalog",
     description:
       "In our shop, we offer you with 10+ brands products from around the world",
     canonical: "brands",
