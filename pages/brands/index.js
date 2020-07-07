@@ -17,6 +17,7 @@ import Footer from "../../components/Footer";
 import { cartActions, brandActions } from "../../actions";
 import { checkServerSideCookie } from "../../actions/user.actions";
 import MainBar from "../../components/Appbar";
+import Head from "next/head";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -82,24 +83,6 @@ const Brands = () => {
 
   return (
     <React.Fragment>
-      <Head>
-        {/* Global site tag (gtag.js) - Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=UA-171517078-1"
-        ></script>
-        <script>
-          {
-            ((window.dataLayer = window.dataLayer || []),
-            function gtag() {
-              dataLayer.push(arguments);
-            },
-            gtag("js", new Date()),
-            gtag("config", "UA-171517078-1"))
-          }
-        </script>
-      </Head>
-
       {/* AppBar */}
       <MainBar />
 

@@ -12,6 +12,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import "fontsource-lato/latin-400-italic.css"; // Select either normal or italic.
+import * as gtag from "../lib/gtag";
 
 function MyApp(props) {
   const { Component, pageProps, store } = props;
@@ -27,6 +28,16 @@ function MyApp(props) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+  }, []);
+
+  React.useEffect(() => {
+    const handleRouteChange = (url) => {
+      gtag.pageview(url);
+    };
+    Router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      Router.events.off("routeChangeComplete", handleRouteChange);
+    };
   }, []);
 
   React.useEffect(() => {

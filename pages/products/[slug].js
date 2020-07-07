@@ -29,12 +29,12 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 
 import { checkServerSideCookie } from "../../actions/user.actions";
-import Private from "../../components/PrivateRoute";
 import MainBar from "../../components/Appbar";
 import { cartActions, userActions } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import backendUrl from "../../src/backendUrl";
 import Router from "next/router";
+import Head from "next/head";
 
 const useStyles = makeStyles((theme) => ({
   cardMedia: {
@@ -223,24 +223,6 @@ const Product = () => {
 
   return (
     <React.Fragment>
-      <Head>
-        {/* Global site tag (gtag.js) - Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=UA-171517078-1"
-        ></script>
-        <script>
-          {
-            ((window.dataLayer = window.dataLayer || []),
-            function gtag() {
-              dataLayer.push(arguments);
-            },
-            gtag("js", new Date()),
-            gtag("config", "UA-171517078-1"))
-          }
-        </script>
-      </Head>
-
       {/* <Private> */}
       <MainBar />
 

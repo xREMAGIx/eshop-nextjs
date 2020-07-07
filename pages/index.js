@@ -34,7 +34,7 @@ import { checkServerSideCookie, userActions } from "../actions/user.actions";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
 import backendUrl from "../src/backendUrl";
-import Skeleton from "@material-ui/lab/Skeleton";
+import Head from "next/head";
 
 function Project(props) {
   const classes = useStyles();
@@ -386,24 +386,6 @@ const Home = () => {
 
   return (
     <React.Fragment>
-      <Head>
-        {/* Global site tag (gtag.js) - Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=UA-171517078-1"
-        ></script>
-        <script>
-          {
-            ((window.dataLayer = window.dataLayer || []),
-            function gtag() {
-              dataLayer.push(arguments);
-            },
-            gtag("js", new Date()),
-            gtag("config", "UA-171517078-1"))
-          }
-        </script>
-      </Head>
-
       {/* <Private> */}
       <MainBar />
 
