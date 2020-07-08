@@ -237,38 +237,37 @@ const Product = () => {
           {
             "@context": "https://schema.org/",
             "@type": "Product",
-            name: "${product.productName}",
+            "name": "${product.productName}",
             "image": ${JSON.stringify(images)},
-            description:
+            "description":
               "${product.description}",
-            sku: "${product.sku}",
-            brand: {
+            "sku": "${product.sku}",
+            "brand": {
               "@type": "Brand",
-              name: "${brand.name}",
+              "name": "${brand.name}",
             },
-            review: {
+            "review": {
               "@type": "Review",
-              reviewRating: {
+              "reviewRating": {
                 "@type": "Rating",
-                ratingValue: "4",
-                bestRating: "5",
+                "ratingValue": "4",
+                "bestRating": "5",
               },
             },
-            aggregateRating: {
+            "aggregateRating": {
               "@type": "AggregateRating",
-              ratingValue: "0",
-              reviewCount: "0",
+              "ratingValue": "0",
+              "reviewCount": "0",
             },
-
             "offers": {
               "@type": "AggregateOffer",
               "offerCount": "5",
               "lowPrice": "${(product.price * (100 - product.discount)) / 100}",
               "highPrice": "${product.price}",
               "priceCurrency": "VND"
-            
             }
-          }`}
+          }
+          `}
         </script>
       </Head>
 
