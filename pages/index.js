@@ -381,6 +381,7 @@ const Home = () => {
         "@type": "Store",
         "image": [
           "https://lh5.googleusercontent.com/p/AF1QipOyZ-7bJLhzviudOvLYPWErA9gYZZPgW7iOzIK2=w408-h272-k-no",
+          "https://upload.wikimedia.org/wikipedia/commons/0/0d/Image002-600x338.jpg"
         ],
         "@id": "https://eshop-nextjs.xremagix.vercel.app",
         "name": "Eshop-NextJS",
