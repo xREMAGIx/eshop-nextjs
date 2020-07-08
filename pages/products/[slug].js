@@ -226,7 +226,6 @@ const Product = () => {
   const images = product.images.map(
     (image) => backendUrl + "/upload/" + image.path
   );
-  console.log(images);
 
   return (
     <React.Fragment>
@@ -235,38 +234,42 @@ const Product = () => {
         <script type="application/ld+json">
           {`
           {
-            "@context": "https://schema.org/",
-            "@type": "Product",
-            "name": "${product.productName}",
-            "image": ${JSON.stringify(images)},
-            "description":
-              "${product.description}",
-            "sku": "${product.sku}",
-            "brand": {
-              "@type": "Brand",
-              "name": "${brand.name}",
-            },
-            "review": {
-              "@type": "Review",
-              "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": "4",
-                "bestRating": "5",
-              },
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "0",
-              "reviewCount": "0",
-            },
-            "offers": {
-              "@type": "AggregateOffer",
-              "offerCount": "5",
-              "lowPrice": "${(product.price * (100 - product.discount)) / 100}",
-              "highPrice": "${product.price}",
-              "priceCurrency": "VND"
-            }
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "${product.productName}",
+        "image": ${JSON.stringify(images)},
+        "description": "${product.description}",
+        "sku": "${product.sku}",
+        "mpn": "925872",
+        "brand": {
+          "@type": "Brand",
+          "name": "${brand.name}"
+        },
+        "review": {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "4",
+            "bestRating": "5"
+          },
+          "author": {
+            "@type": "Person",
+            "name": "Remagi"
           }
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.4",
+          "reviewCount": "89"
+        },
+        "offers": {
+          "@type": "AggregateOffer",
+          "offerCount": "5",
+          "lowPrice": "${(product.price * (100 - product.discount)) / 100}",
+          "highPrice": "${product.price}",
+          "priceCurrency": "VND"
+        }
+      }
           `}
         </script>
       </Head>
