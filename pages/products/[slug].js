@@ -18,7 +18,6 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import IconButton from "@material-ui/core/IconButton";
 import SwipeableViews from "react-swipeable-views";
-import ButtonBase from "@material-ui/core/ButtonBase";
 import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
 import clsx from "clsx";
@@ -33,7 +32,8 @@ import MainBar from "../../components/Appbar";
 import { cartActions, userActions } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import backendUrl from "../../src/backendUrl";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
+
 import Head from "next/head";
 import slugify from "../../src/slugtify";
 
@@ -143,6 +143,7 @@ function a11yProps(index) {
 const Product = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const router = useRouter();
 
   const products = useSelector((state) => state.products);
   const categories = useSelector((state) => state.categories);
@@ -227,6 +228,8 @@ const Product = () => {
     (image) => backendUrl + "/upload/" + image.path
   );
 
+  console.log(router.asPath);
+
   return (
     <React.Fragment>
       {/* Head */}
@@ -263,11 +266,17 @@ const Product = () => {
           "reviewCount": "89"
         },
         "offers": {
-          "@type": "AggregateOffer",
-          "offerCount": "5",
-          "lowPrice": "${(product.price * (100 - product.discount)) / 100}",
-          "highPrice": "${product.price}",
-          "priceCurrency": "VND"
+        "@type": "Offer",
+        "url": "https://eshop-nextjs.xremagix.vercel.app${router.asPath}",
+        "priceCurrency": "VND",
+        "price": "${product.price}",
+        "priceValidUntil": "2020-11-20",
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "Eshop-NextJS"
+            }
         }
       }
           `}

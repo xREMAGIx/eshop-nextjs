@@ -39,6 +39,7 @@ import { checkServerSideCookie, userActions } from "../actions/user.actions";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
 import backendUrl from "../src/backendUrl";
+import Head from "next/head";
 
 function Project(props) {
   const classes = useStyles();
@@ -372,6 +373,71 @@ const Home = () => {
 
   return (
     <React.Fragment>
+      {/* Head for rich results */}
+      <Head>
+        <script type="application/ld+json">
+          {`{
+        "@context": "https://schema.org",
+        "@type": "Store",
+        "image": [
+          "https://lh5.googleusercontent.com/p/AF1QipOyZ-7bJLhzviudOvLYPWErA9gYZZPgW7iOzIK2=w408-h272-k-no",
+        ],
+        "@id": "https://eshop-nextjs.xremagix.vercel.app",
+        "name": "Eshop-NextJS",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "khu pho 6, Thu Đuc",
+          "addressLocality": "Ho Chi Minh",
+          "addressRegion": "HCM",
+          "postalCode": "70000",
+          "addressCountry": "VN"
+        },
+        "review": {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "4",
+            "bestRating": "5"
+          },
+          "author": {
+            "@type": "Person",
+            "name": "Remagi"
+          }
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 10.870034,
+          "longitude": 106.803797
+        },
+        "telephone": "+1234",
+        "servesCuisine": "Vietnam",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+            ],
+            "opens": "9:00",
+            "closes": "21:00"
+          },
+        
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Saturday","Sunday"
+            ]
+            "opens": "16:00",
+            "closes": "23:00"
+          },
+        ],
+       
+      }`}
+        </script>
+      </Head>
+
       {/* <Private> */}
       <MainBar />
 
