@@ -425,11 +425,9 @@ const Home = () => {
             "opens": "9:00",
             "closes": "21:00"
           },
-        
           {
             "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Saturday","Sunday"
-            ]
+            "dayOfWeek": ["Saturday","Sunday"],
             "opens": "16:00",
             "closes": "23:00"
           },
