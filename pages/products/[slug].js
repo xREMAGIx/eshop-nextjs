@@ -155,9 +155,10 @@ const Product = () => {
   if (product) {
     category =
       categories.items.find((element) => element.id === product.category) ||
-      null;
+      product.category;
     brand =
-      brands.items.find((element) => element.id === product.brand) || null;
+      brands.items.find((element) => element.id === product.brand) ||
+      product.brand;
   }
 
   const dispatch = useDispatch();
@@ -222,8 +223,53 @@ const Product = () => {
     else Router.push(`/login`);
   };
 
+  const images = product.images.map(
+    (image) => backendUrl + "/upload/" + image.path
+  );
+  console.log(images);
+
   return (
     <React.Fragment>
+      {/* Head */}
+      <Head>
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            name: "${product.productName}",
+            "image": ${JSON.stringify(images)},
+            description:
+              "${product.description}",
+            sku: "${product.sku}",
+            brand: {
+              "@type": "Brand",
+              name: "${brand.name}",
+            },
+            review: {
+              "@type": "Review",
+              reviewRating: {
+                "@type": "Rating",
+                ratingValue: "4",
+                bestRating: "5",
+              },
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: "0",
+              reviewCount: "0",
+            },
+            "offers": {
+              "@type": "AggregateOffer",
+              "offerCount": "5",
+              "lowPrice": "${(product.price * (100 - product.discount)) / 100}",
+              "highPrice": "${product.price}",
+              "priceCurrency": "VND"
+            }
+            },
+          }`}
+        </script>
+      </Head>
+
       {/* <Private> */}
       <MainBar />
 

@@ -59,8 +59,6 @@ function MyApp(props) {
     setLoading(false);
   };
 
-  console.log(asPath);
-
   return (
     <React.Fragment>
       <Head>
