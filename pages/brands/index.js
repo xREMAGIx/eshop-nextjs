@@ -77,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Brands = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
 
   const brands = useSelector((state) => state.brands);
 

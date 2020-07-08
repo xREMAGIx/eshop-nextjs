@@ -387,7 +387,7 @@ const Home = () => {
         "name": "Eshop-NextJS",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "khu pho 6, Thu Đuc",
+          "streetAddress": "Khu pho 6, Thu Đuc",
           "addressLocality": "Ho Chi Minh",
           "addressRegion": "HCM",
           "postalCode": "70000",
@@ -411,7 +411,6 @@ const Home = () => {
           "longitude": 106.803797
         },
         "telephone": "+1234",
-        "servesCuisine": "Vietnam",
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
@@ -420,7 +419,7 @@ const Home = () => {
               "Tuesday",
               "Wednesday",
               "Thursday",
-              "Friday",
+              "Friday"
             ],
             "opens": "9:00",
             "closes": "21:00"
