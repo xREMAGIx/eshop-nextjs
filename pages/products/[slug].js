@@ -233,7 +233,8 @@ const Product = () => {
       {/* Head */}
       <Head>
         <script type="application/ld+json">
-          {`{
+          {`
+          {
             "@context": "https://schema.org/",
             "@type": "Product",
             name: "${product.productName}",
@@ -258,14 +259,15 @@ const Product = () => {
               ratingValue: "0",
               reviewCount: "0",
             },
+
             "offers": {
               "@type": "AggregateOffer",
               "offerCount": "5",
               "lowPrice": "${(product.price * (100 - product.discount)) / 100}",
               "highPrice": "${product.price}",
               "priceCurrency": "VND"
+            
             }
-            },
           }`}
         </script>
       </Head>
