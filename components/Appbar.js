@@ -227,7 +227,13 @@ export default function Mainbar(props) {
               <Grid container spacing={5}>
                 {/* Home button */}
                 <Grid item>
-                  <Button naked component={Link} href="/" as={`/`}>
+                  <Button
+                    color="inherit"
+                    naked
+                    component={Link}
+                    href="/"
+                    as={`/`}
+                  >
                     Home
                   </Button>
                 </Grid>
@@ -236,6 +242,7 @@ export default function Mainbar(props) {
                 <Grid item>
                   <div>
                     <Button
+                      color="inherit"
                       aria-owns={openCategories ? "category-menu" : null}
                       aria-haspopup="true"
                       onClick={(e) => handleCategoriesClick(e)}
@@ -276,6 +283,7 @@ export default function Mainbar(props) {
                 <Grid item>
                   <div>
                     <Button
+                      color="inherit"
                       aria-owns={openBrands ? "brand-menu" : null}
                       aria-haspopup="true"
                       onClick={(e) => handleBrandsClick(e)}

@@ -16,7 +16,6 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import Tooltip from "@material-ui/core/Tooltip";
 import RestoreIcon from "@material-ui/icons/Restore";
-import Divider from "@material-ui/core/Divider";
 import LocalShippingIcon from "@material-ui/icons/LocalShipping";
 import ContactSupportIcon from "@material-ui/icons/ContactSupport";
 import RedeemIcon from "@material-ui/icons/Redeem";
@@ -34,7 +33,7 @@ import {
 import MainBar from "../components/Appbar";
 import Carousel from "../components/Carousel";
 import Link from "../src/Link";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { checkServerSideCookie, userActions } from "../actions/user.actions";
 import Footer from "../components/Footer";
 import slugtify from "../src/slugtify";
@@ -53,49 +52,6 @@ function Project(props) {
         />
       )}
     </Paper>
-  );
-}
-
-function GridList(props) {
-  const products = props.product;
-  const classes = useStyles();
-
-  const dispatch = useDispatch();
-
-  return (
-    <Grid container direction="row" justify="center" spacing={4}>
-      {products.map((product) => (
-        <Grid className={classes.newProductList} key={product.id} item xs={3}>
-          <Card className={classes.card}>
-            {product.images.length > 0 ? (
-              <CardMedia
-                className={classes.cardMedia}
-                image={`${backendUrl}/uploads/` + product.images[0].path}
-                title="Image title"
-              />
-            ) : null}
-            <CardContent className={classes.cardContent}>
-              <Typography gutterBottom variant="h5" component="h2">
-                {product.productName}
-              </Typography>
-              <Typography variant="h6">$ {product.price}</Typography>
-            </CardContent>
-            <CardActions className={classes.cardActions}>
-              <Button size="small" color="primary">
-                View
-              </Button>
-              <IconButton
-                color="secondary"
-                aria-label="add-to-cart"
-                onClick={() => dispatch(cartActions.addItem(product._id))}
-              >
-                <AddShoppingCartIcon />
-              </IconButton>
-            </CardActions>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
   );
 }
 
@@ -132,17 +88,6 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-
-var splitArray = function (arr, size) {
-  var arr2 = arr.slice(0),
-    arrays = [];
-
-  while (arr2.length > 0) {
-    arrays.push(arr2.splice(0, size));
-  }
-
-  return arrays;
-};
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -429,7 +374,7 @@ const Home = () => {
             "dayOfWeek": ["Saturday","Sunday"],
             "opens": "16:00",
             "closes": "23:00"
-          },
+          } 
         ]
        
       }`}
@@ -704,7 +649,6 @@ const Home = () => {
                                 className={classes.productname}
                               />
                             </Typography>
-                            <Typography>{product.description}</Typography>
                             {product.discount > 0 ? (
                               <React.Fragment>
                                 <Typography variant="h6" color="primary">

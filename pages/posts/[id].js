@@ -1,18 +1,45 @@
 import { postActions } from "../../actions";
 import Typography from "@material-ui/core/Typography";
-import Head from "next/head";
+import Container from "@material-ui/core/Container";
+import { checkServerSideCookie } from "../../actions/user.actions";
+import { useSelector } from "react-redux";
+import { Editor, EditorState, convertFromRaw } from "draft-js";
 
-export default function Post(props) {
-  // const router = useRouter();
-  // const { id } = router.query;
-  // console.log("*************");
-  // console.log(id);
-  //const classes = useStyles();
-  const { result } = props;
+import Mainbar from "../../components/Appbar";
+
+export default function Post() {
+  const posts = useSelector((state) => state.posts);
+  const [editorState, setEditorState] = React.useState(
+    EditorState.createEmpty()
+  );
+
+  // const editor = React.useRef(null);
+
+  // function focusEditor() {
+  //   editor.current.focus();
+  // }
+
+  React.useEffect(() => {
+    if (posts.items.content !== undefined && posts.items.content !== "") {
+      setEditorState(
+        EditorState.createWithContent(
+          convertFromRaw(JSON.parse(posts.items.content))
+        )
+      );
+    }
+    //setContentJsonString(props.content);
+    //focusEditor();
+  }, [posts.items.content]);
+
   return (
     <React.Fragment>
-      <Typography variant="h1">{result.posts.items.title}</Typography>
-      <Typography variant="subtitle1">{result.posts.items.content}</Typography>
+      {/* Header */}
+      <Mainbar />
+      <Container style={{ marginTop: 64 }} maxWidth="lg">
+        <Typography variant="h1">{posts.items.title}</Typography>
+        {/* <Typography variant="subtitle1">{posts.items.content}</Typography>     */}
+        <Editor editorState={editorState} readOnly={true} />
+      </Container>
     </React.Fragment>
   );
 }
@@ -25,36 +52,8 @@ Post.getInitialProps = async (ctx) => {
   await ctx.store.dispatch(postActions.getById(ctx.query.id));
   // .then(() => (result = store.getState()));
   result = {
-    ...ctx.store.getState(),
     title: ctx.store.getState().posts.items.title,
   };
 
   return { result };
 };
-
-// // This function gets called at build time
-// export async function getStaticPaths() {
-//   // Call an external API endpoint to get posts
-//   const res = await fetch("http://localhost:5000/api/posts");
-//   const posts = await res.json();
-//   console.log(posts);
-
-//   // Get the paths we want to pre-render based on posts
-//   const paths = posts.data.map((post) => ({
-//     params: { id: post.id },
-//   }));
-
-//   // We'll pre-render only these paths at build time.
-//   // { fallback: false } means other routes should 404.
-//   return { paths, fallback: false };
-// }
-
-// export async function getStaticProps({ params }) {
-//   // params contains the post `id`.
-//   // If the route is like /posts/1, then params.id is 1
-//   const res = await fetch(`http://localhost:5000/api/posts/${params.id}`);
-//   const post = await res.json();
-
-//   // Pass post data to the page via props
-//   return { props: { post } };
-// }
