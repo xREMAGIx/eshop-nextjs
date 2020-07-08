@@ -36,6 +36,7 @@ import Router, { useRouter } from "next/router";
 
 import Head from "next/head";
 import slugify from "../../src/slugtify";
+import { getCookie } from "../../helpers/cookie";
 
 const useStyles = makeStyles((theme) => ({
   cardMedia: {
@@ -220,15 +221,14 @@ const Product = () => {
   };
 
   const handleAddToCart = (event) => {
-    if (users.token) dispatch(cartActions.addItem(product.id, users.token));
+    if (getCookie("token"))
+      dispatch(cartActions.addItem(product.id, getCookie("token")));
     else Router.push(`/login`);
   };
 
   const images = product.images.map(
     (image) => backendUrl + "/upload/" + image.path
   );
-
-  console.log(router.asPath);
 
   return (
     <React.Fragment>
@@ -516,7 +516,14 @@ Product.getInitialProps = async (ctx) => {
   checkServerSideCookie(ctx);
 
   const token = ctx.store.getState().users.token;
-  if (token) await ctx.store.dispatch(userActions.getMe(token));
+
+  if (token) {
+    await ctx.store.dispatch(userActions.getMe(token));
+    await ctx.store.dispatch(cartActions.getAll(token));
+  }
+
+  await ctx.store.dispatch(productActions.getAll());
+
   await ctx.store.dispatch(productActions.getById(ctx.query.id));
 
   var result = {

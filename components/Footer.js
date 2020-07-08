@@ -14,6 +14,7 @@ import InstagramIcon from "@material-ui/icons/Instagram";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "../src/Link";
+import NormalLink from "@material-ui/core/Link";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,9 +91,9 @@ export default function StickyFooter() {
                 support some simple rich results
               </Typography>
               <Typography variant="body1" align="center">
-                <Link href={"https://admin-page.xremagix.vercel.app/"}>
+                <NormalLink href={"https://admin-page.xremagix.vercel.app/"}>
                   Link to Admin page
-                </Link>
+                </NormalLink>
               </Typography>
               <Typography variant="body1" gutterBottom>
                 Project made by students from UIT VNU-HCM
@@ -100,13 +101,13 @@ export default function StickyFooter() {
 
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.2324288146733!2d106.80161941474984!3d10.869918392258143!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527587e9ad5bf%3A0xafa66f9c8be3c91!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBDw7RuZyBuZ2jhu4cgVGjDtG5nIHRpbiDEkEhRRyBUUC5IQ00!5e0!3m2!1svi!2s!4v1594193642296!5m2!1svi!2s"
-                width="400"
-                height="300"
-                frameborder="0"
+                width="100%"
+                height="200"
+                frameBorder="0"
                 style={{ border: 0 }}
-                allowfullscreen=""
+                allowFullScreen=""
                 aria-hidden="false"
-                tabindex="0"
+                tabIndex="0"
               ></iframe>
             </Grid>
             <Grid item xs={12} sm={6} md={2}>

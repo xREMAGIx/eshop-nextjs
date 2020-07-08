@@ -64,9 +64,8 @@ function discounttotal(items) {
     .reduce((sum, i) => sum + i, 0);
 }
 
-const Cart = (props) => {
+const Cart = () => {
   const classes = useStyles();
-  const { result } = props;
 
   const dispatch = useDispatch();
 

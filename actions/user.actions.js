@@ -1,5 +1,6 @@
 import { userConstants } from "../constants";
 import { userService } from "../services";
+import { cartActions } from "./cart.actions";
 
 import { setCookie, getCookie, removeCookie } from "../helpers/cookie";
 import Router from "next/router";
@@ -100,13 +101,19 @@ function login(user, history) {
 }
 
 function logout() {
-  userService.logout();
-  removeCookie("token");
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("user");
+  return async (dispatch) => {
+    userService.logout();
+    removeCookie("token");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("user");
+    }
+    dispatch(cartActions.logout());
+    await dispatch(logoutUser());
+    Router.push("/");
+  };
+  function logoutUser() {
+    return { type: userConstants.LOGOUT };
   }
-  Router.push("/");
-  return { type: userConstants.LOGOUT };
 }
 
 function register(user) {

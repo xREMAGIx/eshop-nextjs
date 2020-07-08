@@ -143,7 +143,7 @@ export default function Mainbar(props) {
   useEffect(() => {
     if (cart.items && cart.items.products)
       setProductsInCart(
-        cart.items !== null && products.items && products.items.length > 0
+        products.items && products.items.length > 0
           ? cart.items.products.map((element) =>
               Object.assign(
                 products.items.find(
@@ -154,7 +154,7 @@ export default function Mainbar(props) {
             )
           : []
       );
-  }, [cart, cart.items, products.items]);
+  }, [cart.items.products, products.items]);
 
   const dispatch = useDispatch();
 

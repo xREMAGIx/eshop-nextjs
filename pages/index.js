@@ -430,7 +430,7 @@ const Home = () => {
             "opens": "16:00",
             "closes": "23:00"
           },
-        ],
+        ]
        
       }`}
         </script>

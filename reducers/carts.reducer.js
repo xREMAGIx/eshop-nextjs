@@ -25,6 +25,7 @@ export function cart(
       };
     case cartConstants.VIEW_FAILURE:
       return {
+        ...state,
         error: action.error,
       };
 
@@ -39,7 +40,7 @@ export function cart(
         ...state,
         error: null,
         loading: false,
-        items: action.carts,
+        items: [],
       };
     case cartConstants.CHECKOUT_FAILURE:
       return {
@@ -82,6 +83,12 @@ export function cart(
       };
     case cartConstants.DELETE_ITEM_FAILURE:
       return { error: action.error };
+
+    case cartConstants.LOGOUT:
+      return {
+        ...state,
+        items: [],
+      };
 
     default:
       return state;

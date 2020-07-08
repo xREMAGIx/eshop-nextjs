@@ -8,7 +8,7 @@ export const cartActions = {
   subtractItem,
   deleteItem,
   checkOutCart,
-  //delete: _delete,
+  logout,
 };
 
 function getAll(token) {
@@ -129,4 +129,8 @@ function checkOutCart(token) {
   function failure(error) {
     return { type: cartConstants.CHECKOUT_FAILURE, error };
   }
+}
+
+function logout() {
+  return { type: cartConstants.LOGOUT };
 }
