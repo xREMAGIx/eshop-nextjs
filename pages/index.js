@@ -502,7 +502,7 @@ const Home = () => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
@@ -513,7 +513,7 @@ const Home = () => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
@@ -524,7 +524,7 @@ const Home = () => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
@@ -558,7 +558,7 @@ const Home = () => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
@@ -569,7 +569,7 @@ const Home = () => {
                 <CardActionArea>
                   <CardMedia
                     className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{laptop},{computer}"
+                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
                     title="Contemplative Reptile"
                   />
                 </CardActionArea>
