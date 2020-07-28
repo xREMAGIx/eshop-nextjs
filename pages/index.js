@@ -1,203 +1,131 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Grid from "@material-ui/core/Grid";
+import { useState, useRef, useEffect } from "react";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+
+//UI Components
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
 import CardActionArea from "@material-ui/core/CardActionArea";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import CardActions from "@material-ui/core/CardActions";
+import Carousel from "react-material-ui-carousel";
 import Tooltip from "@material-ui/core/Tooltip";
-import RestoreIcon from "@material-ui/icons/Restore";
-import LocalShippingIcon from "@material-ui/icons/LocalShipping";
-import ContactSupportIcon from "@material-ui/icons/ContactSupport";
-import RedeemIcon from "@material-ui/icons/Redeem";
 
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import {
-  productActions,
-  bannerActions,
-  postActions,
-  categoryActions,
-  cartActions,
-} from "../actions";
-import MainBar from "../components/Appbar";
-import Carousel from "../components/Carousel";
-import Link from "../src/Link";
-import { useSelector } from "react-redux";
-import { checkServerSideCookie, userActions } from "../actions/user.actions";
-import Footer from "../components/Footer";
-import slugtify from "../src/slugtify";
-import backendUrl from "../src/backendUrl";
-import Head from "next/head";
-
-function Project(props) {
-  const classes = useStyles();
-  return (
-    <Paper className={classes.imagePaper} elevation={10}>
-      {props.item.path && (
-        <CardMedia
-          className={classes.media}
-          image={`${backendUrl}/uploads/` + props.item.path}
-          // title={props.item.name}
-        />
-      )}
-    </Paper>
-  );
-}
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {/* <Typography>{children}</Typography> */}
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
+//Custom Components
+import Link from "../src/components/Link";
+import Layout from "../src/components/Layout";
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    //height: "100%",
-    display: "flex",
-    flexDirection: "column",
-
-    "&:hover": {
-      boxShadow: "5px 10px 18px #888888",
-      "& .MuiCardActions-root": {
-        opacity: 1,
-      },
-    },
-  },
-  cardActions: {
-    height: "50px",
-    opacity: 0,
+  carouselRoot: {
+    // width: "500px",
     overflow: "hidden",
-    transition: "opacity 0.5s, height 0.1s linear",
-    [theme.breakpoints.down("xs")]: {
-      opacity: 1,
-    },
   },
-  cardMedia: {
-    paddingTop: "56.25%", // 16:9
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  media: {
-    backgroundColor: "white",
-    height: "100%",
-    overflow: "hidden",
+  project: {
     position: "relative",
-    transition: "300ms",
-    cursor: "pointer",
-    "&:hover": {
-      filter: "brightness(115%)",
-    },
-  },
-  imagePaper: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 0, 0),
-    position: "relative",
-    //height: "500px",
-    overflow: "hidden",
-    // padding: "20px",
-    color: "white",
     height: "70vh",
+    overflow: "hidden",
+    padding: "20px",
+    color: "white",
+    [theme.breakpoints.down("sm")]: {
+      height: "50vh",
+    },
   },
-  sectionTitle: {
-    textAlign: "center",
-    margin: "50px",
-    fontWeight: "bold",
-  },
-  sectionTitleBar: {
-    width: "100px",
-    height: "5px",
-    margin: "8px auto 0",
-    display: "block",
-    backgroundColor: theme.palette.secondary.dark,
-  },
-  arcticlesRoot: {
-    margin: theme.spacing(1),
-  },
-  arcticlesMedia: {
-    height: 300,
-  },
-  arcticlesContainer: {
-    backgroundColor: theme.palette.primary.light,
-  },
-  arcticlesGrid: {
-    maxWidth: "1000px",
-    margin: "auto",
-    padding: "20px 0",
+  newProductGridListRoot: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    overflow: "hidden",
+    backgroundColor: theme.palette.background.paper,
   },
   gridList: {
     flexWrap: "nowrap",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
     transform: "translateZ(0)",
-  },
-  tabRoot: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-    "& .MuiAppBar-colorPrimary": {
-      color: "#000",
-      backgroundColor: theme.palette.background.paper,
+    width: "100%",
+    padding: theme.spacing(2),
+
+    /* height */
+    "&::-webkit-scrollbar": {
+      height: "10px",
     },
-    "& .MuiPaper-elevation4": {
-      boxShadow: "none",
+
+    /* Track */
+    "&::-webkit-scrollbar-track": {
+      background: "#F6E3E3",
+    },
+
+    /* Handle */
+    "&::-webkit-scrollbar-thumb": {
+      background: theme.palette.primary.light,
+      borderRadius: "25px",
+      "&:hover": {
+        background: theme.palette.primary.dark,
+      },
     },
   },
-  tabPanel: {
-    backgroundColor: theme.palette.background.paper,
+  title: {
+    color: theme.palette.primary.light,
   },
-  newProductList: {
-    height: "320px",
+  titleBar: {
+    background:
+      "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
   },
-  productname: {
+  cardRoot: {
+    margin: theme.spacing(1),
+    borderRadius: "10px",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+    transition: "opacity 0.1s box-shadow 0.3s linear",
+    "& .MuiCardActionArea-root": {
+      overflow: "hidden",
+    },
+    "&:hover": {
+      boxShadow: "0 0 11px rgba(0, 170, 178,.7)",
+
+      "& .MuiCardMedia-img": {
+        transform: "scale(1.25)",
+      },
+
+      "& .MuiCardActions-root": {
+        opacity: 1,
+      },
+    },
+  },
+  cardMedia: {
+    // height: 0,
+    //paddingTop: "75%", // 4:3
+    transition: "transform 0.2s linear",
+  },
+  cardContent: {
+    padding: theme.spacing(1),
+  },
+  cardAction: {
+    padding: 0,
+    opacity: 0.5,
+    transition: "opacity 0.5s linear",
+    display: "flex",
+    justifyContent: "center",
+  },
+  listItem: {
     maxWidth: "20rem",
     overflow: "hidden",
     position: "relative",
     lineHeight: "1.2em",
     maxHeight: "2.4em",
+    textAlign: "justify",
     marginRight: "-1em",
-    paddingRight: "2em",
-    marginBottom: "1em",
+    paddingRight: "1em",
+    marginBottom: "0.5em",
     "&&:before": {
-      paddingRight: theme.spacing(2),
-      content: '"....."',
+      content: '"..."',
       position: "absolute",
       right: 0,
       bottom: 0,
@@ -211,21 +139,45 @@ const useStyles = makeStyles((theme) => ({
       marginTop: "0.2em",
       background: "white",
     },
-    [theme.breakpoints.down("xs")]: {
-      maxWidth: "none",
-      maxHeight: "none",
-      "&&:before": { content: '""' },
-    },
   },
-  services: {
-    padding: theme.spacing(1),
+  sectionTitle: {
+    textAlign: "center",
+    margin: theme.spacing(4),
+    fontWeight: "bold",
+  },
+  sectionTitleBar: {
+    width: "100px",
+    height: "5px",
+    margin: "8px auto 0",
+    display: "block",
+    backgroundColor: theme.palette.secondary.main,
   },
 }));
 
+function Project(props) {
+  const classes = useStyles();
+  return (
+    <Paper
+      className={classes.project}
+      style={{
+        backgroundColor: props.item.color,
+      }}
+      elevation={10}
+    >
+      <h2>{props.item.name}</h2>
+      <p>{props.item.description}</p>
+
+      <Button className="CheckButton">Check it out!</Button>
+    </Paper>
+  );
+}
+
+//Function for long product name
 const TooltipDiv = (props) => {
-  const divRef = React.useRef(null);
-  const [allowTooltip, setAllowTooltip] = React.useState(false);
-  React.useEffect(() => {
+  const divRef = useRef(null);
+  const [allowTooltip, setAllowTooltip] = useState(false);
+
+  useEffect(() => {
     if (
       !allowTooltip &&
       divRef.current.scrollHeight > divRef.current.offsetHeight
@@ -235,566 +187,405 @@ const TooltipDiv = (props) => {
   }, []);
   if (allowTooltip) {
     return (
-      <Tooltip title={<Typography>{props.text}</Typography>}>
-        <div ref={divRef} className={props.className}>
+      <Tooltip title={props.text}>
+        <Typography variant="h5" ref={divRef} className={props.className}>
           {props.text}
-        </div>
+        </Typography>
       </Tooltip>
     );
   }
   return (
-    <div ref={divRef} className={props.className}>
+    <Typography variant="h5" ref={divRef} className={props.className}>
       {props.text}
-    </div>
+    </Typography>
   );
 };
 
-const Home = () => {
+const carouselItems = [
+  {
+    name: "Lear Music Reader",
+    description: "A PDF Reader specially designed for musicians.",
+    color: "#64ACC8",
+  },
+  {
+    name: "Hash Code 2019",
+    description:
+      "My Solution on the 2019 Hash Code by Google Slideshow problem.",
+    color: "#7D85B1",
+  },
+  {
+    name: "Terrio",
+    description: "A exciting mobile game game made in the Unity Engine.",
+    color: "#CE7E78",
+  },
+  {
+    name: "React Carousel",
+    description: "A Generic carousel UI component for React using material ui.",
+    color: "#C9A27E",
+  },
+];
+
+const tileData = [
+  {
+    img: "https://source.unsplash.com/featured/?{japan}",
+    name: "Image",
+    price: 100000000,
+    discountPrice: 90000000,
+  },
+  {
+    img: "https://source.unsplash.com/featured/?{japan}",
+    name: "Image",
+    price: 10000000,
+    discountPrice: 9000000,
+  },
+  {
+    img: "https://source.unsplash.com/featured/?{japan}",
+    name: "Image",
+    price: 1000,
+    discountPrice: 900,
+  },
+  {
+    img: "https://source.unsplash.com/featured/?{japan}",
+    name: "Image",
+    price: 1000,
+  },
+  {
+    img: "https://source.unsplash.com/featured/?{japan}",
+    name: "Image sajdlkajdlka L ajdlsdlka jklasjdlksajdkla jkasdjlsajdl",
+    price: 1000,
+    discountPrice: 900,
+  },
+  {
+    img: "https://source.unsplash.com/featured/?{japan}",
+    name: "Image",
+    price: 1000,
+    discountPrice: 900,
+  },
+];
+
+export default function Index() {
   const classes = useStyles();
 
-  const autoPlay = false;
-  const timer = 500;
-  const animation = "fade";
-  const indicators = true;
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [timer, setTimer] = useState(500);
+  const [animation, setAnimation] = useState("fade");
+  const [indicators, setIndicators] = useState(true);
+  const [timeout, setTimeout] = useState(200);
+  const [navButtonsAlwaysVisible, setNavButtonsAlwaysVisible] = useState(false);
 
-  const products = useSelector((state) => state.products);
-  const banners = useSelector((state) => state.banners);
-  const posts = useSelector((state) => state.posts);
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down("xs"));
 
-  // const sortedNewProduct = products.items
-  //   ? products.items
-  //       .slice()
-  //       .sort((a, b) => new Date(b.createAt) - new Date(a.createAt))
-  //   : [];
-
-  // const arraySplitted = splitArray(sortedNewProduct, 4);
-
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  // //const dispatch = useDispatch();
-
-  // const targetRef = React.useRef();
-  // const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
-
-  // // holds the timer for setTimeout and clearInterval
-  // let movement_timer = null;
-
-  // // the number of ms the window size must stay the same size before the
-  // // dimension state variable is reset
-  // const RESET_TIMEOUT = 100;
-
-  // const changeDimension = () => {
-  //   // For some reason targetRef.current.getBoundingClientRect was not available
-  //   // I found this worked for me, but unfortunately I can't find the
-  //   // documentation to explain this experience
-
-  //   if (targetRef.current) {
-  //     setDimensions({
-  //       width: targetRef.current.offsetWidth,
-  //       height: targetRef.current.offsetHeight + 50,
-  //     });
-  //   }
+  // const toggleAutoPlay = () => {
+  //   setAutoPlay((prevAutoPlay) => !prevAutoPlay);
   // };
 
-  // React.useEffect(() => {
-  //   changeDimension();
-  // }, []);
+  // const toggleIndicators = () => {
+  //   setIndicators((prevIndicators) => !prevIndicators);
+  // };
 
-  // // every time the window is resized, the timer is cleared and set again
-  // // the net effect is the component will only reset after the window size
-  // // is at rest for the duration set in RESET_TIMEOUT.  This prevents rapid
-  // // redrawing of the component for more complex components such as charts
-  // if (typeof window !== "undefined") {
-  //   // it's safe to use window now
-  //   window.addEventListener("resize", () => {
-  //     clearInterval(movement_timer);
-  //     movement_timer = setTimeout(changeDimension, RESET_TIMEOUT);
-  //   });
-  // }
+  // const toggleNavButtonsAlwaysVisible = () => {
+  //   setNavButtonsAlwaysVisible(
+  //     (prevNavButtonsAlwaysVisible) => !prevNavButtonsAlwaysVisible
+  //   );
+  // };
+
+  // const changeAnimation = (event) => {
+  //   setAnimation(event.target.value);
+  // };
+
+  // const changeTimeout = (event, value) => {
+  //   setTimeout(value);
+  // };
 
   return (
-    <React.Fragment>
-      {/* Head for rich results */}
-      <Head>
-        <script type="application/ld+json">
-          {`{
-        "@context": "https://schema.org",
-        "@type": "Store",
-        "image": [
-          "https://lh5.googleusercontent.com/p/AF1QipOyZ-7bJLhzviudOvLYPWErA9gYZZPgW7iOzIK2=w408-h272-k-no",
-          "https://upload.wikimedia.org/wikipedia/commons/0/0d/Image002-600x338.jpg"
-        ],
-        "@id": "https://eshop-nextjs.xremagix.vercel.app",
-        "name": "Eshop-NextJS",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Khu pho 6, Thu Đuc",
-          "addressLocality": "Ho Chi Minh",
-          "addressRegion": "HCM",
-          "postalCode": "70000",
-          "addressCountry": "VN"
-        },
-        "review": {
-          "@type": "Review",
-          "reviewRating": {
-            "@type": "Rating",
-            "ratingValue": "4",
-            "bestRating": "5"
-          },
-          "author": {
-            "@type": "Person",
-            "name": "Remagi"
-          }
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": 10.870034,
-          "longitude": 106.803797
-        },
-        "telephone": "+1234",
-        "openingHoursSpecification": [
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": [
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday"
-            ],
-            "opens": "9:00",
-            "closes": "21:00"
-          },
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Saturday","Sunday"],
-            "opens": "16:00",
-            "closes": "23:00"
-          } 
-        ]
-       
-      }`}
-        </script>
-      </Head>
+    <Layout>
+      {/* Main Carousel */}
+      <div style={{ marginTop: 30, color: "#494949" }}>
+        <Carousel
+          className={classes.carouselRoot}
+          autoPlay={autoPlay}
+          timer={timer}
+          animation={animation}
+          indicators={indicators}
+          timeout={timeout}
+          navButtonsAlwaysVisible={navButtonsAlwaysVisible}
+        >
+          {carouselItems.map((item, index) => {
+            return <Project item={item} key={index} />;
+          })}
+        </Carousel>
 
-      {/* <Private> */}
-      <MainBar />
+        {/* Carousel Options */}
+        {/* <FormLabel component="legend">Options</FormLabel>
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={toggleAutoPlay}
+                checked={autoPlay}
+                value="autoplay"
+                color="primary"
+              />
+            }
+            label="Auto-play"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={toggleIndicators}
+                checked={indicators}
+                value="indicators"
+                color="primary"
+              />
+            }
+            label="Indicators"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={toggleNavButtonsAlwaysVisible}
+                checked={navButtonsAlwaysVisible}
+                value="indicators"
+                color="primary"
+              />
+            }
+            label="NavButtonsAlwaysVisible"
+          />
 
-      <Container maxWidth="lg">
-        {/* Simple Carousel */}
-        {banners.items !== undefined && (
-          <Carousel
-            style={{ zIndex: -1 }}
-            autoPlay={autoPlay}
-            timer={timer}
-            animation={animation}
-            indicators={indicators}
-          >
-            {banners.items.map((item, index) => {
-              return <Project item={item} key={index} />;
-            })}
-          </Carousel>
-        )}
-
-        {/* About Company */}
-        <Typography variant="h3" component="h1" align="center" color="primary">
-          Eshop-NextJS
-        </Typography>
-        <Typography align="center" variant="h6" gutterBottom>
-          We will bring you best experience when shopping in our Eshop.
-        </Typography>
-        <Grid style={{ marginTop: 20 }} container>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={3}
-            className={classes.services}
-            container
-          >
-            <Grid item xs={3} alignItems="center" justify="center" container>
-              <RestoreIcon fontSize="large" color="primary" />
-            </Grid>
-            <Grid item xs={9}>
-              <Typography variant="h6" color="primary">
-                FREE return
-              </Typography>
-              <Typography variant="subtitle1">
-                We accept return within 7 days.
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={3}
-            className={classes.services}
-            container
-          >
-            <Grid item xs={3} alignItems="center" justify="center" container>
-              <LocalShippingIcon fontSize="large" color="primary" />
-            </Grid>
-            <Grid item xs={9}>
-              <Typography variant="h6" color="primary">
-                FREE shipping
-              </Typography>
-              <Typography variant="subtitle1">
-                Products will be delivered to you within 2-3 days.
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={3}
-            className={classes.services}
-            container
-          >
-            <Grid item xs={3} alignItems="center" justify="center" container>
-              <ContactSupportIcon fontSize="large" color="primary" />
-            </Grid>
-            <Grid item xs={9}>
-              <Typography variant="h6" color="primary">
-                24/7 support
-              </Typography>
-              <Typography variant="subtitle1">
-                Contact us immediately via Facebook or telephone.
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={3}
-            className={classes.services}
-            container
-          >
-            <Grid item xs={3} alignItems="center" justify="center" container>
-              <RedeemIcon fontSize="large" color="primary" />
-            </Grid>
-            <Grid item xs={9}>
-              <Typography variant="h6" color="primary">
-                Lots of prizes every month
-              </Typography>
-              <Typography variant="subtitle1">
-                We give you multiple coupon codes and prizes.
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        {/* Arcticles */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Feature Arcticles
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container className={classes.arcticlesContainer} maxWidth="lg">
-          <Grid className={classes.arcticlesGrid} container direction="row">
-            <Grid item xs={12} sm={6} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-          </Grid>
-        </Container>
-
-        {/* New products
-        <Typography className={classes.sectionTitle} variant="h4">
-          New Products
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container className={classes.newProductsContainer} maxWidth="lg">
-          <ListItemHorizontal style={{ zIndex: -1 }}>
-            {arraySplitted.map((product, index) => {
-              return <GridList product={product} key={index} />;
-            })}
-          </ListItemHorizontal>
-        </Container> */}
-
-        {/* Feature Sale Products */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Feature Sale Products
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container className={classes.arcticlesContainer} maxWidth="lg">
-          <Grid className={classes.arcticlesGrid} container direction="row">
-            <Grid item xs={12} md={8}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card className={classes.arcticlesRoot}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.arcticlesMedia}
-                    image="https://source.unsplash.com/featured/?{recycle},{paper}"
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-              </Card>
-            </Grid>
-          </Grid>
-        </Container>
-
-        {/* Products */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Products
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container maxWidth="md">
-          <div className={classes.tabRoot}>
-            <AppBar position="static">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="simple tabs example"
-                centered
+          <FormControlLabel
+            control={
+              <RadioGroup
+                name="animation"
+                value={animation}
+                onChange={(e) => changeAnimation(e)}
+                row
+                style={{ marginLeft: "10px" }}
               >
-                <Tab label="New Products" {...a11yProps(0)} />
-                <Tab label="Best Seller" {...a11yProps(1)} />
-                <Tab label="Special Offer" {...a11yProps(2)} />
-              </Tabs>
-            </AppBar>
-            <TabPanel className={classes.tabPanel} value={value} index={0}>
-              <Grid container spacing={4}>
-                {products.items
-                  ? products.items.map((product) => (
-                      <Grid
-                        item
-                        key={product.id}
-                        className={classes.productCardGrid}
-                        xs={12}
-                        sm={6}
-                        md={4}
-                        //innerRef={ref}
-                        //ref={ref}
-                      >
-                        <Card className={classes.card}>
-                          <CardActionArea
-                            component={Link}
-                            naked
-                            href={`/products/[slug]?id=${product.id}`}
-                            as={`/products/${slugtify(
-                              product.productName
-                            )}?sku=${product.sku}&&id=${product.id}`}
-                          >
-                            {product.images.length > 0 ? (
-                              <CardMedia
-                                style={{ display: "flex", width: "100%" }}
-                              >
-                                <img
-                                  style={{ margin: "0 auto" }}
-                                  loading="lazy"
-                                  src={
-                                    `${backendUrl}/uploads/` +
-                                    product.images[0].path
-                                  }
-                                  alt={product.productName}
-                                  height={150}
-                                  //width={"100%"}
-                                ></img>
-                              </CardMedia>
-                            ) : null}
-                          </CardActionArea>
-                          <CardContent className={classes.cardContent}>
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="h2"
-                            >
-                              <TooltipDiv
-                                text={product.productName}
-                                className={classes.productname}
-                              />
-                            </Typography>
-                            {product.discount > 0 ? (
-                              <React.Fragment>
-                                <Typography variant="h6" color="primary">
-                                  {(
-                                    (product.price * (100 - product.discount)) /
-                                    100
-                                  ).toLocaleString()}{" "}
-                                  <div
-                                    style={{
-                                      display: "inline",
-                                      textDecoration: "underline",
-                                    }}
-                                  >
-                                    đ
-                                  </div>
-                                </Typography>
-                                <Typography
-                                  style={{ textDecoration: "line-through" }}
-                                  display="inline"
-                                  variant="subtitle1"
-                                  color="textSecondary"
-                                >
-                                  {product.price.toLocaleString()} đ
-                                </Typography>
-                              </React.Fragment>
-                            ) : (
-                              <Typography variant="h6" color="primary">
-                                {product.price.toLocaleString()}{" "}
-                                <div
-                                  style={{
-                                    display: "inline",
-                                    textDecoration: "underline",
-                                  }}
-                                >
-                                  đ
-                                </div>
-                              </Typography>
-                            )}
-                          </CardContent>
-                          <CardActions className={classes.cardActions}>
-                            <Button size="small" color="primary">
-                              View
-                            </Button>
-                            <IconButton
-                              color="secondary"
-                              aria-label="add-to-cart"
-                            >
-                              <AddShoppingCartIcon />
-                            </IconButton>
-                          </CardActions>
-                        </Card>
+                <FormControlLabel
+                  value="fade"
+                  control={<Radio color="primary" />}
+                  label="Fade"
+                />
+                <FormControlLabel
+                  value="slide"
+                  control={<Radio color="primary" />}
+                  label="Slide"
+                />
+              </RadioGroup>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <div style={{ width: 300 }}>
+                <Typography id="discrete-slider" gutterBottom>
+                  Animation Duration (Timeout) in ms
+                </Typography>
+                <Slider
+                  defaultValue={500}
+                  getAriaValueText={() => `${timeout}ms`}
+                  aria-labelledby="discrete-slider"
+                  valueLabelDisplay="auto"
+                  step={100}
+                  marks
+                  min={100}
+                  max={2000}
+                  onChange={(e, value) => changeTimeout(e, value)}
+                />
+              </div>
+            }
+          /> */}
+      </div>
+
+      {/* New Product List */}
+      <Typography className={classes.sectionTitle} variant="h4">
+        New Products
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <div className={classes.newProductGridListRoot}>
+        <GridList
+          className={classes.gridList}
+          cellHeight="auto"
+          cols={mobile ? 1.5 : 4}
+          spacing={5}
+        >
+          {tileData.map((tile, index) => (
+            <GridListTile key={index}>
+              <Card key={index} variant="outlined" className={classes.cardRoot}>
+                <CardActionArea
+                  component={Link}
+                  href="/products/[id]"
+                  as={`/products/${1}`}
+                >
+                  <CardMedia
+                    component="img"
+                    height={200}
+                    className={classes.cardMedia}
+                    image={tile.img}
+                    title={tile.name}
+                  />
+                </CardActionArea>
+                <CardContent className={classes.cardContent}>
+                  {mobile ? (
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="h2"
+                      noWrap={true}
+                    >
+                      {tile.name}
+                    </Typography>
+                  ) : (
+                    <TooltipDiv text={tile.name} className={classes.listItem} />
+                  )}
+
+                  {tile.discountPrice ? (
+                    <Grid
+                      container
+                      direction={mobile ? "column" : "row"}
+                      spacing={mobile ? 0 : 2}
+                    >
+                      <Grid item>
+                        <Typography variant="h5" color="primary" component="p">
+                          {tile.discountPrice.toLocaleString()}
+                        </Typography>
                       </Grid>
-                    ))
-                  : null}
-              </Grid>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              Item Two
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              Item Three
-            </TabPanel>
-          </div>
-        </Container>
-
-        {/* Posts */}
-        <Typography className={classes.sectionTitle} variant="h4">
-          Posts
-          <span className={classes.sectionTitleBar}></span>
-        </Typography>
-        <Container maxWidth="md">
-          <Grid container spacing={4}>
-            {posts.items
-              ? posts.items.map((post) => (
-                  <Grid
-                    item
-                    key={post.id}
-                    className={classes.productCardGrid}
-                    xs={12}
-                    sm={6}
-                    //innerRef={ref}
-                    //ref={ref}
-                  >
-                    <Card className={classes.card}>
-                      <CardActionArea
-                        component={Link}
-                        href="/posts/[id]"
-                        as={`/posts/${post.id}`}
-                      >
-                        {post.images.length > 0 ? (
-                          <CardMedia
-                            className={classes.cardMedia}
-                            image={
-                              `${backendUrl}/uploads/` + product.images[0].path
-                            }
-                            title="Image title"
-                          />
-                        ) : null}
-                        <CardContent className={classes.cardContent}>
-                          <Typography variant="h5"> {post.title}</Typography>
-
-                          {/* <Typography>{post.content}</Typography> */}
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
+                      <Grid item>
+                        <Typography
+                          style={{ textDecoration: "line-through" }}
+                          variant="subtitle1"
+                          color="textSecondary"
+                          component="p"
+                        >
+                          {tile.price.toLocaleString()}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  ) : (
+                    <Typography variant="h6" color="primary" component="p">
+                      {tile.price.toLocaleString()}
+                    </Typography>
+                  )}
+                </CardContent>
+                <CardActions
+                  className={classes.cardAction}
+                  justify="center"
+                  spacing={2}
+                >
+                  <Grid item>
+                    <IconButton
+                      color="primary"
+                      aria-label="add to shopping cart"
+                    >
+                      <AddShoppingCartIcon />
+                    </IconButton>
                   </Grid>
-                ))
-              : null}
+                  <Grid item>
+                    <IconButton color="primary" aria-label="favorite">
+                      <FavoriteBorderIcon />
+                    </IconButton>
+                  </Grid>
+                </CardActions>
+              </Card>
+            </GridListTile>
+          ))}
+        </GridList>
+      </div>
+
+      {/* Best Seller List*/}
+      <Typography className={classes.sectionTitle} variant="h4">
+        Best Sellers
+        <span className={classes.sectionTitleBar}></span>
+      </Typography>
+      <Grid container spacing={mobile ? 0 : 2}>
+        {tileData.map((tile, index) => (
+          <Grid key={index} item xs={6} sm={4} md={3}>
+            <Card
+              key={index}
+              variant="outlined"
+              className={mobile ? null : classes.cardRoot}
+            >
+              <CardActionArea>
+                <CardMedia
+                  className={classes.cardMedia}
+                  component="img"
+                  height={200}
+                  image={tile.img}
+                  title={tile.name}
+                />
+              </CardActionArea>
+              <CardContent className={classes.cardContent}>
+                {mobile ? (
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="h2"
+                    noWrap={true}
+                  >
+                    {tile.name}
+                  </Typography>
+                ) : (
+                  <TooltipDiv text={tile.name} className={classes.listItem} />
+                )}
+
+                {tile.discountPrice ? (
+                  <Grid
+                    container
+                    direction={mobile ? "column" : "row"}
+                    spacing={mobile ? 0 : 2}
+                  >
+                    <Grid item>
+                      <Typography
+                        // variant={mobile ? "h6" : "h5"}
+                        variant="h6"
+                        color="primary"
+                        component="p"
+                      >
+                        {tile.discountPrice.toLocaleString()}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography
+                        style={{ textDecoration: "line-through" }}
+                        variant={mobile ? "subtitle2" : "subtitle1"}
+                        color="textSecondary"
+                        component="p"
+                      >
+                        {tile.price.toLocaleString()}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                ) : (
+                  <Typography
+                    variant={mobile ? "h6" : "h5"}
+                    color="primary"
+                    component="p"
+                  >
+                    {tile.price.toLocaleString()}
+                  </Typography>
+                )}
+              </CardContent>
+
+              <CardActions
+                className={classes.cardAction}
+                justify="center"
+                spacing={2}
+              >
+                <Grid item>
+                  <IconButton color="primary" aria-label="add to shopping cart">
+                    <AddShoppingCartIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <IconButton color="primary" aria-label="favorite">
+                    <FavoriteBorderIcon />
+                  </IconButton>
+                </Grid>
+              </CardActions>
+            </Card>
           </Grid>
-        </Container>
-      </Container>
-      {/* </main> */}
-
-      {/* Footer */}
-      <Footer />
-      {/* </Private> */}
-    </React.Fragment>
+        ))}
+      </Grid>
+    </Layout>
   );
-};
-
-Home.getInitialProps = async (ctx) => {
-  var result;
-
-  checkServerSideCookie(ctx);
-
-  const token = ctx.store.getState().users.token;
-  if (token) {
-    await ctx.store.dispatch(userActions.getMe(token));
-    await ctx.store.dispatch(cartActions.getAll(token));
-  }
-
-  if (ctx.req) {
-    console.log("on server, need to copy cookies from req");
-  } else {
-    console.log("on client, cookies are automatic");
-  }
-
-  await ctx.store.dispatch(bannerActions.getAll());
-  await ctx.store.dispatch(postActions.getAll());
-  await ctx.store.dispatch(categoryActions.getAll());
-
-  await ctx.store
-    .dispatch(productActions.getAll())
-    .then(() => (result = ctx.store.getState()));
-
-  return { result };
-};
-
-export default Home;
+}
