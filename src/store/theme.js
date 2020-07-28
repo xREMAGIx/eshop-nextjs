@@ -9,6 +9,9 @@ let theme = createMuiTheme({
     secondary: {
       main: "#B20800",
     },
+    tertiary: {
+      main: "#B20800",
+    },
   },
   status: {
     danger: "#aabbcc",

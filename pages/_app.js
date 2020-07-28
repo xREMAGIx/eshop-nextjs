@@ -8,6 +8,7 @@ import Router from "next/router";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "../node_modules/react-multi-carousel/lib/styles.css";
 
 //Custom Components
 import theme from "../src/store/theme";

@@ -16,7 +16,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",
-    "react-material-ui-carousel": "^1.6.0",
+    "react-multi-carousel": "^2.5.5",
     "react-redux": "^7.2.0",
     "react-share": "^4.2.1",
     "react-swipeable-views": "^0.13.9",
