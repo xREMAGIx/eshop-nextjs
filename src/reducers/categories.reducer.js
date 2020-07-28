@@ -18,7 +18,7 @@ export function categories(
     case categoryConstants.GETALL_SUCCESS:
       return {
         ...state,
-        items: action.categories,
+        items: action.categories.data,
       };
     case categoryConstants.GETALL_FAILURE:
       return {
@@ -34,7 +34,7 @@ export function categories(
     case categoryConstants.GETBYID_SUCCESS:
       return {
         ...state,
-        item: action.categories,
+        item: action.categories.data,
       };
     case categoryConstants.GETBYID_ERROR:
       return { ...state, error: action.error };

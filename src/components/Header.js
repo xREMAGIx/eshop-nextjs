@@ -31,7 +31,7 @@ import MainListItems from "./ListItemDrawer";
 import Link from "./Link";
 
 //Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { productActions } from "../actions";
 
 const drawerWidth = 240;
@@ -115,6 +115,7 @@ const useStyles = makeStyles((theme) => ({
   popoverPaper: {
     padding: theme.spacing(1),
     pointerEvents: "auto",
+    minWidth: 150,
   },
   linkBtn: {
     color: theme.palette.primary.contrastText,
@@ -150,6 +151,14 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  menuLinkList: {
+    padding: theme.spacing(1),
+    transition: "padding-left 0.2s linear",
+    "&:hover": {
+      paddingLeft: theme.spacing(3),
+      textDecoration: "none",
+    },
   },
 }));
 
@@ -188,7 +197,8 @@ function HoverPopover(props) {
 export default function Header() {
   const classes = useStyles();
 
-  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.categories);
+  const brands = useSelector((state) => state.brands);
 
   const [open, setOpen] = React.useState(false);
 
@@ -361,7 +371,20 @@ export default function Header() {
                     handlePopoverOpen={handlePopoverOpen}
                     handlePopoverClose={handlePopoverClose}
                   >
-                    <Typography variant="h6">Hi</Typography>
+                    {categories.items
+                      ? categories.items.map((category, index) => (
+                          <Link
+                            className={classes.menuLinkList}
+                            href="/categories/[id]"
+                            as={`/categories/${category.id}`}
+                            key={index}
+                            variant="subtitle1"
+                            display="block"
+                          >
+                            {category.name}
+                          </Link>
+                        ))
+                      : "Something wrong with DB or no data"}
                   </HoverPopover>
                 </Grid>
                 {/* Brand */}
@@ -385,7 +408,20 @@ export default function Header() {
                     handlePopoverOpen={handlePopoverOpen}
                     handlePopoverClose={handlePopoverClose}
                   >
-                    <Typography variant="h6">Hi</Typography>
+                    {brands.items
+                      ? brands.items.map((brand, index) => (
+                          <Link
+                            className={classes.menuLinkList}
+                            href="/categories/[id]"
+                            as={`/categories/${brand.id}`}
+                            key={index}
+                            variant="subtitle1"
+                            display="block"
+                          >
+                            {brand.name}
+                          </Link>
+                        ))
+                      : "Something wrong with DB or no data"}
                   </HoverPopover>
                 </Grid>
               </Hidden>

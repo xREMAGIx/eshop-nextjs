@@ -18,7 +18,7 @@ export function brands(
     case brandConstants.GETALL_SUCCESS:
       return {
         ...state,
-        items: action.brands,
+        items: action.brands.data,
       };
     case brandConstants.GETALL_FAILURE:
       return {
@@ -34,7 +34,7 @@ export function brands(
     case brandConstants.GETBYID_SUCCESS:
       return {
         ...state,
-        item: action.brands,
+        item: action.brands.data,
       };
     case brandConstants.GETBYID_ERROR:
       return { error: action.error };

@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Carousel from "react-multi-carousel";
@@ -7,17 +6,9 @@ import Carousel from "react-multi-carousel";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import CardActions from "@material-ui/core/CardActions";
-import Tooltip from "@material-ui/core/Tooltip";
 import Box from "@material-ui/core/Box";
 import Hidden from "@material-ui/core/Hidden";
 import Menu from "@material-ui/core/Menu";
@@ -26,9 +17,15 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+
 //Custom Components
 import Link from "../src/components/Link";
 import Layout from "../src/components/Layout";
+import ProductCardItem from "../src/components/ProductCartItem";
+
+//Redux
+import { initializeStore } from "../src/store";
+import { productActions, categoryActions, brandActions } from "../src/actions";
 
 const useStyles = makeStyles((theme) => ({
   newProductGridListRoot: {
@@ -71,79 +68,7 @@ const useStyles = makeStyles((theme) => ({
     background:
       "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
   },
-  cardRoot: {
-    margin: theme.spacing(1),
-    borderRadius: "10px",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-    transition: "opacity box-shadow 0.1s linear",
-    height: "95%",
-    minHeight: 310,
-    "& .MuiCardActionArea-root": {
-      overflow: "hidden",
-    },
-    "&:hover": {
-      boxShadow: "0 0 11px rgba(114, 17, 17,.7)",
 
-      "& .MuiCardMedia-img": {
-        transform: "scale(1.25)",
-      },
-
-      "& .MuiCardActions-root": {
-        opacity: 1,
-      },
-    },
-    "& .MuiCardContent-root:last-child": {
-      paddingBottom: 0,
-    },
-  },
-  cardRootMobile: {
-    height: "95%",
-    minHeight: 310,
-    "& .MuiCardContent-root:last-child": {
-      paddingBottom: 0,
-    },
-  },
-  cardMedia: {
-    // height: 0,
-    //paddingTop: "75%", // 4:3
-    transition: "transform 0.2s linear",
-  },
-  cardContent: {
-    padding: theme.spacing(1),
-  },
-  cardAction: {
-    padding: 0,
-    opacity: 0.5,
-    transition: "opacity 0.5s linear",
-    display: "flex",
-    justifyContent: "center",
-  },
-  listItem: {
-    maxWidth: "100%",
-    overflow: "hidden",
-    position: "relative",
-    lineHeight: "1.2em",
-    maxHeight: "2.4em",
-    //textAlign: "justify",
-    marginRight: "-1em",
-    paddingRight: "1em",
-    marginBottom: "0.5em",
-    "&::before": {
-      content: '"..."',
-      position: "absolute",
-      right: 0,
-      bottom: 0,
-    },
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      right: 0,
-      width: "1em",
-      height: "1em",
-      marginTop: "0.2em",
-      background: "white",
-    },
-  },
   sectionTitle: {
     textAlign: "center",
     margin: theme.spacing(2),
@@ -161,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(6),
   },
   hotDealPaper: {
-    backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark} , ${theme.palette.primary.light})`,
+    backgroundImage: `linear-gradient(to bottom, ${theme.palette.secondary.dark} , ${theme.palette.primary.light})`,
     color: theme.palette.common.white,
     padding: theme.spacing(2),
   },
@@ -205,130 +130,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
-//Function for long product name
-const TooltipDiv = (props) => {
-  const divRef = useRef(null);
-  const [allowTooltip, setAllowTooltip] = useState(false);
-
-  useEffect(() => {
-    if (
-      !allowTooltip &&
-      divRef.current.scrollHeight > divRef.current.offsetHeight
-    ) {
-      setAllowTooltip(true);
-    }
-  }, []);
-  if (allowTooltip) {
-    return (
-      <Tooltip title={props.text}>
-        <Typography variant="h6">
-          <div ref={divRef} className={props.className}>
-            {props.text}
-          </div>
-        </Typography>
-      </Tooltip>
-    );
-  }
-  return (
-    <Typography variant="h6">
-      <div ref={divRef} className={props.className}>
-        {props.text}
-      </div>
-    </Typography>
-  );
-};
-
-//Card display product
-function ProductCardItem(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down("xs"));
-
-  return (
-    <Card
-      key={props.index}
-      variant="outlined"
-      className={mobile ? classes.cardRootMobile : classes.cardRoot}
-    >
-      <Grid
-        container
-        style={{ height: "100%" }}
-        direction="column"
-        justify="space-between"
-      >
-        <Grid item>
-          <CardActionArea>
-            <CardMedia
-              className={classes.cardMedia}
-              component="img"
-              height={150}
-              image={props.product.img}
-              title={props.product.name}
-            />
-          </CardActionArea>
-        </Grid>
-        <Grid item>
-          <CardContent className={classes.cardContent}>
-            <TooltipDiv
-              text={props.product.name}
-              className={classes.listItem}
-            />
-
-            {props.product.discountPrice ? (
-              <Grid container>
-                <Grid item>
-                  <Typography variant="h6" color="primary" component="p">
-                    {props.product.discountPrice.toLocaleString()}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography
-                    style={{
-                      textDecoration: "line-through",
-                      paddingLeft: theme.spacing(1),
-                    }}
-                    variant={mobile ? "subtitle2" : "subtitle1"}
-                    color="textSecondary"
-                    component="p"
-                  >
-                    {props.product.price.toLocaleString()}
-                  </Typography>
-                </Grid>
-              </Grid>
-            ) : (
-              <Typography
-                variant={mobile ? "h6" : "h5"}
-                color="primary"
-                component="p"
-              >
-                {props.product.price.toLocaleString()}
-              </Typography>
-            )}
-          </CardContent>
-        </Grid>
-        <Grid item>
-          <CardActions
-            className={classes.cardAction}
-            justify="center"
-            spacing={2}
-          >
-            <Grid item>
-              <IconButton color="primary" aria-label="add-to-shopping-cart">
-                <AddShoppingCartIcon />
-              </IconButton>
-            </Grid>
-            <Grid item>
-              <IconButton color="primary" aria-label="favorite">
-                <FavoriteBorderIcon />
-              </IconButton>
-            </Grid>
-          </CardActions>
-        </Grid>
-      </Grid>
-    </Card>
-  );
-}
 
 const Image = ({ url, alt }) => (
   <img
@@ -474,36 +275,36 @@ function CategorySectionPaper(props) {
 const tileData = [
   {
     img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
+    productName: "Image",
     price: 100000000,
     discountPrice: 90000000,
   },
   {
     img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
+    productName: "Image",
     price: 10000000,
     discountPrice: 9000000,
   },
   {
     img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
+    productName: "Image",
     price: 1000,
     discountPrice: 900,
   },
   {
     img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
+    productName: "Image",
     price: 1000,
   },
   {
     img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Nghiêng qua nghiêng lại nghiên tới nghiên lui",
+    productName: "Nghiêng qua nghiêng lại nghiên tới nghiên lui",
     price: 1000,
     discountPrice: 900,
   },
   {
     img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
+    productName: "Image",
     price: 1000,
     discountPrice: 900,
   },
@@ -692,4 +493,15 @@ export default function Index() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const reduxStore = initializeStore();
+  const { dispatch } = reduxStore;
+
+  await dispatch(productActions.getAll());
+  await dispatch(categoryActions.getAll());
+  await dispatch(brandActions.getAll());
+
+  return { props: { initialReduxState: reduxStore.getState() } };
 }

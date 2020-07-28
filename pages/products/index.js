@@ -34,11 +34,17 @@ import Skeleton from "@material-ui/lab/Skeleton";
 //Custom Components
 import Link from "../../src/components/Link";
 import Layout from "../../src/components/Layout";
+import ProductCardItem from "../../src/components/ProductCartItem";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
 import { initializeStore } from "../../src/store";
-import { productActions } from "../../src/actions";
+import {
+  productActions,
+  categoryActions,
+  brandActions,
+} from "../../src/actions";
+import { categories } from "../../src/reducers/categories.reducer";
 
 const useStyles = makeStyles((theme) => ({
   center: {
@@ -53,67 +59,7 @@ const useStyles = makeStyles((theme) => ({
   marginAll: {
     margin: theme.spacing(1),
   },
-  cardRoot: {
-    margin: theme.spacing(1),
-    borderRadius: "10px",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-    transition: "opacity 0.1s box-shadow 0.3s linear",
-    "& .MuiCardActionArea-root": {
-      overflow: "hidden",
-    },
-    "&:hover": {
-      boxShadow: "0 0 11px rgba(114, 17, 17,.7)",
 
-      "& .MuiCardMedia-img": {
-        transform: "scale(1.25)",
-      },
-
-      "& .MuiCardActions-root": {
-        opacity: 1,
-      },
-    },
-  },
-  cardMedia: {
-    // height: 0,
-    //paddingTop: "75%", // 4:3
-    transition: "transform 0.2s linear",
-  },
-  cardContent: {
-    padding: theme.spacing(1),
-  },
-  cardAction: {
-    padding: 0,
-    opacity: 0.5,
-    transition: "opacity 0.5s linear",
-    display: "flex",
-    justifyContent: "center",
-  },
-  listItem: {
-    maxWidth: "20rem",
-    overflow: "hidden",
-    position: "relative",
-    lineHeight: "1.2em",
-    maxHeight: "2.4em",
-    textAlign: "justify",
-    marginRight: "-1em",
-    paddingRight: "1em",
-    marginBottom: "0.5em",
-    "&&:before": {
-      content: '"..."',
-      position: "absolute",
-      right: 0,
-      bottom: 0,
-    },
-    "&&:after": {
-      content: '""',
-      position: "absolute",
-      right: 0,
-      width: "1em",
-      height: "1em",
-      marginTop: "0.2em",
-      background: "white",
-    },
-  },
   sectionTitle: {
     textAlign: "center",
     margin: theme.spacing(4),
@@ -144,76 +90,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-//Function for long product name
-const TooltipDiv = (props) => {
-  const divRef = useRef(null);
-  const [allowTooltip, setAllowTooltip] = useState(false);
-
-  useEffect(() => {
-    if (
-      !allowTooltip &&
-      divRef.current.scrollHeight > divRef.current.offsetHeight
-    ) {
-      setAllowTooltip(true);
-    }
-  }, []);
-  if (allowTooltip) {
-    return (
-      <Tooltip title={props.text}>
-        <Typography variant="h5" ref={divRef} className={props.className}>
-          {props.text}
-        </Typography>
-      </Tooltip>
-    );
-  }
-  return (
-    <Typography variant="h5" ref={divRef} className={props.className}>
-      {props.text}
-    </Typography>
-  );
-};
-
 function ListItemLink(props) {
   return <ListItem button component={Link} {...props} />;
 }
-
-const tileData = [
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
-    price: 100000000,
-    discountPrice: 90000000,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
-    price: 10000000,
-    discountPrice: 9000000,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
-    price: 1000,
-    discountPrice: 900,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
-    price: 1000,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image sajdlkajdlka L ajdlsdlka jklasjdlksajdkla jkasdjlsajdl",
-    price: 1000,
-    discountPrice: 900,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    name: "Image",
-    price: 1000,
-    discountPrice: 900,
-  },
-];
 
 export default function ProductIndex() {
   const classes = useStyles();
@@ -223,6 +102,8 @@ export default function ProductIndex() {
 
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
+  const categories = useSelector((state) => state.categories);
+  const brands = useSelector((state) => state.brands);
 
   const [openPrice, setOpenPrice] = React.useState(true);
   const [openCategory, setOpenCategory] = React.useState(false);
@@ -240,11 +121,9 @@ export default function ProductIndex() {
     setOpenBrand(!openBrand);
   };
 
-  const handlePageChange = (event, value) => {
-    dispatch(productActions.getAll(`?page=${value}`));
+  const handlePageChange = async (event, value) => {
+    await dispatch(productActions.getAll(`?page=${value}`));
   };
-
-  console.log(products);
 
   return (
     <Layout>
@@ -324,12 +203,17 @@ export default function ProductIndex() {
                 </ButtonBase>
                 <Collapse in={openCategory} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItemLink href="#simple-list">
-                      <ListItemText primary="Trash" />
-                    </ListItemLink>
-                    <ListItemLink href="#simple-list">
-                      <ListItemText primary="Spam" />
-                    </ListItemLink>
+                    {categories.items
+                      ? categories.items.map((category, index) => (
+                          <ListItemLink
+                            key={index}
+                            href="/categories/[id]"
+                            as={`/categories/${category.id}`}
+                          >
+                            <ListItemText primary={category.name} />
+                          </ListItemLink>
+                        ))
+                      : "Something wrong or no data"}
                   </List>
                 </Collapse>
               </Paper>
@@ -350,12 +234,17 @@ export default function ProductIndex() {
                 </ButtonBase>
                 <Collapse in={openBrand} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItemLink href="#simple-list">
-                      <ListItemText primary="Trash" />
-                    </ListItemLink>
-                    <ListItemLink href="#simple-list">
-                      <ListItemText primary="Spam" />
-                    </ListItemLink>
+                    {brands.items
+                      ? brands.items.map((brand, index) => (
+                          <ListItemLink
+                            key={index}
+                            href="/brands/[id]"
+                            as={`/brands/${brand.id}`}
+                          >
+                            <ListItemText primary={brand.name} />
+                          </ListItemLink>
+                        ))
+                      : "Something wrong or no data"}
                   </List>
                 </Collapse>
               </Paper>
@@ -375,101 +264,7 @@ export default function ProductIndex() {
               {products.items.map((product, index) => (
                 <Grid key={index} item xs={6} sm={4} md={3}>
                   {!products.loading ? (
-                    <Card
-                      key={index}
-                      variant="outlined"
-                      className={mobile ? null : classes.cardRoot}
-                    >
-                      <CardActionArea
-                        component={Link}
-                        href="/products/[id]"
-                        as={`/products/${product.id}`}
-                      >
-                        <CardMedia
-                          className={classes.cardMedia}
-                          component="img"
-                          height={150}
-                          image={
-                            "https://source.unsplash.com/featured/?{japan}"
-                          }
-                          title={product.name}
-                        />
-                      </CardActionArea>
-                      <CardContent className={classes.cardContent}>
-                        {mobile ? (
-                          <Typography
-                            gutterBottom
-                            variant="h6"
-                            component="h2"
-                            noWrap={true}
-                          >
-                            {product.productName}
-                          </Typography>
-                        ) : (
-                          <TooltipDiv
-                            text={product.productName}
-                            className={classes.listItem}
-                          />
-                        )}
-
-                        {product.discountPrice ? (
-                          <Grid
-                            container
-                            direction={mobile ? "column" : "row"}
-                            spacing={mobile ? 0 : 2}
-                          >
-                            <Grid item>
-                              <Typography
-                                // variant={mobile ? "h6" : "h5"}
-                                variant="h6"
-                                color="primary"
-                                component="p"
-                              >
-                                {product.discountPrice.toLocaleString()}
-                              </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Typography
-                                style={{ textDecoration: "line-through" }}
-                                variant={mobile ? "subtitle2" : "subtitle1"}
-                                color="textSecondary"
-                                component="p"
-                              >
-                                {product.price.toLocaleString()}
-                              </Typography>
-                            </Grid>
-                          </Grid>
-                        ) : (
-                          <Typography
-                            variant={mobile ? "h6" : "h5"}
-                            color="primary"
-                            component="p"
-                          >
-                            {product.price.toLocaleString()}
-                          </Typography>
-                        )}
-                      </CardContent>
-
-                      <CardActions
-                        className={classes.cardAction}
-                        justify="center"
-                        spacing={2}
-                      >
-                        <Grid item>
-                          <IconButton
-                            color="primary"
-                            aria-label="add to shopping cart"
-                          >
-                            <AddShoppingCartIcon />
-                          </IconButton>
-                        </Grid>
-                        <Grid item>
-                          <IconButton color="primary" aria-label="favorite">
-                            <FavoriteBorderIcon />
-                          </IconButton>
-                        </Grid>
-                      </CardActions>
-                    </Card>
+                    <ProductCardItem product={product} index={index} />
                   ) : (
                     <Skeleton variant="rect" height={"30vh"}></Skeleton>
                   )}
@@ -512,6 +307,9 @@ export async function getServerSideProps(ctx) {
   if (ctx.query.search)
     await dispatch(productActions.getAll(`?search=${ctx.query.search}`));
   else await dispatch(productActions.getAll());
+
+  await dispatch(categoryActions.getAll());
+  await dispatch(brandActions.getAll());
 
   return { props: { initialReduxState: reduxStore.getState() } };
 }
