@@ -25,6 +25,12 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import SubscriptionsIcon from "@material-ui/icons/Subscriptions";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 //Social
 import {
@@ -43,9 +49,13 @@ import Link from "../../src/components/Link";
 import ImageZoom from "../../src/components/ZoomImage";
 
 //Redux
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { initializeStore } from "../../src/store";
-import { productActions } from "../../src/actions";
+import {
+  productActions,
+  categoryActions,
+  brandActions,
+} from "../../src/actions";
 
 const useStyles = makeStyles((theme) => ({
   marginY: {
@@ -84,6 +94,10 @@ const useStyles = makeStyles((theme) => ({
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  productInfoSection: {
+    background: theme.palette.secondary.light,
+    color: "white",
   },
 }));
 
@@ -134,15 +148,17 @@ function getId(url) {
   }
 }
 
-const productData = {
-  img: "https://source.unsplash.com/featured/?{japan}",
-  name: "Image sajdlkajdlka L ajdlsdlka jklasjdlksajdkla jkasdjlsajdl",
-  price: 1000000,
-  discountPrice: 900000,
-  barcode: 123,
-  category: "Category",
-  brand: "Brand",
-};
+function createInfoData(name, detail) {
+  if (detail) return { name, detail };
+  else
+    return {
+      name: (
+        <Typography style={{ fontWeight: "bolder" }} variant="subtitle1">
+          {name}
+        </Typography>
+      ),
+    };
+}
 
 const Product = () => {
   const classes = useStyles();
@@ -150,8 +166,49 @@ const Product = () => {
 
   const mobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const dispatch = useDispatch();
-  const productData = useSelector((state) => state.products.item);
+  const product = useSelector((state) => state.products.item);
+  const category = useSelector((state) => state.categories.items);
+  const brand = useSelector((state) => state.brands.items);
+
+  let rows;
+  product && brand && category
+    ? (rows = [
+        createInfoData("General"),
+        createInfoData(
+          "Brand",
+          brand.find((element) => element.id === product.brand).name ||
+            product.brand
+        ),
+        createInfoData(
+          "Category",
+          category.find((element) => element.id === product.category).name ||
+            product.category
+        ),
+        createInfoData("Configurations"),
+        createInfoData("CPU", product.cpu),
+        createInfoData("GPU", product.gpu),
+        createInfoData("OS", product.os),
+        createInfoData("RAM", product.ram),
+        createInfoData("Storage", product.storage),
+        createInfoData("New Features", product.newFeature),
+        createInfoData("Display"),
+        createInfoData("Display", product.display),
+        createInfoData("Display Resolution", product.displayResolution),
+        createInfoData("Display Screen", product.displayScreen),
+        createInfoData("Camera"),
+        createInfoData("Camera", product.camera),
+        createInfoData("Video", product.video),
+        createInfoData("Connectivity"),
+        createInfoData("Wifi", product.wifi),
+        createInfoData("Bluetooth", product.bluetooth),
+        createInfoData("Ports", product.ports),
+        createInfoData("Physical details"),
+        createInfoData("Size", product.size),
+        createInfoData("Weight", product.weight),
+        createInfoData("Material", product.material),
+        createInfoData("Battery Capacity", product.batteryCapacity),
+      ])
+    : (rows = []);
 
   const [value, setValue] = React.useState(0);
   const [isActive, setIsActive] = React.useState(false);
@@ -230,10 +287,23 @@ const Product = () => {
           <Link color="inherit" href="/" as={"/"}>
             Home
           </Link>
-          <Link color="inherit" href="/getting-started/installation/">
-            Category
+          <Link
+            color="inherit"
+            href="/brands/[id]"
+            as={`/brands/${product.brand}`}
+          >
+            {brand.find((element) => element.id === product.brand).name ||
+              product.brand}
           </Link>
-          <Typography color="primary">Product</Typography>
+          <Link
+            color="inherit"
+            href="/categories/[id]"
+            as={`/categories/${product.category}`}
+          >
+            {category.find((element) => element.id === product.category).name ||
+              product.category}
+          </Link>
+          <Typography color="primary">{product.productName}</Typography>
         </Breadcrumbs>
 
         {/* Grid for pictures and main info  */}
@@ -266,11 +336,11 @@ const Product = () => {
                       <SubscriptionsIcon />
                     </IconButton>
                   </Grid>
-                  {[...Array(4)].map((item, index) => (
+                  {product.images.map((image, index) => (
                     <Grid key={index} item>
                       <img
                         className={classes.smallImg}
-                        src="https://source.unsplash.com/featured/?{japan}"
+                        src={`https://nextjs-eshop-backend.herokuapp.com/uploads/${image.path}`}
                         alt="No Data"
                       ></img>
                     </Grid>
@@ -289,7 +359,7 @@ const Product = () => {
               >
                 <ImageZoom
                   isActive={isActive}
-                  imageURL={"https://source.unsplash.com/featured/?{japan}"}
+                  imageURL={`https://nextjs-eshop-backend.herokuapp.com/uploads/${product.images[0].path}`}
                   onZoom={onZoom}
                   onClose={onClose}
                   zoomType={mobile ? "click" : "hover"}
@@ -312,10 +382,10 @@ const Product = () => {
                 component="h1"
                 //   style={{ wordWrap: "break-word" }}
               >
-                {productData.productName}
+                {product.productName}
               </Typography>
 
-              {productData.discountPrice ? (
+              {product.discountPrice ? (
                 <Grid
                   container
                   className={classes.marginY}
@@ -325,7 +395,7 @@ const Product = () => {
                   <Grid item>
                     <Typography display="inline" variant="h4" color="primary">
                       <Box display="inline" fontWeight={700} m={1}>
-                        {productData.discountPrice.toLocaleString()}
+                        {product.discountPrice.toLocaleString()}
                       </Box>
                     </Typography>
                   </Grid>
@@ -336,32 +406,34 @@ const Product = () => {
                       color="textSecondary"
                       style={{ textDecoration: "line-through" }}
                     >
-                      {productData.price.toLocaleString()}
+                      {product.price.toLocaleString()}
                     </Typography>
                   </Grid>
                 </Grid>
               ) : (
                 <Typography variant="h4" color="primary" gutterBottom>
                   <Box fontWeight={700} m={1}>
-                    {productData.price.toLocaleString()}
+                    {product.price.toLocaleString()}
                   </Box>
                 </Typography>
               )}
 
-              <Typography variant="body1">SKU: {productData.sku}</Typography>
+              <Typography variant="body1">SKU: {product.sku}</Typography>
               <Typography variant="body1">
                 Category:{" "}
                 <Link
                   href="/categories/[id]"
-                  as={`/categories/${productData.category}`}
+                  as={`/categories/${product.category}`}
                 >
-                  {productData.category}
+                  {category.find((element) => element.id === product.category)
+                    .name || product.category}
                 </Link>
               </Typography>
               <Typography variant="body1">
                 Brand:{" "}
-                <Link href="/brands/[id]" as={`/brands/${productData.brand}`}>
-                  {productData.brand}
+                <Link href="/brands/[id]" as={`/brands/${product.brand}`}>
+                  {brand.find((element) => element.id === product.brand).name ||
+                    product.brand}
                 </Link>
               </Typography>
             </Grid>
@@ -434,9 +506,9 @@ const Product = () => {
               centered
               aria-label="full width tabs example"
             >
-              <Tab label="Thông tin" {...a11yProps(0)} />
-              <Tab label="Thành phần" {...a11yProps(1)} />
-              <Tab label="Hướng dẫn sử dụng" {...a11yProps(2)} />
+              <Tab label="Information" {...a11yProps(0)} />
+              <Tab label="Detail" {...a11yProps(1)} />
+              <Tab label="Reviews" {...a11yProps(2)} />
             </Tabs>
           </AppBar>
           <SwipeableViews
@@ -445,8 +517,36 @@ const Product = () => {
             onChangeIndex={handleTabChangeIndex}
           >
             <TabPanel value={value} index={0} dir={theme.direction}></TabPanel>
+
+            {/* Information Table */}
             <TabPanel value={value} index={1} dir={theme.direction}>
-              Item Two
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                  <TableBody>
+                    {rows.map((row, index) => (
+                      <TableRow key={index}>
+                        {row.detail ? (
+                          <React.Fragment>
+                            <TableCell component="th" scope="row">
+                              {row.name}
+                            </TableCell>
+                            <TableCell align="left">{row.detail}</TableCell>
+                          </React.Fragment>
+                        ) : (
+                          <TableCell
+                            className={classes.productInfoSection}
+                            colSpan={2}
+                            component="th"
+                            scope="row"
+                          >
+                            {row.name}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </TabPanel>
             <TabPanel value={value} index={2} dir={theme.direction}>
               Item Three
@@ -490,6 +590,8 @@ export async function getServerSideProps(ctx) {
   const { dispatch } = reduxStore;
 
   await dispatch(productActions.getById(ctx.query.id));
+  await dispatch(categoryActions.getAll());
+  await dispatch(brandActions.getAll());
 
   return { props: { initialReduxState: reduxStore.getState() } };
 }

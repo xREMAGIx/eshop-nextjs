@@ -14,6 +14,10 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Skeleton from "@material-ui/lab/Skeleton";
+
+//Custom Components
+import Link from "../components/Link";
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -148,14 +152,23 @@ export default function ProductCardItem(props) {
         justify="space-between"
       >
         <Grid item container>
-          <CardActionArea>
-            <CardMedia
-              className={classes.cardMedia}
-              component="img"
-              height={150}
-              image={props.product.img}
-              title={props.product.name}
-            />
+          <CardActionArea
+            component={Link}
+            href="/products/[id]"
+            as={`/products/${props.product.id}`}
+          >
+            {props.product.images ? (
+              <CardMedia
+                className={classes.cardMedia}
+                component="img"
+                height={150}
+                image={`https://nextjs-eshop-backend.herokuapp.com/uploads/${props.product.images[0].path}`}
+                title={props.product.name}
+                lazy
+              />
+            ) : (
+              <Skeleton variant="rect" height={150} />
+            )}
           </CardActionArea>
         </Grid>
         <Grid item container>
