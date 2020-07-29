@@ -162,9 +162,9 @@ export default function ProductCardItem(props) {
                 className={classes.cardMedia}
                 component="img"
                 height={150}
-                image={`https://nextjs-eshop-backend.herokuapp.com/uploads/${props.product.images[0].path}`}
+                image={`${process.env.DB_HOST}/uploads/${props.product.images[0].path}`}
                 title={props.product.name}
-                lazy
+                lazy={true}
               />
             ) : (
               <Skeleton variant="rect" height={150} />
