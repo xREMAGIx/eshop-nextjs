@@ -340,7 +340,7 @@ const Product = () => {
                     <Grid key={index} item>
                       <img
                         className={classes.smallImg}
-                        src={`${process.env.DB_HOST}/uploads/${image.path}`}
+                        src={`https://nextjs-eshop-backend.herokuapp.com/uploads/${image.path}`}
                         alt="No Data"
                       ></img>
                     </Grid>
@@ -359,7 +359,7 @@ const Product = () => {
               >
                 <ImageZoom
                   isActive={isActive}
-                  imageURL={`${process.env.DB_HOST}/uploads/${product.images[0].path}`}
+                  imageURL={`https://nextjs-eshop-backend.herokuapp.com/uploads/${product.images[0].path}`}
                   onZoom={onZoom}
                   onClose={onClose}
                   zoomType={mobile ? "click" : "hover"}
