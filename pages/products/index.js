@@ -100,6 +100,13 @@ export default function ProductIndex() {
   const [openCategory, setOpenCategory] = React.useState(false);
   const [openBrand, setOpenBrand] = React.useState(false);
 
+  const [priceValue, setPriceValue] = React.useState("all");
+  const [advanceProducts, setAdvanceProducts] = React.useState(products.items);
+
+  const handlePriceChange = (event) => {
+    setPriceValue(event.target.value);
+  };
+
   const handlePriceClick = () => {
     setOpenPrice(!openPrice);
   };
@@ -115,6 +122,68 @@ export default function ProductIndex() {
   const handlePageChange = (event, value) => {
     dispatch(productActions.getAll(`?page=${value}`));
   };
+
+  useEffect(() => {
+    switch (priceValue) {
+      case "all":
+        setAdvanceProducts(products.items);
+        break;
+      case "10":
+        setAdvanceProducts(
+          products.items.filter(
+            (product) =>
+              ((100 - product.discount) * product.price) / 100 < 10000000
+          )
+        );
+        break;
+      case "10-15":
+        setAdvanceProducts(
+          products.items.filter(
+            (product) =>
+              10000000 < ((100 - product.discount) * product.price) / 100 &&
+              ((100 - product.discount) * product.price) / 100 < 15000000
+          )
+        );
+        break;
+      case "15-20":
+        setAdvanceProducts(
+          products.items.filter(
+            (product) =>
+              15000000 < ((100 - product.discount) * product.price) / 100 &&
+              ((100 - product.discount) * product.price) / 100 < 20000000
+          )
+        );
+        break;
+      case "20-25":
+        setAdvanceProducts(
+          products.items.filter(
+            (product) =>
+              20000000 < ((100 - product.discount) * product.price) / 100 &&
+              ((100 - product.discount) * product.price) / 100 < 25000000
+          )
+        );
+        break;
+      case "25-30":
+        setAdvanceProducts(
+          products.items.filter(
+            (product) =>
+              25000000 < ((100 - product.discount) * product.price) / 100 &&
+              ((100 - product.discount) * product.price) / 100 < 30000000
+          )
+        );
+        break;
+      case "30":
+        setAdvanceProducts(
+          products.items.filter(
+            (product) =>
+              ((100 - product.discount) * product.price) / 100 > 30000000
+          )
+        );
+        break;
+      default:
+        break;
+    }
+  }, [priceValue]);
 
   return (
     <Layout>
@@ -142,6 +211,8 @@ export default function ProductIndex() {
                       name="price-list"
                       defaultValue="all"
                       className={classes.marginAll}
+                      value={priceValue}
+                      onChange={handlePriceChange}
                     >
                       <FormControlLabel
                         value="all"
@@ -149,27 +220,32 @@ export default function ProductIndex() {
                         label="Tất cả"
                       />
                       <FormControlLabel
-                        value="500k"
+                        value="10"
                         control={<Radio color="primary" />}
                         label="Dưới 10 triệu"
                       />
                       <FormControlLabel
-                        value="Từ 10 triệu - 15 triệu"
+                        value="10-15"
+                        control={<Radio color="primary" />}
+                        label="Từ 10 triệu - 15 triệu"
+                      />
+                      <FormControlLabel
+                        value="15-20"
                         control={<Radio color="primary" />}
                         label="Từ 15 triệu - 20 triệu"
                       />
                       <FormControlLabel
-                        value="1-5tr"
+                        value="20-25"
                         control={<Radio color="primary" />}
                         label="Từ 20 triệu - 25 triệu"
                       />
                       <FormControlLabel
-                        value="5-10tr"
+                        value="25-30"
                         control={<Radio color="primary" />}
                         label="Từ 25 triệu - 30 triệu"
                       />
                       <FormControlLabel
-                        value="10tr"
+                        value="30"
                         control={<Radio color="primary" />}
                         label="Trên 30 triệu"
                       />
@@ -252,15 +328,19 @@ export default function ProductIndex() {
 
             {/* List items */}
             <Grid container spacing={mobile ? 0 : 2}>
-              {products.items.map((product, index) => (
-                <Grid key={index} item xs={6} sm={4} md={3}>
-                  {!products.loading ? (
-                    <ProductCardItem product={product} index={index} />
-                  ) : (
-                    <Skeleton variant="rect" height={"30vh"}></Skeleton>
-                  )}
-                </Grid>
-              ))}
+              {advanceProducts ? (
+                advanceProducts.map((product, index) => (
+                  <Grid key={index} item xs={6} sm={4} md={3}>
+                    {!products.loading ? (
+                      <ProductCardItem product={product} index={index} />
+                    ) : (
+                      <Skeleton variant="rect" height={"30vh"}></Skeleton>
+                    )}
+                  </Grid>
+                ))
+              ) : (
+                <Skeleton variant="rect" height={"10vh"}></Skeleton>
+              )}
             </Grid>
             {/* Pagination */}
             <div className={classes.center}>

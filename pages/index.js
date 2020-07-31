@@ -389,15 +389,16 @@ export default function Index() {
           renderButtonGroupOutside={false}
           renderDotsOutside={false}
         >
-          {banners.items.map((image, index) => {
-            return (
-              <Image
-                key={index}
-                url={`${backend_url}/uploads/${image.path}`}
-                alt={image}
-              />
-            );
-          })}
+          {banners.items &&
+            banners.items.map((image, index) => {
+              return (
+                <Image
+                  key={index}
+                  url={`${backend_url}/uploads/${image.path}`}
+                  alt={image}
+                />
+              );
+            })}
         </Carousel>
       </div>
       {/* Hot Deal List */}
