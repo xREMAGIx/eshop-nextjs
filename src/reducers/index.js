@@ -5,6 +5,7 @@ import { banners } from "./banners.reducer";
 import { brands } from "./brands.reducer";
 import { categories } from "./categories.reducer";
 import { users } from "./users.reducer";
+import { cart } from "./carts.reducer";
 
 const rootReducer = combineReducers({
   products,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   brands,
   categories,
   users,
+  cart,
 });
 
 export default rootReducer;

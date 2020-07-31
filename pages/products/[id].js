@@ -55,6 +55,7 @@ import {
   productActions,
   categoryActions,
   brandActions,
+  checkServerSideCookie,
 } from "../../src/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -588,6 +589,8 @@ const Product = () => {
 export async function getServerSideProps(ctx) {
   const reduxStore = initializeStore();
   const { dispatch } = reduxStore;
+
+  checkServerSideCookie(ctx, reduxStore);
 
   await dispatch(productActions.getById(ctx.query.id));
   await dispatch(categoryActions.getAll());

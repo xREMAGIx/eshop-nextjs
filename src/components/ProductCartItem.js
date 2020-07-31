@@ -15,6 +15,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Skeleton from "@material-ui/lab/Skeleton";
+import CompareIcon from "@material-ui/icons/Compare";
 
 //Custom Components
 import Link from "../components/Link";
@@ -164,7 +165,7 @@ export default function ProductCardItem(props) {
                 height={150}
                 image={`https://nextjs-eshop-backend.herokuapp.com/uploads/${props.product.images[0].path}`}
                 title={props.product.name}
-                lazy={true}
+                lazy="true"
               />
             ) : (
               <Skeleton variant="rect" height={150} />
@@ -220,6 +221,11 @@ export default function ProductCardItem(props) {
             <Grid item>
               <IconButton color="primary" aria-label="favorite">
                 <FavoriteBorderIcon />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <IconButton color="primary" aria-label="compare">
+                <CompareIcon />
               </IconButton>
             </Grid>
           </CardActions>

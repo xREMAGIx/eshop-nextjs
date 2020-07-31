@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import Router from "next/router";
 
 //UI Components
 import AppBar from "@material-ui/core/AppBar";
@@ -25,6 +24,13 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Collapse from "@material-ui/core/Collapse";
+import Alert from "@material-ui/lab/Alert";
+import CloseIcon from "@material-ui/icons/Close";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 
 //Custom Components
 import MainListItems from "./ListItemDrawer";
@@ -32,7 +38,8 @@ import Link from "./Link";
 
 //Redux
 import { useDispatch, useSelector } from "react-redux";
-import { productActions } from "../actions";
+import { productActions, userActions } from "../actions";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -197,8 +204,11 @@ function HoverPopover(props) {
 export default function Header() {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users);
   const categories = useSelector((state) => state.categories);
   const brands = useSelector((state) => state.brands);
+  const cart = useSelector((state) => state.cart);
 
   const [open, setOpen] = React.useState(false);
 
@@ -269,6 +279,90 @@ export default function Header() {
       searchLink.click();
     }
   };
+
+  const [anchorElMenuAccount, setAnchorElMenuAccount] = React.useState(null);
+
+  const handleMenuAccountClick = (event) => {
+    setAnchorElMenuAccount(event.currentTarget);
+  };
+
+  const handleMenuAccountClose = () => {
+    setAnchorElMenuAccount(null);
+  };
+
+  const handleLogout = () => {
+    dispatch(userActions.logout());
+  };
+
+  //Login Modal
+
+  const [loginFormData, setLoginFormData] = React.useState({
+    email: "",
+    password: "",
+  });
+
+  const [errorOpen, setErrorOpen] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+
+  const onChangeLogin = (e) => {
+    setLoginFormData({ ...loginFormData, [e.target.name]: e.target.value });
+  };
+
+  const keyPressed = (e, number) => {
+    if (e.key === "Enter") {
+      number == 1 ? onLogin(e) : onRegister(e);
+    }
+  };
+
+  const onLogin = () => {
+    if (loginFormData.email === "" || loginFormData.password === "") {
+      setErrorOpen(true);
+      setErrorMessage("Please fill out all required field");
+    } else {
+      dispatch(userActions.login(loginFormData));
+    }
+  };
+
+  //Register Modal
+  const [registerFormData, setRegisterFormData] = React.useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const { name, email, password, confirmPassword } = registerFormData;
+
+  const onChange = (e) => {
+    setRegisterFormData({
+      ...registerFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const onRegister = async () => {
+    console.log(registerFormData);
+    // perform all neccassary validations
+    if ((name && email && password && confirmPassword) === "") {
+      setOpen(true);
+      setErrorMessage("Please fill all required field");
+    } else if (password.length < 5) {
+      setOpen(true);
+      setErrorMessage("Password must have more than 5 characters");
+    } else if (password !== confirmPassword) {
+      setOpen(true);
+      setErrorMessage("Password's not match");
+    } else {
+      dispatch(userActions.register(registerFormData));
+    }
+  };
+
+  useEffect(() => {
+    if (users.error) {
+      setErrorOpen(true);
+      setErrorMessage(users.error);
+    }
+  }, [users.error]);
 
   return (
     <div className={classes.root}>
@@ -483,7 +577,10 @@ export default function Header() {
                   onMouseEnter={handlePopoverOpen}
                   onMouseLeave={handlePopoverClose}
                 >
-                  <Badge badgeContent={1} color="secondary">
+                  <Badge
+                    badgeContent={cart ? cart.items.length : 1}
+                    color="secondary"
+                  >
                     <ShoppingCartIcon />
                   </Badge>
                 </IconButton>
@@ -522,13 +619,33 @@ export default function Header() {
               </Grid>
               {/* Login */}
               <Grid item>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleOpenLoginModal}
-                >
-                  Login
-                </Button>
+                {users.token ? (
+                  <React.Fragment>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={handleMenuAccountClick}
+                    >
+                      <AccountCircleIcon />
+                    </IconButton>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorElMenuAccount}
+                      keepMounted
+                      open={Boolean(anchorElMenuAccount)}
+                      onClose={handleMenuAccountClose}
+                    >
+                      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    </Menu>
+                  </React.Fragment>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleOpenLoginModal}
+                  >
+                    Login
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </Grid>
@@ -556,6 +673,26 @@ export default function Header() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
+            <Collapse className={classes.alertContainer} in={errorOpen}>
+              <Alert
+                severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setErrorOpen(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+              >
+                <AlertTitle>Error</AlertTitle>
+                {errorMessage}
+              </Alert>
+            </Collapse>
             <form className={classes.form} noValidate>
               <TextField
                 variant="outlined"
@@ -567,6 +704,9 @@ export default function Header() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={loginFormData.email}
+                onKeyPress={(e) => keyPressed(e, 1)}
+                onChange={(e) => onChangeLogin(e)}
               />
               <TextField
                 variant="outlined"
@@ -578,26 +718,24 @@ export default function Header() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onKeyPress={(e) => keyPressed(e, 1)}
+                value={loginFormData.password}
+                onChange={(e) => onChangeLogin(e)}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                onClick={onLogin}
               >
                 Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
                 <Grid item>
                   <Button onClick={handleOpenSignupModal} variant="body2">
                     {"Don't have an account? Sign Up"}
@@ -630,29 +768,40 @@ export default function Header() {
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
+            <Collapse className={classes.alertContainer} in={errorOpen}>
+              <Alert
+                severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setErrorOpen(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+              >
+                <AlertTitle>Error</AlertTitle>
+                {errorMessage}
+              </Alert>
+            </Collapse>
             <form className={classes.form} noValidate>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="fname"
-                    name="firstName"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     variant="outlined"
                     required
                     fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastName"
-                    autoComplete="lname"
+                    id="name"
+                    label="Name"
+                    name="name"
+                    autoComplete="name"
+                    value={name}
+                    onKeyPress={(e) => keyPressed(e)}
+                    onChange={(e) => onChange(e)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -664,6 +813,9 @@ export default function Header() {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    value={email}
+                    onKeyPress={(e) => keyPressed(e)}
+                    onChange={(e) => onChange(e)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -671,11 +823,27 @@ export default function Header() {
                     variant="outlined"
                     required
                     fullWidth
-                    name="password"
                     label="Password"
+                    name="password"
                     type="password"
                     id="password"
-                    autoComplete="current-password"
+                    value={password}
+                    onKeyPress={(e) => keyPressed(e)}
+                    onChange={(e) => onChange(e)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    type="password"
+                    id="confirm-password"
+                    value={confirmPassword}
+                    onKeyPress={(e) => keyPressed(e)}
+                    onChange={(e) => onChange(e)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -688,11 +856,11 @@ export default function Header() {
                 </Grid>
               </Grid>
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                onClick={onRegister}
               >
                 Sign Up
               </Button>

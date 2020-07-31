@@ -25,7 +25,13 @@ import ProductCardItem from "../src/components/ProductCartItem";
 
 //Redux
 import { initializeStore } from "../src/store";
-import { productActions, categoryActions, brandActions } from "../src/actions";
+import {
+  productActions,
+  categoryActions,
+  brandActions,
+  cartActions,
+  checkServerSideCookie,
+} from "../src/actions";
 
 const useStyles = makeStyles((theme) => ({
   newProductGridListRoot: {
@@ -499,6 +505,9 @@ export async function getServerSideProps(ctx) {
   const reduxStore = initializeStore();
   const { dispatch } = reduxStore;
 
+  checkServerSideCookie(ctx, reduxStore);
+
+  await dispatch(cartActions.getAll(reduxStore.getState().users.token));
   await dispatch(productActions.getAll());
   await dispatch(categoryActions.getAll());
   await dispatch(brandActions.getAll());

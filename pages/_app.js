@@ -20,7 +20,7 @@ export default function App(props) {
   const store = useStore(pageProps.initialReduxState);
 
   const [loading, setLoading] = React.useState(false);
-  const [history, setHistory] = React.useState([]);
+  // const [history, setHistory] = React.useState([]);
   const asPath = props.router.asPath;
   const [changingLocation, setChangingLocation] = React.useState();
 
@@ -43,12 +43,12 @@ export default function App(props) {
     };
   }, []);
 
-  //Function for simple history, will optimize later
-  React.useEffect(() => {
-    if (history[history.length - 1] !== asPath) {
-      setHistory((prevHistory) => [...prevHistory, asPath]);
-    }
-  }, [history, asPath]);
+  // //Function for simple history, will optimize later
+  // React.useEffect(() => {
+  //   if (history[history.length - 1] !== asPath) {
+  //     setHistory((prevHistory) => [...prevHistory, asPath]);
+  //   }
+  // }, [history, asPath]);
 
   //Router change
   Router.onRouteChangeStart = (url) => {

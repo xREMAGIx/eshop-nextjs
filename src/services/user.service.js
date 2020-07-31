@@ -95,15 +95,9 @@ function _delete(id) {
 }
 
 function handleResponse(response) {
-  let data;
-  data = response.data;
+  const data = response.data;
 
-  if (response.status > 400 && error.response && error.response.data) {
-    let errorkey = Object.keys(error.response.data)[0];
-
-    let errorValue = error.response.data[errorkey][0];
-
-    const error = errorkey.toUpperCase() + ": " + errorValue;
+  if (response.status > 400 && error.response) {
     return Promise.reject(error);
   }
 

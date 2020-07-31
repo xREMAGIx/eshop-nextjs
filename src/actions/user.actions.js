@@ -41,7 +41,7 @@ function getMe(token) {
   }
 }
 
-function login(user, history) {
+function login(user) {
   let auth = { token: "", user_data: "" };
 
   return async (dispatch) => {
@@ -61,11 +61,7 @@ function login(user, history) {
             auth.user_data = userData.data;
             dispatch(successGetMe(userData));
             authenticate(auth, () => {
-              if (!history || !history.length) {
-                Router.push("/");
-              } else {
-                Router.push(history[history.length - 2]);
-              }
+              Router.reload();
             });
           },
           (error) => {
@@ -109,7 +105,7 @@ function logout() {
     }
     dispatch(cartActions.logout());
     await dispatch(logoutUser());
-    Router.push("/");
+    Router.reload();
   };
   function logoutUser() {
     return { type: userConstants.LOGOUT };
@@ -215,16 +211,16 @@ function _delete(id) {
   }
 }
 
-export const checkServerSideCookie = (ctx) => {
+export const checkServerSideCookie = (ctx, reduxStore) => {
   const isServer = !!ctx.req;
 
   if (isServer) {
-    if (ctx.req.headers.cookie) {
-      const token = getCookie("token", ctx.req);
-      ctx.store.dispatch(reauthenticate(token));
-    }
+    console.log(1);
+    const token = getCookie("token", ctx.req) || null;
+    reduxStore.dispatch(reauthenticate(token));
   } else {
-    const token = ctx.store.getState().users.token;
+    console.log(2);
+    const token = reduxStore.getState().users.token || null;
 
     if (token && (ctx.pathname === "/login" || ctx.pathname === "/register")) {
       setTimeout(function () {
@@ -235,8 +231,8 @@ export const checkServerSideCookie = (ctx) => {
 };
 
 export const reauthenticate = (token) => {
-  return (dispatch) => {
-    dispatch(auth(token));
+  return async (dispatch) => {
+    await dispatch(auth(token));
   };
 
   function auth(token) {

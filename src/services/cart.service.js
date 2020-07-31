@@ -68,7 +68,8 @@ async function deleteItem(productId, token) {
 }
 
 function handleResponse(response) {
-  const data = response.data.data;
+  const data = response.data;
+
   if (response.status === 404) {
     // if (response.status === 401) {
     //   // auto logout if 401 response returned from api

@@ -43,8 +43,10 @@ import {
   productActions,
   categoryActions,
   brandActions,
+  cartActions,
+  checkServerSideCookie,
+  userActions,
 } from "../../src/actions";
-import { categories } from "../../src/reducers/categories.reducer";
 
 const useStyles = makeStyles((theme) => ({
   center: {
@@ -121,8 +123,8 @@ export default function ProductIndex() {
     setOpenBrand(!openBrand);
   };
 
-  const handlePageChange = async (event, value) => {
-    await dispatch(productActions.getAll(`?page=${value}`));
+  const handlePageChange = (event, value) => {
+    dispatch(productActions.getAll(`?page=${value}`));
   };
 
   return (
@@ -304,10 +306,13 @@ export async function getServerSideProps(ctx) {
   const reduxStore = initializeStore();
   const { dispatch } = reduxStore;
 
+  checkServerSideCookie(ctx, reduxStore);
+
   if (ctx.query.search)
     await dispatch(productActions.getAll(`?search=${ctx.query.search}`));
   else await dispatch(productActions.getAll());
 
+  await dispatch(cartActions.getAll(reduxStore.getState().users.token));
   await dispatch(categoryActions.getAll());
   await dispatch(brandActions.getAll());
 
