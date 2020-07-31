@@ -240,9 +240,7 @@ export async function getServerSideProps(ctx) {
 
   checkServerSideCookie(ctx, reduxStore);
 
-  if (ctx.query.search)
-    await dispatch(productActions.getAll(`?search=${ctx.query.search}`));
-  else await dispatch(productActions.getAll());
+  await dispatch(productActions.getAll());
 
   await dispatch(cartActions.getAll(reduxStore.getState().users.token));
 

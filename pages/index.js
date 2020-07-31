@@ -24,6 +24,7 @@ import Layout from "../src/components/Layout";
 import ProductCardItem from "../src/components/ProductCartItem";
 
 //Redux
+import { useSelector } from "react-redux";
 import { initializeStore } from "../src/store";
 import {
   productActions,
@@ -31,7 +32,11 @@ import {
   brandActions,
   cartActions,
   checkServerSideCookie,
+  bannerActions,
 } from "../src/actions";
+import { products } from "../src/reducers/products.reducer";
+
+const backend_url = "https://nextjs-eshop-backend.herokuapp.com";
 
 const useStyles = makeStyles((theme) => ({
   newProductGridListRoot: {
@@ -140,9 +145,10 @@ const useStyles = makeStyles((theme) => ({
 const Image = ({ url, alt }) => (
   <img
     draggable={false}
-    style={{ width: "100%", height: "100%", position: "relative" }}
+    style={{ width: "100%", height: "70vh", position: "relative" }}
     src={url}
     alt={alt}
+    lazy="true"
   />
 );
 
@@ -153,7 +159,8 @@ function ListItemLink(props) {
 function CategorySectionPaper(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down("xs"));
+
+  const products = useSelector((state) => state.products);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -203,7 +210,17 @@ function CategorySectionPaper(props) {
                   ))}
                 </Grid>
                 <Grid item xs={2} container justify="flex-end">
-                  <Button color="secondary">Xem thêm</Button>
+                  <Button
+                    component={Link}
+                    href="/products"
+                    as={{
+                      pathname: "/products",
+                      query: { category: `${props.categorygroup.id}` },
+                    }}
+                    color="secondary"
+                  >
+                    See more
+                  </Button>
                 </Grid>
               </Grid>
             </Hidden>
@@ -255,81 +272,32 @@ function CategorySectionPaper(props) {
         {/* Section main content */}
         <Grid item container>
           {/* Category Banner */}
-          <Hidden smDown>
+          {/* <Hidden smDown>
             <Grid item style={{ overflow: "hidden" }} md={3}>
               <img
                 height={700}
-                src={"https://source.unsplash.com/featured/?{japan}"}
+                src={"https://source.unsplash.com/featured/?{macbook}"}
                 alt="No data"
+                lazy="true"
               />
             </Grid>
-          </Hidden>
+          </Hidden> */}
           {/* List products (max: 8) */}
-          <Grid item md={9} container>
-            {tileData.slice(0, 8).map((product, index) => (
-              <Grid item key={index} xs={6} sm={4} md={3}>
-                <ProductCardItem product={product} index={index} />
-              </Grid>
-            ))}
+          <Grid item md={12} container>
+            {products.items
+              .filter((product) => product.category === props.categorygroup.id)
+              .slice(0, 8)
+              .map((product, index) => (
+                <Grid item key={index} xs={6} sm={4} md={3}>
+                  <ProductCardItem product={product} index={index} />
+                </Grid>
+              ))}
           </Grid>
         </Grid>
       </Grid>
     </Paper>
   );
 }
-
-const tileData = [
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    productName: "Image",
-    price: 100000000,
-    discountPrice: 90000000,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    productName: "Image",
-    price: 10000000,
-    discountPrice: 9000000,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    productName: "Image",
-    price: 1000,
-    discountPrice: 900,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    productName: "Image",
-    price: 1000,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    productName: "Nghiêng qua nghiêng lại nghiên tới nghiên lui",
-    price: 1000,
-    discountPrice: 900,
-  },
-  {
-    img: "https://source.unsplash.com/featured/?{japan}",
-    productName: "Image",
-    price: 1000,
-    discountPrice: 900,
-  },
-];
-
-const images = [
-  "https://images.unsplash.com/photo-1549989476-69a92fa57c36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549396535-c11d5c55b9df?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550133730-695473e544be?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550167164-1b67c2be3973?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550338861-b7cfeaf8ffd8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550223640-23097fc71cb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550353175-a3611868086b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550330039-a54e15ed9d33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549737328-8b9f3252b927?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549833284-6a7df91c1f65?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1549985908-597a09ef0a7c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-  "https://images.unsplash.com/photo-1550064824-8f993041ffd3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-];
 
 const bannerResponsive = {
   desktop: {
@@ -376,11 +344,13 @@ const productResponsive = {
 const categoryGroup = [
   {
     name: "Laptop",
+    id: "5f02ec7732940c0018d17476",
     children: [{ name: "Macbook" }, { name: "Surface" }],
   },
   {
-    name: "Phone",
-    children: [{ name: "iPhone" }, { name: "Samsung" }],
+    name: "Accessories",
+    id: "5f227c022131720018e38c16",
+    children: [{ name: "Apple" }, { name: "Samsung" }],
   },
 ];
 
@@ -389,6 +359,9 @@ export default function Index() {
 
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down("xs"));
+
+  const products = useSelector((state) => state.products);
+  const banners = useSelector((state) => state.banners);
 
   return (
     <Layout>
@@ -417,8 +390,14 @@ export default function Index() {
           renderButtonGroupOutside={false}
           renderDotsOutside={false}
         >
-          {images.map((image, index) => {
-            return <Image key={index} url={image} alt={image} />;
+          {banners.items.map((image, index) => {
+            return (
+              <Image
+                key={index}
+                url={`${backend_url}/uploads/${image.path}`}
+                alt={image}
+              />
+            );
           })}
         </Carousel>
       </div>
@@ -437,9 +416,9 @@ export default function Index() {
         </Typography>
 
         <Grid container>
-          {tileData.slice(0, 4).map((tile, index) => (
+          {products.items.slice(0, 4).map((product, index) => (
             <Grid key={index} item xs={6} sm={4} md={3}>
-              <ProductCardItem product={tile} index={index} />
+              <ProductCardItem product={product} index={index} />
             </Grid>
           ))}
         </Grid>
@@ -469,8 +448,8 @@ export default function Index() {
             slidesToSlide={1}
             swipeable
           >
-            {tileData.map((tile, index) => {
-              return <ProductCardItem key={index} product={tile} />;
+            {products.items.map((product, index) => {
+              return <ProductCardItem key={index} product={product} />;
             })}
           </Carousel>
         </div>
@@ -483,7 +462,7 @@ export default function Index() {
           <span className={classes.sectionTitleBar}></span>
         </Typography>
         <Grid container>
-          {tileData.map((product, index) => (
+          {products.items.map((product, index) => (
             <Grid key={index} item xs={6} sm={4} md={3}>
               <ProductCardItem product={product} index={index} />
             </Grid>
@@ -511,6 +490,7 @@ export async function getServerSideProps(ctx) {
   await dispatch(productActions.getAll());
   await dispatch(categoryActions.getAll());
   await dispatch(brandActions.getAll());
+  await dispatch(bannerActions.getAll());
 
   return { props: { initialReduxState: reduxStore.getState() } };
 }

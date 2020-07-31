@@ -15,6 +15,8 @@ import SendIcon from "@material-ui/icons/Send";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import Snackbar from "@material-ui/core/Snackbar";
+import Slide from "@material-ui/core/Slide";
 
 //Custom Components
 import Link from "../components/Link";
@@ -150,11 +152,18 @@ function StoreModal(props) {
   );
 }
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 export default function Footer() {
   const classes = useStyles();
 
   const [openStoreModal, setOpenStoreModal] = React.useState(false);
   const [activeStore, setActiveStore] = React.useState(0);
+  const [receiveEmail, setReceiveEmail] = React.useState("");
+  const [transition, setTransition] = React.useState(undefined);
+  const [openEmailSnackbar, setOpenEmailSnackbbar] = React.useState(false);
 
   const handleOpen = (e) => {
     setOpenStoreModal(true);
@@ -163,6 +172,17 @@ export default function Footer() {
 
   const handleClose = () => {
     setOpenStoreModal(false);
+  };
+
+  const handleEmailSubmit = (Transition) => {
+    setTransition(() => Transition);
+    setOpenEmailSnackbbar(true);
+
+    setReceiveEmail("");
+  };
+
+  const handleEmailSnackbarClose = () => {
+    setOpenEmailSnackbbar(false);
   };
 
   return (
@@ -254,17 +274,27 @@ export default function Footer() {
                     id="email"
                     label="Email"
                     variant="outlined"
+                    value={receiveEmail}
+                    onChange={(e) => setReceiveEmail(e.target.value)}
                     className={classes.receiveEmail}
                     InputProps={{
                       endAdornment: (
                         <IconButton
                           color="secondary"
-                          onClick={() => console.log("Im clicked!")}
+                          onClick={() => handleEmailSubmit(TransitionUp)}
                         >
                           <SendIcon />
                         </IconButton>
                       ),
                     }}
+                  />
+                  <Snackbar
+                    autoHideDuration={3000}
+                    open={openEmailSnackbar}
+                    onClose={handleEmailSnackbarClose}
+                    TransitionComponent={transition}
+                    message={`An email has been sent to your mail :)`}
+                    key={transition ? transition.name : ""}
                   />
                 </Grid>
               </Grid>

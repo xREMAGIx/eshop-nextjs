@@ -10,7 +10,7 @@ function getAll(url) {
   return async (dispatch) => {
     dispatch(request());
     await productService.getAll(url).then(
-      async (products) => {
+      (products) => {
         dispatch(success(products));
       },
       (error) => dispatch(failure(error.toString()))

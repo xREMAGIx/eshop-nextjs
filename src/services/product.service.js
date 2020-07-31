@@ -34,5 +34,6 @@ function handleResponse(response) {
     const error = errorkey.toUpperCase() + ": " + errorValue;
     return Promise.reject(error);
   }
+
   return data;
 }

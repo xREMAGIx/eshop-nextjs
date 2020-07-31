@@ -151,27 +151,27 @@ export default function ProductIndex() {
                       <FormControlLabel
                         value="500k"
                         control={<Radio color="primary" />}
-                        label="Dưới 500k"
+                        label="Dưới 10 triệu"
                       />
                       <FormControlLabel
-                        value="500-1tr"
+                        value="Từ 10 triệu - 15 triệu"
                         control={<Radio color="primary" />}
-                        label="Từ 500k - 1 triệu"
+                        label="Từ 15 triệu - 20 triệu"
                       />
                       <FormControlLabel
                         value="1-5tr"
                         control={<Radio color="primary" />}
-                        label="Từ 1 triệu - 5 triệu"
+                        label="Từ 20 triệu - 25 triệu"
                       />
                       <FormControlLabel
                         value="5-10tr"
                         control={<Radio color="primary" />}
-                        label="Từ 5 triệu - 10 triệu"
+                        label="Từ 25 triệu - 30 triệu"
                       />
                       <FormControlLabel
                         value="10tr"
                         control={<Radio color="primary" />}
-                        label="Từ 10 triệu trở lên"
+                        label="Trên 30 triệu"
                       />
                     </RadioGroup>
                   </FormControl>
@@ -297,8 +297,14 @@ export async function getServerSideProps(ctx) {
 
   checkServerSideCookie(ctx, reduxStore);
 
-  if (ctx.query.search)
-    await dispatch(productActions.getAll(`?search=${ctx.query.search}`));
+  if (ctx.query)
+    await dispatch(
+      productActions.getAll(
+        `?search=${ctx.query.search || ""}&&category=${
+          ctx.query.category || ""
+        }`
+      )
+    );
   else await dispatch(productActions.getAll());
 
   await dispatch(cartActions.getAll(reduxStore.getState().users.token));
