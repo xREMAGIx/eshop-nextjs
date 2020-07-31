@@ -192,11 +192,14 @@ export default function ProductCardItem(props) {
               className={classes.listItem}
             />
 
-            {props.product.discountPrice ? (
+            {props.product.discount ? (
               <Grid container>
                 <Grid item>
                   <Typography variant="h6" color="primary" component="p">
-                    {props.product.discountPrice.toLocaleString()}
+                    {(
+                      ((100 - props.product.discount) * props.product.price) /
+                      100
+                    ).toLocaleString()}
                   </Typography>
                 </Grid>
                 <Grid item>

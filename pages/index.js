@@ -34,7 +34,6 @@ import {
   checkServerSideCookie,
   bannerActions,
 } from "../src/actions";
-import { products } from "../src/reducers/products.reducer";
 
 const backend_url = "https://nextjs-eshop-backend.herokuapp.com";
 
@@ -345,7 +344,7 @@ const categoryGroup = [
   {
     name: "Laptop",
     id: "5f02ec7732940c0018d17476",
-    children: [{ name: "Macbook" }, { name: "Surface" }],
+    children: [{ name: "Macbook" }, { name: "Asus" }],
   },
   {
     name: "Accessories",
@@ -416,11 +415,14 @@ export default function Index() {
         </Typography>
 
         <Grid container>
-          {products.items.slice(0, 4).map((product, index) => (
-            <Grid key={index} item xs={6} sm={4} md={3}>
-              <ProductCardItem product={product} index={index} />
-            </Grid>
-          ))}
+          {products.items
+            .filter((product) => product.discount > 0)
+            .slice(0, 4)
+            .map((product, index) => (
+              <Grid key={index} item xs={6} sm={4} md={3}>
+                <ProductCardItem product={product} index={index} />
+              </Grid>
+            ))}
         </Grid>
       </Paper>
 
