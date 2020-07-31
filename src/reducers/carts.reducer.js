@@ -4,7 +4,6 @@ export function cart(
   state = {
     loading: false,
     items: [],
-    item: [],
   },
   action
 ) {
@@ -20,7 +19,7 @@ export function cart(
         ...state,
         error: null,
         loading: false,
-        items: action.carts.data,
+        items: action.carts.data.products,
       };
     case cartConstants.VIEW_FAILURE:
       return {
@@ -54,10 +53,10 @@ export function cart(
       return {
         ...state,
         loading: false,
-        items: action.cart.data,
+        items: action.cart.data.products,
       };
     case cartConstants.ADD_ITEM_FAILURE:
-      return { error: action.error };
+      return { ...state, error: action.error };
 
     //Subtract item
     case cartConstants.SUBTRACT_ITEM_REQUEST:
@@ -66,7 +65,7 @@ export function cart(
       return {
         ...state,
         loading: false,
-        items: action.cart.data,
+        items: action.cart.data.products,
       };
     case cartConstants.SUBTRACT_ITEM_FAILURE:
       return { error: action.error };
@@ -78,7 +77,7 @@ export function cart(
       return {
         ...state,
         loading: false,
-        items: action.cart.data,
+        items: action.cart.data.products,
       };
     case cartConstants.DELETE_ITEM_FAILURE:
       return { error: action.error };

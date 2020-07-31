@@ -20,6 +20,10 @@ import CompareIcon from "@material-ui/icons/Compare";
 //Custom Components
 import Link from "../components/Link";
 
+//Redux
+import { useDispatch, useSelector } from "react-redux";
+import { cartActions } from "../actions";
+
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
     margin: theme.spacing(1),
@@ -140,6 +144,15 @@ export default function ProductCardItem(props) {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down("xs"));
 
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users);
+
+  const handleAddToCart = (event) => {
+    if (users.token)
+      dispatch(cartActions.addItem(props.product.id, users.token));
+    else null;
+  };
+
   return (
     <Card
       key={props.index}
@@ -214,7 +227,11 @@ export default function ProductCardItem(props) {
             spacing={2}
           >
             <Grid item>
-              <IconButton color="primary" aria-label="add-to-shopping-cart">
+              <IconButton
+                color="primary"
+                aria-label="add-to-shopping-cart"
+                onClick={handleAddToCart}
+              >
                 <AddShoppingCartIcon />
               </IconButton>
             </Grid>

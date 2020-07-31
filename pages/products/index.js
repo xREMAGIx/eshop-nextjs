@@ -3,17 +3,8 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 //UI Components
 import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import CardActions from "@material-ui/core/CardActions";
-import Tooltip from "@material-ui/core/Tooltip";
 import Paper from "@material-ui/core/Paper";
 import Pagination from "@material-ui/lab/Pagination";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -26,7 +17,6 @@ import Collapse from "@material-ui/core/Collapse";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -45,7 +35,6 @@ import {
   brandActions,
   cartActions,
   checkServerSideCookie,
-  userActions,
 } from "../../src/actions";
 
 const useStyles = makeStyles((theme) => ({

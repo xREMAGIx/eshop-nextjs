@@ -31,6 +31,7 @@ import Collapse from "@material-ui/core/Collapse";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import AlertTitle from "@material-ui/lab/AlertTitle";
+import ButtonBase from "@material-ui/core/ButtonBase";
 
 //Custom Components
 import MainListItems from "./ListItemDrawer";
@@ -42,6 +43,7 @@ import { productActions, userActions } from "../actions";
 import { useEffect } from "react";
 
 const drawerWidth = 240;
+const backendUrl = "https://nextjs-eshop-backend.herokuapp.com";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -167,6 +169,14 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: "none",
     },
   },
+  cartPaper: {
+    maxWidth: "300px",
+    maxHeight: "300px",
+    overflow: "auto",
+  },
+  cartGrid: {
+    paddingBottom: theme.spacing(2),
+  },
 }));
 
 function HoverPopover(props) {
@@ -209,6 +219,7 @@ export default function Header() {
   const categories = useSelector((state) => state.categories);
   const brands = useSelector((state) => state.brands);
   const cart = useSelector((state) => state.cart);
+  const products = useSelector((state) => state.products);
 
   const [open, setOpen] = React.useState(false);
 
@@ -363,6 +374,22 @@ export default function Header() {
       setErrorMessage(users.error);
     }
   }, [users.error]);
+
+  //Cart
+  const [productsInCart, setProductsInCart] = React.useState([]);
+
+  useEffect(() => {
+    setProductsInCart(
+      products.items && products.items.length > 0
+        ? cart.items.map((element) =>
+            Object.assign(
+              products.items.find((product) => product.id === element.product),
+              { amount: element.amount }
+            )
+          )
+        : []
+    );
+  }, [cart.items, products.items]);
 
   return (
     <div className={classes.root}>
@@ -578,7 +605,13 @@ export default function Header() {
                   onMouseLeave={handlePopoverClose}
                 >
                   <Badge
-                    badgeContent={cart ? cart.items.length : 1}
+                    badgeContent={
+                      productsInCart
+                        ? productsInCart
+                            .map((e) => e.amount)
+                            .reduce((sum, current) => sum + current, 0)
+                        : null
+                    }
                     color="secondary"
                   >
                     <ShoppingCartIcon />
@@ -592,9 +625,68 @@ export default function Header() {
                 >
                   {/* <div className={classes.cartRoot}> */}
                   <Typography variant="h6">Cart detail: </Typography>
-                  {false ? (
+                  {productsInCart && productsInCart.length > 0 ? (
                     <React.Fragment>
-                      <div className={classes.cartPaper}></div>
+                      <div className={classes.cartPaper}>
+                        {productsInCart.map((element, index) => (
+                          <Grid
+                            key={index}
+                            container
+                            className={classes.cartGrid}
+                          >
+                            <Grid item xs={4} style={{ paddingRight: 10 }}>
+                              <ButtonBase
+                                className={classes.cartImage}
+                                component={Link}
+                                href="/products/[id]"
+                                as={`/products/${element.id}`}
+                              >
+                                <img
+                                  width={"100%"}
+                                  src={
+                                    `${backendUrl}/uploads/` +
+                                    element.images[0].path
+                                  }
+                                  alt={element.productName}
+                                  className={classes.cartImg}
+                                  alt="complex"
+                                />
+                              </ButtonBase>
+                            </Grid>
+                            <Grid item xs={8} sm container>
+                              <Grid
+                                item
+                                container
+                                direction="column"
+                                justify="center"
+                                //alignItems="center"
+                              >
+                                <Grid item xs={12}>
+                                  <Typography
+                                    gutterBottom
+                                    variant="body1"
+                                    component={Link}
+                                    href="/products/[id]"
+                                    as={`/products/${element.id}`}
+                                  >
+                                    {element.productName}
+                                  </Typography>
+                                </Grid>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Typography variant="subtitle1">
+                                  ${element.price.toLocaleString()}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Typography variant="caption">
+                                  Quantity: {element.amount}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        ))}
+                      </div>
                       <Grid container justify="space-between">
                         <Grid item>
                           <Button>Delete</Button>

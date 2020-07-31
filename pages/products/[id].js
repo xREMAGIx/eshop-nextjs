@@ -49,12 +49,13 @@ import Link from "../../src/components/Link";
 import ImageZoom from "../../src/components/ZoomImage";
 
 //Redux
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { initializeStore } from "../../src/store";
 import {
   productActions,
   categoryActions,
   brandActions,
+  cartActions,
   checkServerSideCookie,
 } from "../../src/actions";
 
@@ -167,9 +168,11 @@ const Product = () => {
 
   const mobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const dispatch = useDispatch();
   const product = useSelector((state) => state.products.item);
   const category = useSelector((state) => state.categories.items);
   const brand = useSelector((state) => state.brands.items);
+  const users = useSelector((state) => state.users);
 
   let rows;
   product && brand && category
@@ -255,6 +258,11 @@ const Product = () => {
 
   const handleCloseFavoriteSnackbar = () => {
     setOpenFavoriteSnackbar(false);
+  };
+
+  const handleAddToCart = (event) => {
+    if (users.token) dispatch(cartActions.addItem(product.id, users.token));
+    else null;
   };
 
   return (
@@ -445,6 +453,7 @@ const Product = () => {
                 <Button
                   variant="contained"
                   color="secondary"
+                  onClick={handleAddToCart}
                   startIcon={<AddShoppingCartIcon />}
                 >
                   Add to Cart
@@ -592,6 +601,8 @@ export async function getServerSideProps(ctx) {
 
   checkServerSideCookie(ctx, reduxStore);
 
+  await dispatch(cartActions.getAll(reduxStore.getState().users.token));
+  await dispatch(productActions.getAll());
   await dispatch(productActions.getById(ctx.query.id));
   await dispatch(categoryActions.getAll());
   await dispatch(brandActions.getAll());
