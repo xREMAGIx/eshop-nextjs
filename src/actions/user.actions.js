@@ -119,7 +119,6 @@ function register(user) {
     userService.register(user).then(
       (user) => {
         dispatch(success(user));
-        history.push({ pathname: "/", state: 200 });
       },
       (error) => {
         dispatch(failure(error.toString()));

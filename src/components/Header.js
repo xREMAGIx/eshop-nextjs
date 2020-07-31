@@ -365,6 +365,10 @@ export default function Header() {
       setErrorMessage("Password's not match");
     } else {
       dispatch(userActions.register(registerFormData));
+      if (!users.error) {
+        setOpenLoginModal(true);
+        setOpenSignupModal(false);
+      }
     }
   };
 
@@ -814,10 +818,7 @@ export default function Header() {
                 value={loginFormData.password}
                 onChange={(e) => onChangeLogin(e)}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+
               <Button
                 fullWidth
                 variant="contained"
@@ -829,7 +830,7 @@ export default function Header() {
               </Button>
               <Grid container>
                 <Grid item>
-                  <Button onClick={handleOpenSignupModal} variant="body2">
+                  <Button onClick={handleOpenSignupModal}>
                     {"Don't have an account? Sign Up"}
                   </Button>
                 </Grid>
@@ -936,14 +937,6 @@ export default function Header() {
                     value={confirmPassword}
                     onKeyPress={(e) => keyPressed(e)}
                     onChange={(e) => onChange(e)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox value="allowExtraEmails" color="primary" />
-                    }
-                    label="I want to receive inspiration, marketing promotions and updates via email."
                   />
                 </Grid>
               </Grid>
