@@ -39,9 +39,14 @@ async function getMe(token) {
       "Content-Type": "application/json",
     },
   };
-  return await axios
-    .get(`${process.env.DB_HOST}/api/auth/me`, requestConfig)
-    .then(handleResponse);
+  if (process.env.DB_HOST)
+    return await axios
+      .get(`${process.env.DB_HOST}/api/auth/me`, requestConfig)
+      .then(handleResponse);
+  else
+    return await axios
+      .get(`${backend_url}/api/auth/me`, body, requestConfig)
+      .then(handleResponse);
 }
 
 async function logout() {
