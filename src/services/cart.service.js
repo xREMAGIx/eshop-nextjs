@@ -24,15 +24,17 @@ async function getAll(token) {
       .then(handleResponse);
 }
 
-async function checkOutCart(token) {
+async function checkOutCart(token, formData) {
   setAuthToken(token);
   const requestConfig = {
     payment: "Cash",
+    address: formData.address,
+    phone: formData.phone,
   };
 
   if (process.env.DB_HOST)
     return await axios
-      .post(`${process.env.DB_HOST}/api/orders/createOrder`)
+      .post(`${process.env.DB_HOST}/api/orders/createOrder`, requestConfig)
       .then(handleResponse);
   else
     return await axios

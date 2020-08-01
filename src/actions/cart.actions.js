@@ -108,11 +108,11 @@ function deleteItem(productId, token) {
   }
 }
 
-function checkOutCart(token) {
+function checkOutCart(token, formData) {
   return async (dispatch) => {
     dispatch(request());
 
-    await cartService.checkOutCart(token).then(
+    await cartService.checkOutCart(token, formData).then(
       (carts) => {
         dispatch(success(carts));
       },

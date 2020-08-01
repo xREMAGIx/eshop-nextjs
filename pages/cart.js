@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import Router from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 
 //UI Components
@@ -14,6 +15,8 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 //Custom Components
 import Link from "../src/components/Link";
@@ -81,11 +84,37 @@ export default function Cart() {
   const products = useSelector((state) => state.products);
   const users = useSelector((state) => state.users);
 
+  const [formData, setFormData] = React.useState({ phone: "", address: "" });
+
+  const { phone, address } = formData;
+
   const [productsInCart, setProductsInCart] = React.useState([]);
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const invoiceSubtotal = subtotal(productsInCart);
   const invoiceDiscountTotal = discounttotal(productsInCart);
   const invoiceTotal = invoiceSubtotal - invoiceDiscountTotal;
+
+  const onChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleCheckout = () => {
+    dispatch(cartActions.checkOutCart(users.token, formData));
+    setOpen(true);
+  };
 
   useEffect(() => {
     setProductsInCart(
@@ -102,6 +131,12 @@ export default function Cart() {
 
   return (
     <Layout>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Checkout success!
+        </Alert>
+      </Snackbar>
+
       <Container className={classes.container}>
         <div className={classes.center}>
           <Typography
@@ -197,7 +232,32 @@ export default function Cart() {
 
         <Grid className={classes.marginY} container spacing={4}>
           <Grid item xs={12} sm={6}>
-            <Paper style={{ padding: 30 }} elevation={3}>
+            <Paper style={{ padding: 30, margin: 10 }} elevation={3}>
+              <Typography variant="h6">INFOMATION DETAIL</Typography>
+              <Typography gutterBottom>Enter your shipping detail</Typography>
+              <TextField
+                id="standard-full-width"
+                variant="outlined"
+                placeholder="Enter your phone"
+                fullWidth
+                name="phone"
+                value={phone}
+                margin="normal"
+                onChange={(e) => onChange(e)}
+              />
+              <TextField
+                id="standard-full-width"
+                variant="outlined"
+                placeholder="Enter your address"
+                fullWidth
+                name="address"
+                value={address}
+                margin="normal"
+                onChange={(e) => onChange(e)}
+              />
+            </Paper>
+
+            <Paper style={{ padding: 30, margin: 10 }} elevation={3}>
               <Typography variant="h6">COUPON DISCOUNT</Typography>
               <Typography gutterBottom>
                 Enter your coupon code if you have one!
@@ -222,7 +282,7 @@ export default function Cart() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => dispatch(cartActions.checkOutCart(users.token))}
+                onClick={handleCheckout}
               >
                 CheckOut
               </Button>
