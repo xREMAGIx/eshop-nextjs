@@ -7,10 +7,12 @@ export const userService = {
   register,
   getAll,
   getById,
-  update,
+  //update,
   delete: _delete,
   getMe,
 };
+
+const backend_url = "https://nextjs-eshop-backend.herokuapp.com";
 
 async function login(user) {
   const requestConfig = {
@@ -20,9 +22,14 @@ async function login(user) {
   };
   const body = JSON.stringify(user);
 
-  return await axios
-    .post(`${process.env.DB_HOST}/api/auth/login`, body, requestConfig)
-    .then(handleResponse);
+  if (process.env.DB_HOST)
+    return await axios
+      .post(`${process.env.DB_HOST}/api/auth/login`, body, requestConfig)
+      .then(handleResponse);
+  else
+    return await axios
+      .post(`${backend_url}/api/auth/login`, body, requestConfig)
+      .then(handleResponse);
 }
 
 async function getMe(token) {
@@ -38,9 +45,17 @@ async function getMe(token) {
 }
 
 async function logout() {
-  // remove user from local storage to log user out
-  await axios.post(`${process.env.DB_HOST}/api/auth/logout`);
   localStorage.removeItem("user");
+
+  // remove user from local storage to log user out
+  if (process.env.DB_HOST)
+    return await axios
+      .post(`${process.env.DB_HOST}/api/auth/logout`)
+      .then(handleResponse);
+  else
+    return await axios
+      .post(`${backend_url}/api/auth/login`, body, requestConfig)
+      .then(handleResponse);
 }
 
 function getAll() {
@@ -74,15 +89,15 @@ async function register(user) {
     .then(handleResponse);
 }
 
-function update(user) {
-  const requestOptions = {
-    method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  };
+// function update(user) {
+//   const requestOptions = {
+//     method: "PUT",
+//     headers: { ...authHeader(), "Content-Type": "application/json" },
+//     body: JSON.stringify(user),
+//   };
 
-  return fetch(`/api/users/${user.id}`, requestOptions).then(handleResponse);
-}
+//   return fetch(`/api/users/${user.id}`, requestOptions).then(handleResponse);
+// }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {
