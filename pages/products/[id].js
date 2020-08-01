@@ -269,7 +269,55 @@ const Product = () => {
   return (
     <React.Fragment>
       {/* Head */}
-      <Head></Head>
+      <Head>
+        <script type="application/ld+json">
+          {`
+          {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "${product.productName}",
+        "image": ${JSON.stringify(images)},
+        "description": "${product.description}",
+        "sku": "${product.sku}",
+        "mpn": "925872",
+        "brand": {
+          "@type": "Brand",
+          "name": "${brand.name}"
+        },
+        "review": {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "4",
+            "bestRating": "5"
+          },
+          "author": {
+            "@type": "Person",
+            "name": "Remagi"
+          }
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.4",
+          "reviewCount": "89"
+        },
+        "offers": {
+        "@type": "Offer",
+        "url": "https://eshop-nextjs.xremagix.vercel.app${router.asPath}",
+        "priceCurrency": "VND",
+        "price": "${product.price}",
+        "priceValidUntil": "2020-11-20",
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "Eshop-NextJS"
+            }
+        }
+      }
+          `}
+        </script>
+      </Head>
 
       <Layout>
         {/* Snackbars */}
@@ -631,7 +679,12 @@ export async function getServerSideProps(ctx) {
   await dispatch(categoryActions.getAll());
   await dispatch(brandActions.getAll());
 
-  return { props: { initialReduxState: reduxStore.getState() } };
+  return {
+    props: {
+      initialReduxState: reduxStore.getState(),
+      title: reduxStore.getState().products.item.productName,
+    },
+  };
 }
 
 export default Product;

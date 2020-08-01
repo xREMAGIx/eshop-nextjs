@@ -391,5 +391,7 @@ export async function getServerSideProps(ctx) {
   await dispatch(categoryActions.getAll());
   await dispatch(brandActions.getAll());
 
-  return { props: { initialReduxState: reduxStore.getState() } };
+  return {
+    props: { initialReduxState: reduxStore.getState(), title: "Product List" },
+  };
 }

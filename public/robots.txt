@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://eshop-nextjs.xremagix.vercel.app/sitemap.xml

@@ -68,10 +68,29 @@ export default function App(props) {
     <React.Fragment>
       <Provider store={store}>
         <Head>
-          <title>My page</title>
+          <title>{(pageProps && pageProps.title) || "NextJS Page"}</title>
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width"
+          />
+          <meta
+            name="description"
+            content={
+              (pageProps && pageProps.title && pageProps.description) ||
+              "Eshop-NextJS is an eshop page using NextJS, we will bring you best experience on our site. Fast, convient, reliable are our top priority"
+            }
+          />
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width"
+          />
+          <meta
+            name="google-site-verification"
+            content="WDzAzOfBEaHVAoZbgV2VjuCC7Qx9QmPlcqBHjHPpPZo"
+          />
+          <link
+            rel="canonical"
+            href={`https://eshop-nextjs.xremagix.vercel.app${asPath}`}
           />
         </Head>
         <ThemeProvider theme={theme}>

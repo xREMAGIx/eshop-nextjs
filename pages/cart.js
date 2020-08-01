@@ -114,6 +114,7 @@ export default function Cart() {
   const handleCheckout = () => {
     dispatch(cartActions.checkOutCart(users.token, formData));
     setOpen(true);
+    setFormData({ phone: "", address: "" });
   };
 
   useEffect(() => {
@@ -236,7 +237,7 @@ export default function Cart() {
               <Typography variant="h6">INFOMATION DETAIL</Typography>
               <Typography gutterBottom>Enter your shipping detail</Typography>
               <TextField
-                id="standard-full-width"
+                id="phone-full-width"
                 variant="outlined"
                 placeholder="Enter your phone"
                 fullWidth
@@ -246,7 +247,7 @@ export default function Cart() {
                 onChange={(e) => onChange(e)}
               />
               <TextField
-                id="standard-full-width"
+                id="address-full-width"
                 variant="outlined"
                 placeholder="Enter your address"
                 fullWidth
@@ -304,5 +305,5 @@ export async function getServerSideProps(ctx) {
 
   await dispatch(cartActions.getAll(reduxStore.getState().users.token));
 
-  return { props: { initialReduxState: reduxStore.getState() } };
+  return { props: { initialReduxState: reduxStore.getState(), title: "Cart" } };
 }
