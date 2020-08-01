@@ -7,6 +7,8 @@ import { ServerStyleSheets } from "@material-ui/core/styles";
 //Custom Components
 import theme from "../src/store/theme";
 
+import { GA_TRACKING_ID } from "../src/store/gtag";
+
 export default class MyDocument extends Document {
   render() {
     return (
