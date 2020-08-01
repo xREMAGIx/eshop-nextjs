@@ -45,7 +45,7 @@ async function getMe(token) {
       .then(handleResponse);
   else
     return await axios
-      .get(`${backend_url}/api/auth/me`, body, requestConfig)
+      .get(`${backend_url}/api/auth/me`, requestConfig)
       .then(handleResponse);
 }
 
