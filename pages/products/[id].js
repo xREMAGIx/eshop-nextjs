@@ -60,6 +60,17 @@ import {
   checkServerSideCookie,
 } from "../../src/actions";
 
+//Text Editor
+import dynamic from "next/dynamic"; // (if using Next.js or use own dynamic loader)
+import { convertFromRaw, Editor, EditorState } from "draft-js";
+
+import Divider from "@material-ui/core/Divider";
+
+const SuperEditor = dynamic(
+  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
+  { ssr: false }
+);
+
 const useStyles = makeStyles((theme) => ({
   marginY: {
     marginTop: theme.spacing(2),
@@ -227,6 +238,14 @@ const Product = () => {
 
   const [openYTModal, setOpenYTModal] = React.useState(false);
 
+  const [editorState, setEditorState] = React.useState(
+    product.content
+      ? EditorState.createWithContent(
+          convertFromRaw(JSON.parse(product.content))
+        )
+      : EditorState.createEmpty()
+  );
+
   const handleOpenYTModal = () => {
     setOpenYTModal(true);
   };
@@ -269,55 +288,7 @@ const Product = () => {
   return (
     <React.Fragment>
       {/* Head */}
-      <Head>
-        <script type="application/ld+json">
-          {`
-          {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        "name": "${product.productName}",
-        "image": ${JSON.stringify(images)},
-        "description": "${product.description}",
-        "sku": "${product.sku}",
-        "mpn": "925872",
-        "brand": {
-          "@type": "Brand",
-          "name": "${brand.name}"
-        },
-        "review": {
-          "@type": "Review",
-          "reviewRating": {
-            "@type": "Rating",
-            "ratingValue": "4",
-            "bestRating": "5"
-          },
-          "author": {
-            "@type": "Person",
-            "name": "Remagi"
-          }
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.4",
-          "reviewCount": "89"
-        },
-        "offers": {
-        "@type": "Offer",
-        "url": "https://eshop-nextjs.xremagix.vercel.app${router.asPath}",
-        "priceCurrency": "VND",
-        "price": "${product.price}",
-        "priceValidUntil": "2020-11-20",
-        "itemCondition": "https://schema.org/NewCondition",
-        "availability": "https://schema.org/InStock",
-            "seller": {
-              "@type": "Organization",
-              "name": "Eshop-NextJS"
-            }
-        }
-      }
-          `}
-        </script>
-      </Head>
+      <Head></Head>
 
       <Layout>
         {/* Snackbars */}
@@ -598,7 +569,9 @@ const Product = () => {
             index={value}
             onChangeIndex={handleTabChangeIndex}
           >
-            <TabPanel value={value} index={0} dir={theme.direction}></TabPanel>
+            <TabPanel value={value} index={0} dir={theme.direction}>
+              <SuperEditor readOnly toolbarHidden editorState={editorState} />
+            </TabPanel>
 
             {/* Information Table */}
             <TabPanel value={value} index={1} dir={theme.direction}>

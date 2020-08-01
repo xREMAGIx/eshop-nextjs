@@ -79,6 +79,11 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     marginBottom: theme.spacing(1),
   },
+  productList: {
+    "& .MuiTypography-h6": {
+      fontSize: "1rem",
+    },
+  },
 }));
 
 function ListItemLink(props) {
@@ -327,7 +332,11 @@ export default function ProductIndex() {
             </Typography>
 
             {/* List items */}
-            <Grid container spacing={mobile ? 0 : 2}>
+            <Grid
+              className={classes.productList}
+              container
+              spacing={mobile ? 0 : 2}
+            >
               {advanceProducts ? (
                 advanceProducts.map((product, index) => (
                   <Grid key={index} item xs={6} sm={4} md={3}>
