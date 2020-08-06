@@ -35,6 +35,7 @@ import {
   brandActions,
   cartActions,
   checkServerSideCookie,
+  ratingActions,
 } from "../../src/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -386,15 +387,16 @@ export async function getServerSideProps(ctx) {
 
   checkServerSideCookie(ctx, reduxStore);
 
-  if (ctx.query)
-    await dispatch(
-      productActions.getAll(
-        `?search=${ctx.query.search || ""}&&category=${
-          ctx.query.category || ""
-        }`
-      )
-    );
-  else await dispatch(productActions.getAll());
+  // if (ctx.query)
+  //   await dispatch(
+  //     productActions.getAll(
+  //       `?search=${ctx.query.search || ""}&&category=${
+  //         ctx.query.category || ""
+  //       }&&brand=${ctx.query.brand || ""}`
+  //     )
+  //   );
+  // else
+  await dispatch(productActions.getAll());
 
   await dispatch(cartActions.getAll(reduxStore.getState().users.token));
   await dispatch(categoryActions.getAll());

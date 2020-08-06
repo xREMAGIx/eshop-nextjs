@@ -63,13 +63,15 @@ async function logout() {
       .then(handleResponse);
 }
 
-function getAll() {
-  const requestOptions = {
-    method: "GET",
-    //headers: authHeader(),
-  };
-
-  return fetch(`/api/users`, requestOptions).then(handleResponse);
+async function getAll() {
+  if (process.env.DB_HOST)
+    return await axios
+      .get(`${process.env.DB_HOST}/api/user`)
+      .then(handleResponse);
+  else
+    return await axios
+      .get(`${backend_url}/api/user`, requestConfig)
+      .then(handleResponse);
 }
 
 async function getById(id) {

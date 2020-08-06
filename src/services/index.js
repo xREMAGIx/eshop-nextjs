@@ -5,3 +5,4 @@ export * from "./banner.service";
 export * from "./category.service";
 export * from "./brand.service";
 export * from "./cart.service";
+export * from "./rating.service";

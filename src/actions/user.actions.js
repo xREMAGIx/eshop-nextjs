@@ -138,10 +138,10 @@ function register(user) {
 }
 
 function getAll() {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(request());
 
-    userService.getAll().then(
+    await userService.getAll().then(
       (users) => dispatch(success(users)),
       (error) => dispatch(failure(error.toString()))
     );

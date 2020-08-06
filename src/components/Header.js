@@ -365,19 +365,12 @@ export default function Header() {
       setErrorMessage("Password's not match");
     } else {
       dispatch(userActions.register(registerFormData));
-      if (!users.error) {
-        setOpenLoginModal(true);
-        setOpenSignupModal(false);
+      if (users.error) {
+        setErrorOpen(true);
+        setErrorMessage(users.error);
       }
     }
   };
-
-  useEffect(() => {
-    if (users.error) {
-      setErrorOpen(true);
-      setErrorMessage(users.error);
-    }
-  }, [users.error]);
 
   //Cart
   const [productsInCart, setProductsInCart] = React.useState([]);

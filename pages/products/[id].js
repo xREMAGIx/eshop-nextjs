@@ -32,6 +32,11 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Tooltip from "@material-ui/core/Tooltip";
+import TextField from "@material-ui/core/TextField";
+import Rating from "@material-ui/lab/Rating";
+import ReplyIcon from "@material-ui/icons/Reply";
+import Avatar from "@material-ui/core/Avatar";
+import Portal from "@material-ui/core/Portal";
 
 //Social
 import {
@@ -57,14 +62,16 @@ import {
   categoryActions,
   brandActions,
   cartActions,
+  ratingActions,
   checkServerSideCookie,
+  userActions,
 } from "../../src/actions";
 
 //Text Editor
 import dynamic from "next/dynamic"; // (if using Next.js or use own dynamic loader)
-import { convertFromRaw, Editor, EditorState } from "draft-js";
-
-import Divider from "@material-ui/core/Divider";
+import { convertFromRaw, EditorState } from "draft-js";
+import { Divider } from "@material-ui/core";
+import { useEffect } from "react";
 
 const SuperEditor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
@@ -79,6 +86,10 @@ const useStyles = makeStyles((theme) => ({
   tabRoot: {
     backgroundColor: theme.palette.background.paper,
     flexGrow: 1,
+    "& .MuiPaper-root": {
+      backgroundColor: "white",
+      boxShadow: "none",
+    },
   },
   smallImg: {
     opacity: 0.5,
@@ -185,6 +196,7 @@ const Product = () => {
   const category = useSelector((state) => state.categories.items);
   const brand = useSelector((state) => state.brands.items);
   const users = useSelector((state) => state.users);
+  const ratings = useSelector((state) => state.ratings);
 
   let rows;
   product && brand && category
@@ -238,13 +250,11 @@ const Product = () => {
 
   const [openYTModal, setOpenYTModal] = React.useState(false);
 
-  const [editorState, setEditorState] = React.useState(
-    product.content
-      ? EditorState.createWithContent(
-          convertFromRaw(JSON.parse(product.content))
-        )
-      : EditorState.createEmpty()
-  );
+  const [mainImageIndex, setMainImageIndex] = React.useState(0);
+
+  const editorState = product.content
+    ? EditorState.createWithContent(convertFromRaw(JSON.parse(product.content)))
+    : EditorState.createEmpty();
 
   const handleOpenYTModal = () => {
     setOpenYTModal(true);
@@ -280,9 +290,55 @@ const Product = () => {
     setOpenFavoriteSnackbar(false);
   };
 
+  const handleSmallImageList = (index) => {
+    setMainImageIndex(index);
+  };
+
   const handleAddToCart = (event) => {
     if (users.token) dispatch(cartActions.addItem(product.id, users.token));
     else null;
+  };
+
+  //Rating
+  const [rating, setRating] = React.useState(0);
+  const [formRating, setFormRating] = React.useState({
+    name: "",
+    content: "",
+  });
+
+  const { name, content } = formRating;
+
+  const onRatingChange = (e) => {
+    setFormRating({ ...formRating, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmitRating = () => {
+    dispatch(
+      ratingActions.create(
+        {
+          ...formRating,
+          point: rating,
+          productID: product.id,
+        },
+        users.token
+      )
+    );
+  };
+
+  //Reply
+  const [openReply, setOpenReply] = React.useState(false);
+  const container = React.useRef(null);
+
+  const [formReply, setFormReply] = React.useState({
+    content: "",
+  });
+
+  const onReplyChange = (e) => {
+    setFormReply({ ...formReply, [e.target.name]: e.target.value });
+  };
+
+  const handleReply = (ratingId) => {
+    dispatch(ratingActions.reply(ratingId, formReply, users.token, product.id));
   };
 
   return (
@@ -321,16 +377,16 @@ const Product = () => {
             href="/brands/[id]"
             as={`/brands/${product.brand}`}
           >
-            {brand.find((element) => element.id === product.brand).name ||
-              product.brand}
+            {(brand.find((element) => element.id === product.brand) || {})
+              .name || product.brand}
           </Link>
           <Link
             color="inherit"
             href="/categories/[id]"
             as={`/categories/${product.category}`}
           >
-            {category.find((element) => element.id === product.category).name ||
-              product.category}
+            {(category.find((element) => element.id === product.category) || {})
+              .name || product.category}
           </Link>
           <Typography color="primary">{product.productName}</Typography>
         </Breadcrumbs>
@@ -370,7 +426,8 @@ const Product = () => {
                       <img
                         className={classes.smallImg}
                         src={`https://nextjs-eshop-backend.herokuapp.com/uploads/${image.path}`}
-                        alt="No Data"
+                        alt={product.productName}
+                        onClick={() => handleSmallImageList(index)}
                       ></img>
                     </Grid>
                   ))}
@@ -388,7 +445,7 @@ const Product = () => {
               >
                 <ImageZoom
                   isActive={isActive}
-                  imageURL={`https://nextjs-eshop-backend.herokuapp.com/uploads/${product.images[0].path}`}
+                  imageURL={`https://nextjs-eshop-backend.herokuapp.com/uploads/${product.images[mainImageIndex].path}`}
                   onZoom={onZoom}
                   onClose={onClose}
                   zoomType={mobile ? "click" : "hover"}
@@ -454,15 +511,18 @@ const Product = () => {
                   href="/categories/[id]"
                   as={`/categories/${product.category}`}
                 >
-                  {category.find((element) => element.id === product.category)
-                    .name || product.category}
+                  {(
+                    category.find(
+                      (element) => element.id === product.category
+                    ) || {}
+                  ).name || product.category}
                 </Link>
               </Typography>
               <Typography variant="body1">
                 Brand:{" "}
                 <Link href="/brands/[id]" as={`/brands/${product.brand}`}>
-                  {brand.find((element) => element.id === product.brand).name ||
-                    product.brand}
+                  {(brand.find((element) => element.id === product.brand) || {})
+                    .name || product.brand}
                 </Link>
               </Typography>
             </Grid>
@@ -603,8 +663,201 @@ const Product = () => {
                 </Table>
               </TableContainer>
             </TabPanel>
+
+            {/* Review panel */}
             <TabPanel value={value} index={2} dir={theme.direction}>
-              Item Three
+              {ratings.items && ratings.items.length > 0 ? (
+                ratings.items.map((rating, index) => (
+                  <React.Fragment key={index}>
+                    {/* Review */}
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <Avatar>{rating.name.charAt(0).toUpperCase()}</Avatar>
+                      </Grid>
+                      <Grid item>
+                        <Grid container alignItems="center" spacing={5}>
+                          <Grid item>
+                            <Typography variant="subtitle1">
+                              {rating.name}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Rating
+                              name="read-only"
+                              value={rating.point}
+                              size="small"
+                              readOnly
+                            />
+                          </Grid>
+                        </Grid>
+                        <Typography variant="subtitle2">
+                          {rating.content}
+                        </Typography>
+                        <IconButton
+                          aria-label="reply"
+                          onClick={() => setOpenReply(!openReply)}
+                        >
+                          <ReplyIcon fontSize="small" />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+
+                    {/* Review Reply */}
+                    {rating.replies.length > 0
+                      ? rating.replies.map((reply, index) => (
+                          <Box key={index} pl={6} pb={2}>
+                            <Grid container spacing={2}>
+                              <Grid item>
+                                <Avatar>
+                                  {(
+                                    (
+                                      (users.items &&
+                                        users.items.find(
+                                          (element) =>
+                                            element._id === reply.user
+                                        )) ||
+                                      {}
+                                    ).name || reply.user
+                                  )
+                                    .charAt(0)
+                                    .toUpperCase()}
+                                </Avatar>
+                              </Grid>
+                              <Grid item>
+                                <Typography variant="subtitle1">
+                                  {(
+                                    (users.items &&
+                                      users.items.find(
+                                        (element) => element._id === reply.user
+                                      )) ||
+                                    {}
+                                  ).name || reply.user}
+                                </Typography>
+
+                                <Typography variant="subtitle2">
+                                  {reply.content}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        ))
+                      : null}
+                    {/* Reply box */}
+                    {openReply ? (
+                      <Portal container={container.current}>
+                        <Box pl={6} pb={2}>
+                          <Grid container spacing={3} alignItems="center">
+                            <Grid item xs={6}>
+                              <TextField
+                                id="outlined-multiline-static"
+                                fullWidth
+                                label="Reply"
+                                multiline
+                                rows={2}
+                                variant="outlined"
+                                name="content"
+                                value={formReply.content}
+                                onChange={onReplyChange}
+                              />
+                            </Grid>
+                            <Grid item>
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleReply(rating._id)}
+                              >
+                                Reply
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      </Portal>
+                    ) : null}
+                    <div ref={container} />
+                  </React.Fragment>
+                ))
+              ) : (
+                <Typography variant="subtitle1" gutterBottom>
+                  There's no review yet
+                </Typography>
+              )}
+              <Divider />
+              {/* Review form */}
+              <Typography variant="h6" gutterBottom>
+                WRITE YOUR REVIEW
+              </Typography>
+              <Grid container direction="column" spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    id="outlined-name"
+                    label="Name"
+                    variant="outlined"
+                    required
+                    fullWidth
+                    name="name"
+                    value={name}
+                    onChange={(event) => onRatingChange(event)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    id="outlined-message"
+                    label="Message"
+                    variant="outlined"
+                    multiline
+                    required
+                    rows={4}
+                    fullWidth
+                    name="content"
+                    value={content}
+                    onChange={(event) => onRatingChange(event)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="body1">Your rating:</Typography>
+                  <Rating
+                    name="simple-rating"
+                    value={rating}
+                    onChange={(event, newRating) => {
+                      setRating(newRating);
+                    }}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                {users.token ? (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    fullWidth
+                    onClick={handleSubmitRating}
+                  >
+                    Submit
+                  </Button>
+                ) : (
+                  <Tooltip
+                    title={
+                      <Typography variant="subtitle1">
+                        Please login to continue :(
+                      </Typography>
+                    }
+                    aria-label="cart-no-login"
+                    placement="top"
+                  >
+                    <span>
+                      <Button
+                        disabled
+                        variant="contained"
+                        color="secondary"
+                        fullWidth
+                        onClick={handleSubmitRating}
+                      >
+                        Submit
+                      </Button>
+                    </span>
+                  </Tooltip>
+                )}
+              </Grid>
             </TabPanel>
           </SwipeableViews>
         </div>
@@ -651,6 +904,8 @@ export async function getServerSideProps(ctx) {
   await dispatch(productActions.getById(ctx.query.id));
   await dispatch(categoryActions.getAll());
   await dispatch(brandActions.getAll());
+  await dispatch(ratingActions.getAll(ctx.query.id));
+  await dispatch(userActions.getAll());
 
   return {
     props: {

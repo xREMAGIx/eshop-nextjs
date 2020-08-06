@@ -71,7 +71,7 @@ export function users(state = initialState, action) {
     case userConstants.GETALL_SUCCESS:
       return {
         ...state,
-        items: action.users,
+        items: action.users.data,
       };
     case userConstants.GETALL_FAILURE:
       return {
