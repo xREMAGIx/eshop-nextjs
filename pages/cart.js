@@ -90,14 +90,24 @@ export default function Cart() {
 
   const [productsInCart, setProductsInCart] = React.useState([]);
 
+  //Success Snackbar
   const [open, setOpen] = React.useState(false);
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
 
     setOpen(false);
+  };
+
+  //Error Snackbar
+  const [openError, setOpenError] = React.useState(false);
+  const handleErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenError(false);
   };
 
   const invoiceSubtotal = subtotal(productsInCart);
@@ -112,9 +122,12 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    dispatch(cartActions.checkOutCart(users.token, formData));
-    setOpen(true);
-    setFormData({ phone: "", address: "" });
+    if (phone === "" || address === "") setOpenError(true);
+    else {
+      dispatch(cartActions.checkOutCart(users.token, formData));
+      setOpen(true);
+      setFormData({ phone: "", address: "" });
+    }
   };
 
   useEffect(() => {
@@ -132,9 +145,21 @@ export default function Cart() {
 
   return (
     <Layout>
+      {/* Success submit */}
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
           Checkout success!
+        </Alert>
+      </Snackbar>
+
+      {/* Error */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={3000}
+        onClose={handleErrorClose}
+      >
+        <Alert onClose={handleErrorClose} severity="error">
+          Please fill all fields required!
         </Alert>
       </Snackbar>
 
@@ -234,31 +259,6 @@ export default function Cart() {
         <Grid className={classes.marginY} container spacing={4}>
           <Grid item xs={12} sm={6}>
             <Paper style={{ padding: 30, margin: 10 }} elevation={3}>
-              <Typography variant="h6">INFOMATION DETAIL</Typography>
-              <Typography gutterBottom>Enter your shipping detail</Typography>
-              <TextField
-                id="phone-full-width"
-                variant="outlined"
-                placeholder="Enter your phone"
-                fullWidth
-                name="phone"
-                value={phone}
-                margin="normal"
-                onChange={(e) => onChange(e)}
-              />
-              <TextField
-                id="address-full-width"
-                variant="outlined"
-                placeholder="Enter your address"
-                fullWidth
-                name="address"
-                value={address}
-                margin="normal"
-                onChange={(e) => onChange(e)}
-              />
-            </Paper>
-
-            <Paper style={{ padding: 30, margin: 10 }} elevation={3}>
               <Typography variant="h6">COUPON DISCOUNT</Typography>
               <Typography gutterBottom>
                 Enter your coupon code if you have one!
@@ -279,15 +279,40 @@ export default function Cart() {
             direction="row"
             justify="flex-end"
           >
-            <Grid item>
+            <Paper style={{ padding: 30, margin: 10 }} elevation={3}>
+              <Typography variant="h6">INFOMATION DETAIL</Typography>
+              <Typography gutterBottom>Enter your shipping detail</Typography>
+              <TextField
+                id="phone-full-width"
+                variant="outlined"
+                label="Phone"
+                fullWidth
+                required
+                name="phone"
+                value={phone}
+                margin="normal"
+                onChange={(e) => onChange(e)}
+              />
+              <TextField
+                id="address-full-width"
+                variant="outlined"
+                label="Address"
+                fullWidth
+                required
+                name="address"
+                value={address}
+                margin="normal"
+                onChange={(e) => onChange(e)}
+              />
               <Button
+                style={{ margin: 10, float: "right" }}
                 variant="contained"
-                color="primary"
+                color="secondary"
                 onClick={handleCheckout}
               >
                 CheckOut
               </Button>
-            </Grid>
+            </Paper>
           </Grid>
         </Grid>
       </Container>
