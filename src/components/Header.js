@@ -723,6 +723,20 @@ export default function Header() {
                       open={Boolean(anchorElMenuAccount)}
                       onClose={handleMenuAccountClose}
                     >
+                      <MenuItem
+                        component={Link}
+                        href="/users/orders"
+                        as={`/users/orders`}
+                      >
+                        Profile
+                      </MenuItem>
+                      <MenuItem
+                        component={Link}
+                        href="/users/orders"
+                        as={`/users/orders`}
+                      >
+                        Order History
+                      </MenuItem>
                       <MenuItem onClick={handleLogout}>Logout</MenuItem>
                     </Menu>
                   </React.Fragment>

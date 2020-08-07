@@ -7,9 +7,9 @@ export const userService = {
   register,
   getAll,
   getById,
-  //update,
-  delete: _delete,
   getMe,
+  getOrders,
+  getOrderDetail,
 };
 
 const backend_url = "https://nextjs-eshop-backend.herokuapp.com";
@@ -46,6 +46,41 @@ async function getMe(token) {
   else
     return await axios
       .get(`${backend_url}/api/auth/me`, requestConfig)
+      .then(handleResponse);
+}
+
+async function getOrders(userId) {
+  const requestConfig = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  if (process.env.DB_HOST)
+    return await axios
+      .get(
+        `${process.env.DB_HOST}/api/orders/getUserOrder/${userId}`,
+        requestConfig
+      )
+      .then(handleResponse);
+  else
+    return await axios
+      .get(`${backend_url}/api/orders/getUserOrder/${userId}`, requestConfig)
+      .then(handleResponse);
+}
+
+async function getOrderDetail(id) {
+  const requestConfig = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  if (process.env.DB_HOST)
+    return await axios
+      .get(`${process.env.DB_HOST}/api/orders/${id}`, requestConfig)
+      .then(handleResponse);
+  else
+    return await axios
+      .get(`${backend_url}/api/orders/${id}`, requestConfig)
       .then(handleResponse);
 }
 
@@ -105,16 +140,6 @@ async function register(user) {
 
 //   return fetch(`/api/users/${user.id}`, requestOptions).then(handleResponse);
 // }
-
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-  const requestOptions = {
-    method: "DELETE",
-    headers: authHeader(),
-  };
-
-  return fetch(`/api/users/${id}`, requestOptions).then(handleResponse);
-}
 
 function handleResponse(response) {
   const data = response.data;

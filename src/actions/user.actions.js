@@ -11,8 +11,9 @@ export const userActions = {
   register,
   getAll,
   getById,
-  delete: _delete,
   getMe,
+  getOrders,
+  getOrderDetail,
 };
 
 function getMe(token) {
@@ -188,25 +189,55 @@ function getById(id) {
   }
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-  return (dispatch) => {
-    dispatch(request(id));
+function getOrders(userId) {
+  return async (dispatch) => {
+    dispatch(request());
 
-    userService.delete(id).then(
-      (user) => dispatch(success(id)),
-      (error) => dispatch(failure(id, error.toString()))
+    await userService.getOrders(userId).then(
+      (orders) => {
+        dispatch(success(orders));
+      },
+      (error) => {
+        dispatch(failure(error));
+        //dispatch(alertActions.error(error.toString()));
+      }
     );
   };
 
-  function request(id) {
-    return { type: userConstants.DELETE_REQUEST, id };
+  function request() {
+    return { type: userConstants.GET_ORDERS_REQUEST };
   }
-  function success(id) {
-    return { type: userConstants.DELETE_SUCCESS, id };
+  function success(orders) {
+    return { type: userConstants.GET_ORDERS_SUCCESS, orders };
   }
-  function failure(id, error) {
-    return { type: userConstants.DELETE_FAILURE, id, error };
+  function failure(error) {
+    return { type: userConstants.GET_ORDERS_FAILURE, error };
+  }
+}
+
+function getOrderDetail(id) {
+  return async (dispatch) => {
+    dispatch(request());
+
+    await userService.getOrderDetail(id).then(
+      (order) => {
+        dispatch(success(order));
+      },
+      (error) => {
+        dispatch(failure(error));
+        //dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request() {
+    return { type: userConstants.GET_ORDER_DETAIL_REQUEST };
+  }
+  function success(order) {
+    return { type: userConstants.GET_ORDER_DETAIL_SUCCESS, order };
+  }
+  function failure(error) {
+    return { type: userConstants.GET_ORDER_DETAIL_FAILURE, error };
   }
 }
 
@@ -214,11 +245,9 @@ export const checkServerSideCookie = (ctx, reduxStore) => {
   const isServer = !!ctx.req;
 
   if (isServer) {
-    console.log(1);
     const token = getCookie("token", ctx.req) || null;
     reduxStore.dispatch(reauthenticate(token));
   } else {
-    console.log(2);
     const token = reduxStore.getState().users.token || null;
 
     if (token && (ctx.pathname === "/login" || ctx.pathname === "/register")) {
